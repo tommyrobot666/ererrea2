@@ -12,6 +12,7 @@ add_subdirectory(libs/glfw-3.4)
 
 project(ererrea2)
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_C_STANDARD 17)
 
 file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS src/*.cpp)
 add_executable(${CMAKE_PROJECT_NAME} main.cpp ${MY_SOURCES})
