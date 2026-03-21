@@ -52,13 +52,14 @@ void simulateFrame(GLFWwindow *window){
 
 void renderFrame(GLFWwindow *window){
     std::chrono::time_point time_point = std::chrono::system_clock::now();
-    std::chrono::duration time_duration = time_point - time_point.min();
-    float time = time_duration.count();
+    std::chrono::duration time_duration = time_point.time_since_epoch();
+    double time = time_duration.count(); //for some reason, using float makes time not change
+    time *= .0000001; // colors were too fast
 
-    glClearColor(std::sinf(time),std::sinf(time+(3.14/2)),std::cosf(time),1.0);
+    glClearColor(std::sin(time),std::sin(time+(3.14/2)),std::cos(time),1.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    std::cout << std::sinf(time);
+    std::cout << std::sin(time) << "   " << time << "\n";
 }
 
 void processInput(GLFWwindow *window)
