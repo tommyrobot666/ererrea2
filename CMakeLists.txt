@@ -24,8 +24,11 @@ add_subdirectory(libs/glfw-3.4)
 file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS src/*.cpp)
 add_executable(${CMAKE_PROJECT_NAME} main.cpp ${MY_SOURCES})
 
-#target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC RESOURCES_PATH=${CMAKE_CURRENT_SOURCE_DIR}/resources/)
-#target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC RESOURCES_PATH=.resources/)
+if(CMAKE_BUILD_TYPE EQUAL Debug)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC RESOURCES_PATH=${CMAKE_CURRENT_SOURCE_DIR}/resources/)
+else()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC RESOURCES_PATH=.resources/)
+endif()
 
 target_include_directories(ererrea2 PUBLIC include)
 #FORCE STATIC LINKS, allowing exe in builddir to run
