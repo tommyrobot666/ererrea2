@@ -108,12 +108,17 @@ int main() {
 
     std::cout << "its errors at textures";
     int width, height, nrChannels;
-    unsigned char *data = stbi_load(RESOURCES_PATH"smile.png", &width, &height, &nrChannels, 0); 
+    unsigned char *data = stbi_load(RESOURCES_PATH"smile.png", &width, &height, &nrChannels, STBI_rgb_alpha); 
+    std::cout << " does not1\n";
     unsigned int texture;
     glGenTextures(1, &texture);
+    std::cout << " does not2\n";// << data;
     if (data){
         // texture target, mipmap levels, load in format, size, idk, stored in format, data
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        std::cout << glGetError();
+        std::cout << " does not3\n";
         glGenerateMipmap(GL_TEXTURE_2D);
     } else
     {
