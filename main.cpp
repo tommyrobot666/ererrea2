@@ -3,6 +3,9 @@
 #include <GLFW/glfw3.h>
 #include <chrono>
 #include <stb_image.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #define GAME_WINDOW_WIDTH 800
 #define GAME_WINDOW_HEIGHT 600
@@ -46,6 +49,15 @@ int main() {
     glViewport(0,0,GAME_WINDOW_WIDTH,GAME_WINDOW_HEIGHT);
 
     unsigned int shaderProgram = setUpShaders();
+    unsigned int transformLoc = glGetUniformLocation(shaderProgram, "transform");
+    glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f); // current pos
+    glm::mat4 trans = glm::mat4(1.0f); // identity
+    trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f)); // now translation
+    trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0)); // also rotate
+    trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5)); // and scale
+    vec = trans * vec; // apply translation to print it
+    std::cout << vec.x << vec.y << vec.z << "\n";
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
     float vertices[] = {
         // positions         // colors

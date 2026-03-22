@@ -21,6 +21,7 @@ project(ererrea2)
 add_subdirectory(libs/glad)
 add_subdirectory(libs/glfw-3.4)
 add_subdirectory(libs/stb)
+add_subdirectory(libs/glm)
 
 file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS src/*.cpp)
 add_executable(${CMAKE_PROJECT_NAME} main.cpp ${MY_SOURCES})
@@ -37,4 +38,4 @@ target_include_directories(ererrea2 PUBLIC include)
 set(CMAKE_EXE_LINKER_FLAGS " -static")
 #target_link_libraries(myLib libgcc libstdc++)
 
-target_link_libraries(ererrea2 PRIVATE glad glfw stb_image)
+target_link_libraries(ererrea2 PRIVATE glad glfw stb_image glm)
