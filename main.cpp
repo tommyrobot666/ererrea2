@@ -107,28 +107,21 @@ int main() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     stbi_set_flip_vertically_on_load(true); 
-    std::cout << "its errors at textures";
     int width, height, nrChannels;
     unsigned char *data = stbi_load(RESOURCES_PATH"smile.png", &width, &height, &nrChannels, STBI_rgb_alpha); 
-    std::cout << " does not1\n";
     unsigned int texture;
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
     glActiveTexture(GL_TEXTURE0);
-    std::cout << " does not2\n";// << data;
     if (data){
         // texture target, mipmap levels, load in format, size, idk, stored in format, data
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        std::cout << glGetError();
-        std::cout << " does not3\n";
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     } else
     {
         std::cout << "Failed to load texture\n";
     }
     stbi_image_free(data);
-    std::cout << " does not\n";
 
     while(!glfwWindowShouldClose(window))
     {
