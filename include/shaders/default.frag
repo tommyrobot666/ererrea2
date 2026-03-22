@@ -1,10 +1,10 @@
-R"=====(#version 330 core
+R"=====(#version 420 core
 out vec4 FragColor;
 
 in vec4 VertColor;
 in vec2 VertUV;
 
-uniform sampler2D Texture;
+layout (binding = 0) uniform sampler2D Texture;
 
 void main()
 {

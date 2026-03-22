@@ -106,12 +106,15 @@ int main() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+    stbi_set_flip_vertically_on_load(true); 
     std::cout << "its errors at textures";
     int width, height, nrChannels;
     unsigned char *data = stbi_load(RESOURCES_PATH"smile.png", &width, &height, &nrChannels, STBI_rgb_alpha); 
     std::cout << " does not1\n";
     unsigned int texture;
     glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glActiveTexture(GL_TEXTURE0);
     std::cout << " does not2\n";// << data;
     if (data){
         // texture target, mipmap levels, load in format, size, idk, stored in format, data
