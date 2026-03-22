@@ -2,9 +2,14 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <chrono>
+#include <stb_image.h>
 
 #define GAME_WINDOW_WIDTH 800
 #define GAME_WINDOW_HEIGHT 600
+
+#ifndef RESOURCES_PATH
+#define RESOURCES_PATH
+#endif
 
 const char* defaultVertexShaderSource = {
     #include <shaders/default.vert>
@@ -14,7 +19,7 @@ const char* defaultFragmentShaderSource = {
 };
 
 void simulateFrame(GLFWwindow *window);
-void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgram);
+void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgram, unsigned int texture);
 unsigned int setUpShaders();
 
 int main() {
@@ -44,22 +49,16 @@ int main() {
 
     float vertices[] = {
         // positions         // colors
-        0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
-        -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
-        -0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,    // top left
-        0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 1.0f    // top right
+        0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   1.0f, 0.0f,  // lower-right corner
+        -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   0.0f, 0.0f,  // lower-left corner
+        -0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,    0.0f, 1.0f,   // top-left corner
+        0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 1.0f,    1.0f, 1.0f   // top-right corner
     };
     unsigned int indices[] = {  // note that we start from 0!
         0, 1, 3,   // first triangle
         1, 2, 3    // second triangle
     }; 
     //float texCoords[] = {0.0f, 0.0f,  1.0f, 0.0f,  0.5f, 1.0f  }; for triangle
-    float texCoords[] = {
-        0.0f, 0.0f,  // lower-left corner  
-        1.0f, 0.0f,  // lower-right corner
-        0.0f, 1.0f,   // top-left corner
-        1.0f, 1.0f   // top-right corner
-    };
 
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);
@@ -80,11 +79,14 @@ int main() {
     // tell it how vertices is formatted
     // position attribute
     // layout location, items, type, idk, stride length, offset. 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     // color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3* sizeof(float)));
     glEnableVertexAttribArray(1);
+    // uv
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);  
 
     //GL_REPEAT,GL_MIRRORED_REPEAT,GL_CLAMP_TO_EDGE,GL_CLAMP_TO_BORDER (like MonoGame)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
@@ -104,11 +106,26 @@ int main() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+    std::cout << "its errors at textures";
+    int width, height, nrChannels;
+    unsigned char *data = stbi_load(RESOURCES_PATH"smile.png", &width, &height, &nrChannels, 0); 
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    if (data){
+        // texture target, mipmap levels, load in format, size, idk, stored in format, data
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    } else
+    {
+        std::cout << "Failed to load texture\n";
+    }
+    stbi_image_free(data);
+    std::cout << " does not\n";
 
     while(!glfwWindowShouldClose(window))
     {
         simulateFrame(window);
-        renderFrame(window,VAO,shaderProgram);
+        renderFrame(window,VAO,shaderProgram,texture);
 
         glfwSwapBuffers(window); //it draws to back buffer first, this swaps it to be the shown front buffer
         glfwPollEvents();    
@@ -123,7 +140,7 @@ void simulateFrame(GLFWwindow *window){
     processInput(window);
 }
 
-void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgram){
+void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgram, unsigned int texture){
     std::chrono::time_point time_point = std::chrono::system_clock::now();
     std::chrono::duration time_duration = time_point.time_since_epoch();
     double time = time_duration.count(); //for some reason, using float makes time not change
@@ -135,6 +152,7 @@ void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgra
     std::cout << std::sin(time) << "   " << time << "\n";
 
     glUseProgram(shaderProgram);
+    glBindTexture(GL_TEXTURE_2D, texture);
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0); // i think this is the reason why glBindVertexArray(VAO) gets called again
