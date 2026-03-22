@@ -22,7 +22,7 @@ const char* defaultFragmentShaderSource = {
 };
 
 void simulateFrame(GLFWwindow *window);
-void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgram, unsigned int texture);
+void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgram, unsigned int texture, unsigned int transformLoc);
 unsigned int setUpShaders();
 
 int main() {
@@ -50,14 +50,6 @@ int main() {
 
     unsigned int shaderProgram = setUpShaders();
     unsigned int transformLoc = glGetUniformLocation(shaderProgram, "transform");
-    glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f); // current pos
-    glm::mat4 trans = glm::mat4(1.0f); // identity
-    trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f)); // now translation
-    trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0)); // also rotate
-    trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5)); // and scale
-    vec = trans * vec; // apply translation to print it
-    std::cout << vec.x << vec.y << vec.z << "\n";
-    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
     float vertices[] = {
         // positions         // colors
@@ -138,7 +130,7 @@ int main() {
     while(!glfwWindowShouldClose(window))
     {
         simulateFrame(window);
-        renderFrame(window,VAO,shaderProgram,texture);
+        renderFrame(window,VAO,shaderProgram,texture,transformLoc);
 
         glfwSwapBuffers(window); //it draws to back buffer first, this swaps it to be the shown front buffer
         glfwPollEvents();    
@@ -153,7 +145,7 @@ void simulateFrame(GLFWwindow *window){
     processInput(window);
 }
 
-void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgram, unsigned int texture){
+void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgram, unsigned int texture, unsigned int transformLoc){
     std::chrono::time_point time_point = std::chrono::system_clock::now();
     std::chrono::duration time_duration = time_point.time_since_epoch();
     double time = time_duration.count(); //for some reason, using float makes time not change
@@ -162,9 +154,15 @@ void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgra
     glClearColor(std::sin(time),std::sin(time+(3.14/2)),std::cos(time),1.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    std::cout << std::sin(time) << "   " << time << "\n";
+    std::cout << std::sin(time) << "   " << time << "   " << (float)(time*10) << "\n";
+
+    glm::mat4 trans = glm::mat4(1.0f); // identity
+    trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f)); // now translation
+    trans = glm::rotate(trans, (float)(time*10), glm::vec3(0.0, 0.0, 1.0)); // also rotate
+    trans = glm::scale(trans, glm::vec3(2, 2, 2)); // and scale
 
     glUseProgram(shaderProgram);
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
     glBindTexture(GL_TEXTURE_2D, texture);
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
