@@ -1,7 +1,6 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <chrono>
 #include <stb_image.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -146,19 +145,16 @@ void simulateFrame(GLFWwindow *window){
 }
 
 void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgram, unsigned int texture, unsigned int transformLoc){
-    std::chrono::time_point time_point = std::chrono::system_clock::now();
-    std::chrono::duration time_duration = time_point.time_since_epoch();
-    double time = time_duration.count(); //for some reason, using float makes time not change
-    time *= .0000001; // colors were too fast
+    double time = glfwGetTime();
 
     glClearColor(std::sin(time),std::sin(time+(3.14/2)),std::cos(time),1.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    std::cout << std::sin(time) << "   " << time << "   " << (float)(time*10) << "\n";
+    std::cout << std::sin(time) << "   " << time << "\n";
 
     glm::mat4 trans = glm::mat4(1.0f); // identity
     trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f)); // now translation
-    trans = glm::rotate(trans, (float)(time*10), glm::vec3(0.0, 0.0, 1.0)); // also rotate
+    trans = glm::rotate(trans, (float)time, glm::vec3(0.0, 0.0, 1.0)); // also rotate
     trans = glm::scale(trans, glm::vec3(2, 2, 2)); // and scale
 
     glUseProgram(shaderProgram);
