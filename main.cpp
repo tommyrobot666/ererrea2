@@ -53,6 +53,13 @@ int main() {
         0, 1, 3,   // first triangle
         1, 2, 3    // second triangle
     }; 
+    //float texCoords[] = {0.0f, 0.0f,  1.0f, 0.0f,  0.5f, 1.0f  }; for triangle
+    float texCoords[] = {
+        0.0f, 0.0f,  // lower-left corner  
+        1.0f, 0.0f,  // lower-right corner
+        0.0f, 1.0f,   // top-left corner
+        1.0f, 1.0f   // top-right corner
+    };
 
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);
@@ -72,11 +79,30 @@ int main() {
 
     // tell it how vertices is formatted
     // position attribute
+    // layout location, items, type, idk, stride length, offset. 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     // color attribute
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
     glEnableVertexAttribArray(1);
+
+    //GL_REPEAT,GL_MIRRORED_REPEAT,GL_CLAMP_TO_EDGE,GL_CLAMP_TO_BORDER (like MonoGame)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+    float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);  // for GL_CLAMP_TO_BORDER 
+
+    //mipmap stuff
+    // NEAREST is exact value, LINEAR blurrs between
+    // GL_[MIPMAP]_MIPMAP_[TEXEL]
+    // [MIPMAP] affects interpoliate for mipmap selection
+    // [TEXEL] affects interpoliate for pixels
+    // 2*2 = 4 mipmap constants for glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_x_FILTER, x)
+
+    // GL_NEAREST is exact value, GL_LINEAR blurrs between
+    // GL_TEXTURE_MIN_FILTER is scaled down, GL_TEXTURE_MAG_FILTER is scaled up
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 
     while(!glfwWindowShouldClose(window))
