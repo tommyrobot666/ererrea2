@@ -50,6 +50,7 @@ int main() {
 
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
 
     unsigned int VBO;
     glGenBuffers(1, &VBO);
@@ -61,14 +62,6 @@ int main() {
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0); // tell it how vertices is formatted
     glEnableVertexAttribArray(0);
-
-    
-    // glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    // glEnableVertexAttribArray(0);
-
-
 
 
     while(!glfwWindowShouldClose(window))
