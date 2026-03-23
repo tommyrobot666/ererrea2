@@ -51,11 +51,48 @@ int main() {
     unsigned int transformLoc = glGetUniformLocation(shaderProgram, "transform");
 
     float vertices[] = {
-        // positions         // colors
-        0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   1.0f, 0.0f,  // lower-right corner
-        -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   0.0f, 0.0f,  // lower-left corner
-        -0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,    0.0f, 1.0f,   // top-left corner
-        0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 1.0f,    1.0f, 1.0f   // top-right corner
+        // positions           // colors       // uvs
+        -0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
+        0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
+        0.5f,  0.5f, -0.5f,    1.0f,1.0f,1.0f, 1.0f, 1.0f,
+        0.5f,  0.5f, -0.5f,    1.0f,1.0f,1.0f, 1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
+
+        -0.5f, -0.5f,  0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
+        0.5f, -0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
+        0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 1.0f,
+        0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
+
+        -0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,    1.0f,1.0f,1.0f, 1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
+
+        0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
+        0.5f,  0.5f, -0.5f,    1.0f,1.0f,1.0f, 1.0f, 1.0f,
+        0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
+        0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
+        0.5f, -0.5f,  0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
+        0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
+
+        -0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
+        0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 1.0f, 1.0f,
+        0.5f, -0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
+        0.5f, -0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
+
+        -0.5f,  0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
+        0.5f,  0.5f, -0.5f,    1.0f,1.0f,1.0f, 1.0f, 1.0f,
+        0.5f,  0.5f, 0.5f,    1.0f,1.0f,1.0f,  1.0f, 0.0f,
+        0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f
     };
     unsigned int indices[] = {  // note that we start from 0!
         0, 1, 3,   // first triangle
@@ -150,18 +187,34 @@ void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgra
     glClearColor(std::sin(time),std::sin(time+(3.14/2)),std::cos(time),1.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    std::cout << std::sin(time) << "   " << time << "\n";
+    // std::cout << std::sin(time) << "   " << time << "\n";
 
+    // camera location
+    glm::mat4 camera = glm::mat4(1.0f);
+    camera = glm::translate(camera, glm::vec3(0.0f,0.0f,-3.0f));
+
+    // fov, aspect ratio, near plane distance, far plane distance
+    glm::mat4 proj = glm::perspective(glm::radians(45.0f), (float)GAME_WINDOW_WIDTH/(float)GAME_WINDOW_HEIGHT, 0.1f, 100.0f);
+
+    // object transform
     glm::mat4 trans = glm::mat4(1.0f); // identity
-    trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f)); // now translation
+    // trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f)); // now translation
     trans = glm::rotate(trans, (float)time, glm::vec3(0.0, 0.0, 1.0)); // also rotate
-    trans = glm::scale(trans, glm::vec3(2, 2, 2)); // and scale
+    trans = glm::scale(trans, glm::vec3(.5f, .5f, .5f)); // and scale
+
+    // trans is reused as final position
+    trans = trans * proj * camera;
+    // trans = glm::mat4(1.0f); // temp debug
+
+    glm::vec4 out = trans * glm::vec4(1.0f);
+    std::cout << out[0] << "," << out[1] << "," << out[2] << "\n";
 
     glUseProgram(shaderProgram);
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
     glBindTexture(GL_TEXTURE_2D, texture);
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0); // i think this is the reason why glBindVertexArray(VAO) gets called again
 }
 
