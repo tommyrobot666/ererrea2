@@ -21,7 +21,7 @@ const char* defaultFragmentShaderSource = {
 };
 
 void simulateFrame(GLFWwindow *window);
-void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgram, unsigned int texture, unsigned int transformLoc);
+void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgram, unsigned int texture, unsigned int transformLoc, glm::vec3 cubePositions[]);
 unsigned int setUpShaders();
 
 int main() {
@@ -99,6 +99,18 @@ int main() {
         1, 2, 3    // second triangle
     }; 
     //float texCoords[] = {0.0f, 0.0f,  1.0f, 0.0f,  0.5f, 1.0f  }; for triangle
+    glm::vec3 cubePositions[] = {
+        glm::vec3( 0.0f,  0.0f,  0.0f), 
+        glm::vec3( 2.0f,  5.0f, -15.0f), 
+        glm::vec3(-1.5f, -2.2f, -2.5f),  
+        glm::vec3(-3.8f, -2.0f, -12.3f),  
+        glm::vec3( 2.4f, -0.4f, -3.5f),  
+        glm::vec3(-1.7f,  3.0f, -7.5f),  
+        glm::vec3( 1.3f, -2.0f, -2.5f),  
+        glm::vec3( 1.5f,  2.0f, -2.5f), 
+        glm::vec3( 1.5f,  0.2f, -1.5f), 
+        glm::vec3(-1.3f,  1.0f, -1.5f)  
+    };
 
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);
@@ -163,10 +175,12 @@ int main() {
     }
     stbi_image_free(data);
 
+    glEnable(GL_DEPTH_TEST);
+
     while(!glfwWindowShouldClose(window))
     {
         simulateFrame(window);
-        renderFrame(window,VAO,shaderProgram,texture,transformLoc);
+        renderFrame(window,VAO,shaderProgram,texture,transformLoc,cubePositions);
 
         glfwSwapBuffers(window); //it draws to back buffer first, this swaps it to be the shown front buffer
         glfwPollEvents();    
@@ -181,40 +195,44 @@ void simulateFrame(GLFWwindow *window){
     processInput(window);
 }
 
-void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgram, unsigned int texture, unsigned int transformLoc){
+void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgram, unsigned int texture, unsigned int transformLoc, glm::vec3 cubePositions[]){
     double time = glfwGetTime();
 
     glClearColor(std::sin(time),std::sin(time+(3.14/2)),std::cos(time),1.0);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // std::cout << std::sin(time) << "   " << time << "\n";
 
     // camera location
     glm::mat4 camera = glm::mat4(1.0f);
-    camera = glm::translate(camera, glm::vec3(0.0f,0.0f,-3.0f));
+    camera = glm::translate(camera, glm::vec3(0.0f,0.0f,-9.0f));
 
     // fov, aspect ratio, near plane distance, far plane distance
-    glm::mat4 proj = glm::perspective(glm::radians(45.0f), (float)GAME_WINDOW_WIDTH/(float)GAME_WINDOW_HEIGHT, 0.1f, 100.0f);
-
-    // object transform
-    glm::mat4 trans = glm::mat4(1.0f); // identity
-    // trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f)); // now translation
-    trans = glm::rotate(trans, (float)time, glm::vec3(0.0, 0.0, 1.0)); // also rotate
-    trans = glm::scale(trans, glm::vec3(.5f, .5f, .5f)); // and scale
-
-    // trans is reused as final position
-    trans = trans * proj * camera;
-    // trans = glm::mat4(1.0f); // temp debug
-
-    glm::vec4 out = trans * glm::vec4(1.0f);
-    std::cout << out[0] << "," << out[1] << "," << out[2] << "\n";
+    glm::mat4 proj = glm::perspective(glm::radians(70.0f), (float)GAME_WINDOW_WIDTH/(float)GAME_WINDOW_HEIGHT, 0.1f, 100.0f);
 
     glUseProgram(shaderProgram);
-    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
     glBindTexture(GL_TEXTURE_2D, texture);
     glBindVertexArray(VAO);
-    // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    for (size_t i = 0; i < 10; i++){
+        // object transform
+        glm::mat4 trans = glm::mat4(1.0f); // identity
+        trans = glm::translate(trans, cubePositions[i]); // now translation
+        trans = glm::rotate(trans, (float)time, glm::vec3(0.0, 0.5, 1.0)); // also rotate
+        trans = glm::scale(trans, glm::vec3(.5f, .5f, .5f)); // and scale
+
+        // trans is reused as final position
+        trans = trans * proj * camera;
+
+        glm::vec4 out = trans * glm::vec4(1.0f);
+        std::cout << out[0] << "," << out[1] << "," << out[2] << " :" << i <<"\n";
+
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+        
+        // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        
+    }
     glBindVertexArray(0); // i think this is the reason why glBindVertexArray(VAO) gets called again
 }
 
