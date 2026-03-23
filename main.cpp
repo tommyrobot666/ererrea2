@@ -205,7 +205,7 @@ void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgra
 
     // camera location
     glm::mat4 camera = glm::mat4(1.0f);
-    camera = glm::translate(camera, glm::vec3(0.0f,0.0f,-9.0f));
+    camera = glm::translate(camera, glm::vec3(0.0f,0.0f,0.4f));
 
     // fov, aspect ratio, near plane distance, far plane distance
     glm::mat4 proj = glm::perspective(glm::radians(70.0f), (float)GAME_WINDOW_WIDTH/(float)GAME_WINDOW_HEIGHT, 0.1f, 100.0f);
