@@ -177,6 +177,17 @@ int main() {
 
     glEnable(GL_DEPTH_TEST);
 
+
+    // glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f); 
+    // glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+    // glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
+    // glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f); 
+    // glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection));
+    // glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
+
+    // glm::mat4 view;
+    // view = glm::lookAt(cameraPos, cameraTarget, up);
+
     while(!glfwWindowShouldClose(window))
     {
         simulateFrame(window);
@@ -204,8 +215,14 @@ void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgra
     // std::cout << std::sin(time) << "   " << time << "\n";
 
     // camera location
-    glm::mat4 camera = glm::mat4(1.0f);
-    camera = glm::translate(camera, glm::vec3(0.0f,0.0f,0.4f));
+    // glm::mat4 camera = glm::mat4(1.0f);
+    // camera = glm::translate(camera, glm::vec3(0.0f,0.0f,0.4f));
+    // circle around camera
+    const float radius = 10.0f;
+    float camX = sin(glfwGetTime()) * radius;
+    float camZ = cos(glfwGetTime()) * radius;
+    glm::mat4 view;
+    view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 
     // fov, aspect ratio, near plane distance, far plane distance
     glm::mat4 proj = glm::perspective(glm::radians(70.0f), (float)GAME_WINDOW_WIDTH/(float)GAME_WINDOW_HEIGHT, 0.1f, 100.0f);
@@ -222,7 +239,7 @@ void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgra
         trans = glm::scale(trans, glm::vec3(.5f, .5f, .5f)); // and scale
 
         // trans is reused as final position
-        trans = trans * proj * camera;
+        trans = proj * view * trans;
 
         glm::vec4 out = trans * glm::vec4(1.0f);
         std::cout << out[0] << "," << out[1] << "," << out[2] << " :" << i <<"\n";
