@@ -20,8 +20,8 @@ const char* defaultFragmentShaderSource = {
     #include <shaders/default.frag>
 };
 
-void simulateFrame(GLFWwindow *window);
-void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgram, unsigned int texture, unsigned int transformLoc, glm::vec3 cubePositions[]);
+void simulateFrame(GLFWwindow *window, glm::vec3 *cameraPos);
+void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgram, unsigned int texture, unsigned int transformLoc, glm::vec3 cubePositions[], glm::vec3 *cameraPos);
 unsigned int setUpShaders();
 
 int main() {
@@ -178,7 +178,7 @@ int main() {
     glEnable(GL_DEPTH_TEST);
 
 
-    // glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f); 
+    glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f); 
     // glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
     // glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
     // glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f); 
@@ -190,8 +190,8 @@ int main() {
 
     while(!glfwWindowShouldClose(window))
     {
-        simulateFrame(window);
-        renderFrame(window,VAO,shaderProgram,texture,transformLoc,cubePositions);
+        simulateFrame(window,&cameraPos);
+        renderFrame(window,VAO,shaderProgram,texture,transformLoc,cubePositions,&cameraPos);
 
         glfwSwapBuffers(window); //it draws to back buffer first, this swaps it to be the shown front buffer
         glfwPollEvents();    
@@ -201,12 +201,12 @@ int main() {
     return 0;
 }
 
-void processInput(GLFWwindow *window);
-void simulateFrame(GLFWwindow *window){
-    processInput(window);
+void processInput(GLFWwindow *window, glm::vec3 *cameraPos);
+void simulateFrame(GLFWwindow *window, glm::vec3 *cameraPos){
+    processInput(window,cameraPos);
 }
 
-void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgram, unsigned int texture, unsigned int transformLoc, glm::vec3 cubePositions[]){
+void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgram, unsigned int texture, unsigned int transformLoc, glm::vec3 cubePositions[], glm::vec3 *cameraPos){
     double time = glfwGetTime();
 
     glClearColor(std::sin(time),std::sin(time+(3.14/2)),std::cos(time),1.0);
@@ -215,14 +215,8 @@ void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgra
     // std::cout << std::sin(time) << "   " << time << "\n";
 
     // camera location
-    // glm::mat4 camera = glm::mat4(1.0f);
-    // camera = glm::translate(camera, glm::vec3(0.0f,0.0f,0.4f));
-    // circle around camera
-    const float radius = 10.0f;
-    float camX = sin(glfwGetTime()) * radius;
-    float camZ = cos(glfwGetTime()) * radius;
     glm::mat4 view;
-    view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+    view = glm::lookAt(*cameraPos, glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 
     // fov, aspect ratio, near plane distance, far plane distance
     glm::mat4 proj = glm::perspective(glm::radians(70.0f), (float)GAME_WINDOW_WIDTH/(float)GAME_WINDOW_HEIGHT, 0.1f, 100.0f);
@@ -253,10 +247,24 @@ void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgra
     glBindVertexArray(0); // i think this is the reason why glBindVertexArray(VAO) gets called again
 }
 
-void processInput(GLFWwindow *window)
+void processInput(GLFWwindow *window, glm::vec3 *cameraPos)
 {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+    
+
+
+    glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+    glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
+    const float cameraSpeed = 0.05f; // adjust accordingly
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        *cameraPos += cameraSpeed * cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        *cameraPos -= cameraSpeed * cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        *cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        *cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 }
 
 unsigned int setUpShaders(){
