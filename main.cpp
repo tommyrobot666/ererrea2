@@ -7,12 +7,10 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
-#include <src/gameState.h>
-#include <src/scene.h>
-#include <src/renderer.h>
-#include <src/testScene.h>
+#include <gameState.h>
+#include <renderer.h>
+#include <testScene.h>
 
 #define GAME_WINDOW_WIDTH 800
 #define GAME_WINDOW_HEIGHT 600

@@ -1,5 +1,5 @@
-#include <src/gameState.h>
-#include <src/scene.h>
+#include <gameState.h>
+#include <scene.h>
 #include <src/renderer.h>
 #include <src/vertexObjectGenerators.h>
 #include <src/testScene.h>

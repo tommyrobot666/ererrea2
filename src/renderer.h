@@ -1,12 +1,9 @@
 #pragma once
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 #include <vector>
+#include <string>
 
 class vertexObject
 {
@@ -36,8 +33,8 @@ private:
     unsigned int setUpShaders();
 public:
     renderer();
-    vertexObject createVertexObject(double vertices[], unsigned int indices[], unsigned int vertices, unsigned int triangles);
-    void setShaderTransform(&mat4 trans);
-    void defaultShader();
-    unsigned int loadPngTexture(String path);
+    vertexObject createVertexObject(double vertices[], unsigned int indices[], unsigned int vertCount, unsigned int triangles);
+    void setShaderTransform(glm::mat4* trans) const;
+    void defaultShader() const;
+    static unsigned int loadPngTexture(std::string path);
 };

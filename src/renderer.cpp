@@ -1,15 +1,13 @@
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #include <vector>
+#include <iostream>
 
 #include <stb_image.h>
 
-#include <src/renderer.h>
+#include <renderer.h>
 
 #ifndef RESOURCES_PATH
 #define RESOURCES_PATH
@@ -22,16 +20,9 @@ const char* defaultFragmentShaderSource = {
     #include <shaders/default.frag>
 };
 
-class vertexObject
-{
-    public:
-        unsigned int VAO;
-        unsigned int VBO;
-        unsigned int EBO;
-        unsigned int vertices;
-        unsigned int triangles; // use for glDrawArrays
 
-        vertexObject(unsigned int VAO,unsigned int VBO,unsigned int EBO,unsigned int vertices,unsigned int triangles){
+
+        vertexObject::vertexObject(unsigned int VAO,unsigned int VBO,unsigned int EBO,unsigned int vertices,unsigned int triangles){
             this->VAO = VAO;
             this->VBO = VBO;
             this->EBO = EBO;
@@ -39,27 +30,21 @@ class vertexObject
             this->triangles = triangles;
         }
 
-        ~vertexObject(){
+        vertexObject::~vertexObject(){
             glDeleteVertexArrays(1,&VAO);
             glDeleteBuffers(1,&VBO);
             glDeleteBuffers(1,&EBO);
         }
 
-        void draw(){
+        void vertexObject::draw(){
             glDrawElements(GL_TRIANGLES, vertices, GL_UNSIGNED_INT, 0);
         }
 
-};
 
 
-class renderer
-{
-private:
-    std::vector<vertexObject> vertexObjects;
-    unsigned int shaderProgram;
-    unsigned int transformLoc;
 
-    unsigned int setUpShaders(){
+
+    unsigned int renderer::setUpShaders(){
         int  success;
         char infoLog[512];
         unsigned int vertexShader;
@@ -96,8 +81,8 @@ private:
         glDeleteShader(fragmentShader);
         return shaderProgram;
     }
-public:
-    renderer(){
+
+    renderer::renderer(){
         shaderProgram = setUpShaders();
         transformLoc = glGetUniformLocation(shaderProgram, "transform");
 
@@ -124,7 +109,7 @@ public:
         glEnable(GL_DEPTH_TEST);
     }
 
-    vertexObject createVertexObject(double vertices[], unsigned int indices[], unsigned int vertices, unsigned int triangles){
+    vertexObject renderer::createVertexObject(double vertices[], unsigned int indices[], unsigned int vertCount, unsigned int triangles){
         unsigned int VAO;
         glGenVertexArrays(1, &VAO);
         glBindVertexArray(VAO);
@@ -151,24 +136,24 @@ public:
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW); 
 
-        vertexObject vo = vertexObject(VAO,VBO,EBO);
+        vertexObject vo = vertexObject(VAO,VBO,EBO,vertCount,triangles);
 
         vertexObjects.push_back(vo);
 
         return vo;
     }
 
-    void setShaderTransform(&mat4 trans){
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+    void renderer::setShaderTransform(glm::mat4* trans) const{
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(*trans));
     }
 
-    void defaultShader(){
+    void renderer::defaultShader() const{
         glUseProgram(shaderProgram);
     }
 
-    unsigned int loadPngTexture(String path){
+    unsigned int renderer::loadPngTexture(std::string path){
         int width, height, nrChannels;
-        unsigned char *data = stbi_load(RESOURCES_PATH "textures/" path, &width, &height, &nrChannels, STBI_rgb_alpha); 
+        unsigned char *data = stbi_load(RESOURCES_PATH "textures/" path, &width, &height, &nrChannels, STBI_rgb_alpha);
         unsigned int texture;
         glGenTextures(1, &texture);
         glBindTexture(GL_TEXTURE_2D, texture);
