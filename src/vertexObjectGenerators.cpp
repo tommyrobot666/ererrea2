@@ -1,4 +1,4 @@
-#include <vertexObjectGenerators.h>
+#include <src/vertexObjectGenerators.h>
 
 namespace vertexObjectGenerators
 {

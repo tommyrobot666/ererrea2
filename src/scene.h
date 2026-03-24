@@ -1,6 +1,5 @@
 #pragma once
-#include <gameState.h>
-#include <scene.h>
+#include <src/gameState.h>
 
 class scene
 {

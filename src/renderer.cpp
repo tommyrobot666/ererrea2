@@ -9,7 +9,7 @@
 
 #include <stb_image.h>
 
-#include <renderer.h>
+#include <src/renderer.h>
 
 #ifndef RESOURCES_PATH
 #define RESOURCES_PATH

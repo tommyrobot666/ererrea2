@@ -1,8 +1,8 @@
-#include <gameState.h>
-#include <scene.h>
-#include <renderer.h>
-#include <vertexObjectGenerators.h>
-#include <testScene.h>
+#include <src/gameState.h>
+#include <src/scene.h>
+#include <src/renderer.h>
+#include <src/vertexObjectGenerators.h>
+#include <src/testScene.h>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
