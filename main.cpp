@@ -12,6 +12,7 @@
 #include <gameState.h>
 #include <scene.h>
 #include <renderer.h>
+#include <testScene.h>
 
 #define GAME_WINDOW_WIDTH 800
 #define GAME_WINDOW_HEIGHT 600
@@ -56,6 +57,8 @@ int main() {
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, gameState::mouseCallback); 
 
+    testScene test = testScene();
+    gs.currentScene = &test;
     
     while(!glfwWindowShouldClose(window))
     {

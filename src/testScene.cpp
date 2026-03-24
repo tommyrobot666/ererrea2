@@ -2,6 +2,7 @@
 #include <scene.h>
 #include <renderer.h>
 #include <vertexObjectGenerators.h>
+#include <testScene.h>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -107,7 +108,7 @@ public:
             trans = glm::scale(trans, glm::vec3(.5f, .5f, .5f)); // and scale
 
             // trans is reused as final position
-            trans = proj * view * trans;
+            trans = proj * gs.view * trans;
 
             glm::vec4 out = trans * glm::vec4(1.0f);
 
