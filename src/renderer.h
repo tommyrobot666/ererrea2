@@ -33,7 +33,7 @@ private:
     unsigned int setUpShaders();
 public:
     renderer();
-    vertexObject createVertexObject(double vertices[], unsigned int indices[], unsigned int vertCount, unsigned int triangles);
+    vertexObject createVertexObject(float vertices[], unsigned int indices[], unsigned int vertCount, unsigned int triangles);
     void setShaderTransform(glm::mat4* trans) const;
     void defaultShader() const;
     static unsigned int loadPngTexture(std::string path);

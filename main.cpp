@@ -21,13 +21,13 @@
 
 void simulateFrame(){
     if (gs.currentScene){
-        (*gs.currentScene).simulate();
+        gs.currentScene->simulate();
     }
 }
 
 void renderFrame(){
     if (gs.currentScene){
-        (*gs.currentScene).render();
+        gs.currentScene->render();
     }
 }
 
@@ -55,7 +55,7 @@ int main() {
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, gameState::mouseCallback); 
 
-    testScene test = testScene();
+    testScene test = testScene(); // the new keyword does exist and makes it on the heap
     gs.currentScene = &test;
     
     while(!glfwWindowShouldClose(window))
