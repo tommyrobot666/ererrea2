@@ -13,12 +13,6 @@
 #define RESOURCES_PATH
 #endif
 
-const char* defaultVertexShaderSource = {
-    #include <shaders/default.vert>
-};
-const char* defaultFragmentShaderSource = {
-    #include <shaders/default.frag>
-};
 
 float lastMouseX = GAME_WINDOW_WIDTH/2, lastMouseY = GAME_WINDOW_HEIGHT/2;
 float mouseVelX = 0, mouseVelY = 0;
@@ -32,7 +26,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos){
 }
 void simulateFrame(GLFWwindow *window, glm::vec3 *cameraPos, float *yaw, float *pitch, glm::vec3 *cameraDir);
 void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgram, unsigned int texture, unsigned int transformLoc, glm::vec3 cubePositions[], glm::vec3 *cameraPos, glm::vec3 *cameraDir);
-unsigned int setUpShaders();
 
 int main() {
     glfwInit();
@@ -57,58 +50,6 @@ int main() {
 
     glViewport(0,0,GAME_WINDOW_WIDTH,GAME_WINDOW_HEIGHT);
 
-    unsigned int shaderProgram = setUpShaders();
-    unsigned int transformLoc = glGetUniformLocation(shaderProgram, "transform");
-
-    float vertices[] = {
-        // positions           // colors       // uvs
-        -0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
-        0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
-        0.5f,  0.5f, -0.5f,    1.0f,1.0f,1.0f, 1.0f, 1.0f,
-        0.5f,  0.5f, -0.5f,    1.0f,1.0f,1.0f, 1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
-
-        -0.5f, -0.5f,  0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
-        0.5f, -0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
-
-        -0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,    1.0f,1.0f,1.0f, 1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
-
-        0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
-        0.5f,  0.5f, -0.5f,    1.0f,1.0f,1.0f, 1.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
-        0.5f, -0.5f,  0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
-
-        -0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 1.0f, 1.0f,
-        0.5f, -0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
-        0.5f, -0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
-
-        -0.5f,  0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
-        0.5f,  0.5f, -0.5f,    1.0f,1.0f,1.0f, 1.0f, 1.0f,
-        0.5f,  0.5f, 0.5f,    1.0f,1.0f,1.0f,  1.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f
-    };
-    unsigned int indices[] = {  // note that we start from 0!
-        0, 1, 3,   // first triangle
-        1, 2, 3    // second triangle
-    }; 
-    //float texCoords[] = {0.0f, 0.0f,  1.0f, 0.0f,  0.5f, 1.0f  }; for triangle
     glm::vec3 cubePositions[] = {
         glm::vec3( 0.0f,  0.0f,  0.0f), 
         glm::vec3( 2.0f,  5.0f, -15.0f), 
@@ -122,51 +63,6 @@ int main() {
         glm::vec3(-1.3f,  1.0f, -1.5f)  
     };
 
-    unsigned int VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-
-    unsigned int VBO;
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    //GL_STATIC_DRAW is for unchanging things, GL_DYNAMIC_DRAW is for changing things
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); 
-
-    unsigned int EBO;
-    glGenBuffers(1, &EBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    //GL_STATIC_DRAW is for unchanging things, GL_DYNAMIC_DRAW is for changing things
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW); 
-
-    // tell it how vertices is formatted
-    // position attribute
-    // layout location, items, type, idk, stride length, offset. 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    // color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3* sizeof(float)));
-    glEnableVertexAttribArray(1);
-    // uv
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);  
-
-    //GL_REPEAT,GL_MIRRORED_REPEAT,GL_CLAMP_TO_EDGE,GL_CLAMP_TO_BORDER (like MonoGame)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
-    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);  // for GL_CLAMP_TO_BORDER 
-
-    //mipmap stuff
-    // NEAREST is exact value, LINEAR blurrs between
-    // GL_[MIPMAP]_MIPMAP_[TEXEL]
-    // [MIPMAP] affects interpoliate for mipmap selection
-    // [TEXEL] affects interpoliate for pixels
-    // 2*2 = 4 mipmap constants for glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_x_FILTER, x)
-
-    // GL_NEAREST is exact value, GL_LINEAR blurrs between
-    // GL_TEXTURE_MIN_FILTER is scaled down, GL_TEXTURE_MAG_FILTER is scaled up
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     stbi_set_flip_vertically_on_load(true); 
     int width, height, nrChannels;
@@ -241,7 +137,6 @@ void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgra
     // fov, aspect ratio, near plane distance, far plane distance
     glm::mat4 proj = glm::perspective(glm::radians(70.0f), (float)GAME_WINDOW_WIDTH/(float)GAME_WINDOW_HEIGHT, 0.1f, 100.0f);
 
-    glUseProgram(shaderProgram);
     glBindTexture(GL_TEXTURE_2D, texture);
     glBindVertexArray(VAO);
 
@@ -258,7 +153,7 @@ void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgra
         glm::vec4 out = trans * glm::vec4(1.0f);
         std::cout << out[0] << "," << out[1] << "," << out[2] << " :" << i <<"\n";
 
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+        
         
         // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -299,40 +194,3 @@ void processInput(GLFWwindow *window, glm::vec3 *cameraPos, float *yaw, float *p
     *pitch -= mouseVelY*0.005;
 }
 
-unsigned int setUpShaders(){
-    int  success;
-    char infoLog[512];
-    unsigned int vertexShader;
-    vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &defaultVertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if(!success)
-    {
-        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        std::cout << "Default vertex shader failed\n" << infoLog;
-    }
-    unsigned int fragmentShader;
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &defaultFragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if(!success)
-    {
-        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-        std::cout << "Default fragment shader failed\n" << infoLog;
-    }
-    unsigned int shaderProgram;
-    shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if(!success) {
-        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-        std::cout << "Shader program failed\n" << infoLog;
-    }
-    glDeleteShader(vertexShader); // the shaders are in the program now
-    glDeleteShader(fragmentShader);
-    return shaderProgram;
-}
