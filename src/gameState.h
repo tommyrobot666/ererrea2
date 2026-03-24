@@ -3,6 +3,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -15,19 +16,24 @@ class gameState
 {
 public:
     GLFWwindow *window;
-    float lastMouseX;
+    float lastMouseX, lastMouseY;
     float mouseVelX, mouseVelY;
     glm::vec3 cameraPos; 
     glm::vec3 cameraDir;
     float yaw;
     float pitch;
-
+    scene* currentScene;
+    scene* nextScene;
 
     gameState();
 
-    void mouseCallback(GLFWwindow* window, double xpos, double ypos);
+    static void mouseCallback(GLFWwindow* window, double xpos, double ypos);
+
+    void onFrameStart();
 
     void onFrameEnd();
 };
+
+static gameState gs = gameState();
 
 #endif

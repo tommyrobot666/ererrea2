@@ -1,6 +1,8 @@
 #include <gameState.h>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -10,23 +12,24 @@
 
 class scene
 {
-protected:
-    gameState* gs;
 public:
-    scene(gameState* gs){
-        this->gs = gs;
-    }
+    scene(){}
+
     virtual ~scene() = default;
+
+    virtual void load(){
+        // get textures and stuff
+    }
 
     virtual void simulate(){
         // The code that I wrote when folowing the tutorial
-        GLFWwindow* window = (*gs).window;
-        glm::vec3 cameraPos = (*gs).cameraPos;
-        glm::vec3 cameraDir = (*gs).cameraDir;
-        float yaw = (*gs).yaw;
-        float pitch = (*gs).pitch;
-        float mouseVelX = (*gs).mouseVelX;
-        float mouseVelY = (*gs).mouseVelY;
+        GLFWwindow* window = gs.window;
+        glm::vec3 cameraPos = gs.cameraPos;
+        glm::vec3 cameraDir = gs.cameraDir;
+        float yaw = gs.yaw;
+        float pitch = gs.pitch;
+        float mouseVelX = gs.mouseVelX;
+        float mouseVelY = gs.mouseVelY;
 
         if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
@@ -62,9 +65,9 @@ public:
 
     virtual void render(){
         // The code that I wrote when folowing the tutorial
-        GLFWwindow* window = (*gs).window;
-        glm::vec3 cameraPos = (*gs).cameraPos;
-        glm::vec3 cameraDir = (*gs).cameraDir;
+        GLFWwindow* window = gs.window;
+        glm::vec3 cameraPos = gs.cameraPos;
+        glm::vec3 cameraDir = gs.cameraDir;
         unsigned int texture; // use the new render class
         unsigned int VAO; // use the new render class
 

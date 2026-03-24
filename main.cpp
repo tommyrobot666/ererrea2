@@ -1,11 +1,16 @@
 #include <iostream>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
 #include <stb_image.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
 #include <gameState.h>
+#include <scene.h>
 
 #define GAME_WINDOW_WIDTH 800
 #define GAME_WINDOW_HEIGHT 600
@@ -14,10 +19,17 @@
 #define RESOURCES_PATH
 #endif
 
+void simulateFrame(){
+    if (gs.currentScene){
+        (*gs.currentScene).simulate();
+    }
+}
 
-
-void simulateFrame(gameState gs);
-void renderFrame(gameState gs);
+void renderFrame(){
+    if (gs.currentScene){
+        (*gs.currentScene).render();
+    }
+}
 
 int main() {
     glfwInit();
@@ -39,25 +51,20 @@ int main() {
     }
     glViewport(0,0,GAME_WINDOW_WIDTH,GAME_WINDOW_HEIGHT);
 
-    gameState gs = gameState();
-
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetCursorPosCallback(window, ); 
+    glfwSetCursorPosCallback(window, gameState::mouseCallback); 
 
-    float lastFrameTime = glfwGetTime();
-    float deltaTime = 0;
+    
     while(!glfwWindowShouldClose(window))
     {
-        deltaTime = glfwGetTime() - lastFrameTime;
-
-        simulateFrame(gs);
-        renderFrame(gs);
+        gs.onFrameStart();
+        simulateFrame();
+        renderFrame();
+        gs.onFrameEnd();
         
 
         glfwSwapBuffers(window); //it draws to back buffer first, this swaps it to be the shown front buffer
         glfwPollEvents();    
-
-        lastFrameTime = glfwGetTime();
     }
 
     glfwTerminate();
