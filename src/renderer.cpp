@@ -4,6 +4,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
+#include <stb_image.h>
+
+#ifndef RESOURCES_PATH
+#define RESOURCES_PATH
+#endif
 
 const char* defaultVertexShaderSource = {
     #include <shaders/default.vert>
@@ -106,6 +111,10 @@ public:
         // GL_TEXTURE_MIN_FILTER is scaled down, GL_TEXTURE_MAG_FILTER is scaled up
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        stbi_set_flip_vertically_on_load(true); 
+    
+        glEnable(GL_DEPTH_TEST);
     }
 
     vertexObject createVertexObject(double vertices[], unsigned int indices[]){
@@ -135,7 +144,11 @@ public:
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW); 
 
-        return vertexObject(VAO,VBO,EBO);
+        vertexObject vo = vertexObject(VAO,VBO,EBO);
+
+        vertexObjects.push_back(vo);
+
+        return vo;
     }
 
     void setShaderTransform(&mat4 trans){
@@ -144,5 +157,24 @@ public:
 
     void defaultShader(){
         glUseProgram(shaderProgram);
+    }
+
+    unsigned int loadPngTexture(String path){
+        int width, height, nrChannels;
+        unsigned char *data = stbi_load(RESOURCES_PATH "textures/" path, &width, &height, &nrChannels, STBI_rgb_alpha); 
+        unsigned int texture;
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glActiveTexture(GL_TEXTURE0);
+        if (data){
+            // texture target, mipmap levels, load in format, size, idk, stored in format, data
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            glGenerateMipmap(GL_TEXTURE_2D);
+        } else
+        {
+            std::cout << "Failed to load texture\n";
+        }
+        stbi_image_free(data);
+        return texture;
     }
 };
