@@ -3,13 +3,11 @@
 class scene
 {
 public:
-    scene();
+    virtual ~scene() = default;
 
-    virtual ~scene();
+    virtual void load(){}
 
-    virtual void load();
+    virtual void simulate(){}
 
-    virtual void simulate();
-
-    virtual void render();
+    virtual void render(){}
 };
