@@ -1,3 +1,5 @@
+#include <vertexObjectGenerators.h>
+
 namespace vertexObjectGenerators
 {
     namespace basicCube {

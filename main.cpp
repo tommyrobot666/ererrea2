@@ -11,6 +11,7 @@
 
 #include <gameState.h>
 #include <scene.h>
+#include <renderer.h>
 
 #define GAME_WINDOW_WIDTH 800
 #define GAME_WINDOW_HEIGHT 600
@@ -50,6 +51,7 @@ int main() {
         return -1;
     }
     glViewport(0,0,GAME_WINDOW_WIDTH,GAME_WINDOW_HEIGHT);
+    gs.r = renderer();
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, gameState::mouseCallback); 

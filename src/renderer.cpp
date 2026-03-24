@@ -9,6 +9,8 @@
 
 #include <stb_image.h>
 
+#include <renderer.h>
+
 #ifndef RESOURCES_PATH
 #define RESOURCES_PATH
 #endif
@@ -29,10 +31,12 @@ class vertexObject
         unsigned int vertices;
         unsigned int triangles; // use for glDrawArrays
 
-        vertexObject(unsigned int VAO,unsigned int VBO,unsigned int EBO){
+        vertexObject(unsigned int VAO,unsigned int VBO,unsigned int EBO,unsigned int vertices,unsigned int triangles){
             this->VAO = VAO;
             this->VBO = VBO;
             this->EBO = EBO;
+            this->vertices = vertices;
+            this->triangles = triangles;
         }
 
         ~vertexObject(){
@@ -120,7 +124,7 @@ public:
         glEnable(GL_DEPTH_TEST);
     }
 
-    vertexObject createVertexObject(double vertices[], unsigned int indices[]){
+    vertexObject createVertexObject(double vertices[], unsigned int indices[], unsigned int vertices, unsigned int triangles){
         unsigned int VAO;
         glGenVertexArrays(1, &VAO);
         glBindVertexArray(VAO);

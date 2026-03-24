@@ -1,12 +1,11 @@
 #pragma once
 #include <gameState.h>
+#include <scene.h>
 
 class scene
 {
-protected:
-    gameState* gs;
 public:
-    scene(gameState* gs);
+    scene();
 
     virtual ~scene();
 

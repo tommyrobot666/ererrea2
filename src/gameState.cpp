@@ -7,6 +7,7 @@
 
 #include <gameState.h>
 #include <scene.h>
+#include <renderer.h>
 
 #define GAME_WINDOW_WIDTH 800
 #define GAME_WINDOW_HEIGHT 600
@@ -25,6 +26,8 @@ public:
     float deltaTime = 0;
     scene* currentScene;
     scene* nextScene;
+    renderer r; // this will be init manualy
+    glm::mat4 view;
 
     gameState();
 
@@ -38,6 +41,9 @@ public:
 
     void onFrameStart(){
         deltaTime = glfwGetTime() - lastFrameTime;
+        
+        // camera location
+        view = glm::lookAt(cameraPos, cameraPos+cameraDir, glm::vec3(0.0, 1.0, 0.0));
     }
 
     void onFrameEnd(){

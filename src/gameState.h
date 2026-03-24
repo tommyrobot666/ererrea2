@@ -24,6 +24,8 @@ public:
     float pitch;
     scene* currentScene;
     scene* nextScene;
+    renderer r; // this will be init manualy
+    glm::mat4 view;
 
     gameState();
 
