@@ -11,7 +11,7 @@
 
 gameState::gameState() {}
 
-void gameState::mouseCallback(GLFWwindow* window, double xpos, double ypos){
+void gameState::mouseCallback(GLFWwindow *window, double xpos, double ypos) {
     gs.mouseVelX = gs.lastMouseX - xpos;
     gs.mouseVelY = gs.lastMouseY - ypos;
 
@@ -19,14 +19,14 @@ void gameState::mouseCallback(GLFWwindow* window, double xpos, double ypos){
     gs.lastMouseY = ypos;
 }
 
-void gameState::onFrameStart(){
+void gameState::onFrameStart() {
     deltaTime = glfwGetTime() - lastFrameTime;
 
     // camera location
-    view = glm::lookAt(cameraPos, cameraPos+cameraDir, glm::vec3(0.0, 1.0, 0.0));
+    view = glm::lookAt(cameraPos, cameraPos + cameraDir, glm::vec3(0.0, 1.0, 0.0));
 }
 
-void gameState::onFrameEnd(){
+void gameState::onFrameEnd() {
     mouseVelX = 0;
     mouseVelY = 0;
     lastFrameTime = glfwGetTime();

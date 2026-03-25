@@ -12,11 +12,10 @@
 #define GAME_WINDOW_HEIGHT 600
 
 
-class gameState
-{
+class gameState {
 public:
     GLFWwindow *window;
-    double lastMouseX = GAME_WINDOW_WIDTH/2, lastMouseY = GAME_WINDOW_HEIGHT/2;
+    double lastMouseX = GAME_WINDOW_WIDTH / 2, lastMouseY = GAME_WINDOW_HEIGHT / 2;
     double mouseVelX = 0, mouseVelY = 0;
     glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 cameraDir = glm::normalize(cameraPos - glm::vec3(0.0f, 0.0f, 1.0f));
@@ -24,14 +23,14 @@ public:
     double pitch = 0.0f;
     double lastFrameTime = glfwGetTime();
     double deltaTime = 0;
-    scene* currentScene;
-    scene* nextScene;
+    scene *currentScene;
+    scene *nextScene;
     renderer r; // this will be init manualy
     glm::mat4 view;
 
     gameState();
 
-    static void mouseCallback(GLFWwindow* window, double xpos, double ypos);
+    static void mouseCallback(GLFWwindow *window, double xpos, double ypos);
 
     void onFrameStart();
 

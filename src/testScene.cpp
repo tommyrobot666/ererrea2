@@ -1,6 +1,4 @@
-// #ifndef __gl_h_
 #include <glad/glad.h>
-// #endif
 #include <GLFW/glfw3.h>
 
 #include <gameState.h>
@@ -15,17 +13,17 @@
 #define GAME_WINDOW_WIDTH 800
 #define GAME_WINDOW_HEIGHT 600
 
-void testScene::load(){
+void testScene::load() {
     // get textures and stuff
-    gs.cameraPos = glm::vec3(0.0f,0.0f,3.0f);
+    gs.cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
     texture = gs.r.loadPngTexture("smile.png");
-    VAO = gs.r.createVertexObject(vertexObjectGenerators::basicCube::vertices(),{},
-        0,vertexObjectGenerators::basicCube::verticesSize()).VAO;
+    VAO = gs.r.createVertexObject(vertexObjectGenerators::basicCube::vertices(), {},
+                                  0, vertexObjectGenerators::basicCube::verticesSize()).VAO;
 }
 
-void testScene::simulate(){
+void testScene::simulate() {
     // The code that I wrote when folowing the tutorial
-    GLFWwindow* window = gs.window;
+    GLFWwindow *window = gs.window;
     glm::vec3 cameraPos = gs.cameraPos;
     glm::vec3 cameraDir = gs.cameraDir;
     double yaw = gs.yaw;
@@ -33,11 +31,11 @@ void testScene::simulate(){
     double mouseVelX = gs.mouseVelX;
     double mouseVelY = gs.mouseVelY;
 
-    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-    glfwSetWindowShouldClose(window, true);
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
 
     glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-    glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
+    glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
     constexpr float cameraSpeed = 0.05f; // adjust accordingly
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         cameraPos += cameraSpeed * cameraFront;
@@ -57,32 +55,33 @@ void testScene::simulate(){
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         pitch += 0.1f;
 
-    yaw -= mouseVelX*0.005;
-    pitch -= mouseVelY*0.005;
+    yaw -= mouseVelX * 0.005;
+    pitch -= mouseVelY * 0.005;
 
     (cameraDir).x = cos(yaw) * cos(pitch);
     (cameraDir).y = sin(pitch);
     (cameraDir).z = sin(yaw) * cos(pitch);
 }
 
-void testScene::render(){
+void testScene::render() {
     // The code that I wrote when folowing the tutorial
-    GLFWwindow* window = gs.window;
+    GLFWwindow *window = gs.window;
     glm::vec3 cameraPos = gs.cameraPos;
     glm::vec3 cameraDir = gs.cameraDir;
 
     double time = glfwGetTime();
 
-    glClearColor(std::sin(time),std::sin(time+(3.14/2)),std::cos(time),1.0);
+    glClearColor(std::sin(time), std::sin(time + (3.14 / 2)), std::cos(time), 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // fov, aspect ratio, near plane distance, far plane distance
-    glm::mat4 proj = glm::perspective(glm::radians(70.0f), (float)GAME_WINDOW_WIDTH/(float)GAME_WINDOW_HEIGHT, 0.1f, 100.0f);
+    glm::mat4 proj = glm::perspective(glm::radians(70.0f), (float) GAME_WINDOW_WIDTH / (float) GAME_WINDOW_HEIGHT, 0.1f,
+                                      100.0f);
 
     glBindTexture(GL_TEXTURE_2D, texture);
     // glBindVertexArray(VAO); TODO
 
-    for (size_t i = 0; i < 10; i++){
+    for (size_t i = 0; i < 10; i++) {
         // object transform
         auto trans = glm::mat4(1.0f); // identity
         trans = glm::translate(trans, cubePositions[i]); // now translation
@@ -95,7 +94,6 @@ void testScene::render(){
         gs.r.setShaderTransform(&trans);
 
         glDrawArrays(GL_TRIANGLES, 0, 36);
-
     }
     // glBindVertexArray(0); // i think this is the reason why glBindVertexArray(VAO) gets called again TODO
 }

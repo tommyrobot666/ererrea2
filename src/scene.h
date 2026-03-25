@@ -1,13 +1,12 @@
 #pragma once
 
-class scene
-{
+class scene {
 public:
     virtual ~scene() = default;
 
-    virtual void load(){}
+    virtual void load() {}
 
-    virtual void simulate(){}
+    virtual void simulate() {}
 
-    virtual void render(){}
+    virtual void render() {}
 };

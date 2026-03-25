@@ -1,17 +1,15 @@
 #pragma once
-namespace vertexObjectGenerators
-{
+namespace vertexObjectGenerators {
     namespace basicCube {
-        float* vertices();
+        float *vertices();
 
         int verticesSize();
     }
 
-    namespace quad
-    {
-        int* indices();
+    namespace quad {
+        int *indices();
 
-        float* vertices();
+        float *vertices();
 
         int size();
     }
