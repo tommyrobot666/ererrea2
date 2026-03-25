@@ -12,6 +12,7 @@
 void gameState::initGameState(GLFWwindow *window,renderer *pointerToRenderer) {
     this->window = window;
     this->pointerToRenderer = pointerToRenderer;
+    initCalled = true;
 }
 
 void gameState::mouseCallback(GLFWwindow *window, double xpos, double ypos) {
@@ -34,3 +35,5 @@ void gameState::onFrameEnd() {
     mouseVelY = 0;
     lastFrameTime = glfwGetTime();
 }
+
+gameState gs = gameState();

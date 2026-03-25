@@ -13,6 +13,7 @@
 
 
 class gameState {
+    bool initCalled = false; // for debuging
 public:
     GLFWwindow *window = nullptr;
     double lastMouseX = GAME_WINDOW_WIDTH / 2, lastMouseY = GAME_WINDOW_HEIGHT / 2;
@@ -30,6 +31,11 @@ public:
 
     gameState() = default;
 
+    gameState(const gameState&)=delete;
+    gameState& operator=(const gameState&)=delete;
+    gameState(const gameState&&)=delete;
+    gameState& operator=(const gameState&&)=delete;
+
     void initGameState(GLFWwindow *window,renderer *pointerToRenderer);
 
     static void mouseCallback(GLFWwindow *window, double xpos, double ypos);
@@ -39,10 +45,11 @@ public:
     void onFrameEnd();
 
     [[nodiscard]] renderer& r() const {
+        assert(this->pointerToRenderer != nullptr);
         return *this->pointerToRenderer;
     }
 };
 
-static gameState gs = gameState();
+extern gameState gs;
 
 #endif

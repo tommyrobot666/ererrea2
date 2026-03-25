@@ -23,7 +23,7 @@ public:
 
 class renderer {
 private:
-    std::vector<vertexObject> vertexObjects;
+    std::vector<vertexObject> vertexObjects = std::vector<vertexObject>();
     unsigned int shaderProgram;
     unsigned int transformLoc;
 
