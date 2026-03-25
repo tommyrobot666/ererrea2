@@ -51,9 +51,7 @@ int main() {
     }
     glViewport(0, 0,GAME_WINDOW_WIDTH,GAME_WINDOW_HEIGHT);
     renderer coreRenderer = renderer();
-    // gs.pointerToRenderer = &coreRenderer;
     gs.initGameState(window,&coreRenderer);
-    gs.onFrameStart(); // be able to check if init in debugger
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, gameState::mouseCallback);

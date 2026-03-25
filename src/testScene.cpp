@@ -34,8 +34,8 @@ void testScene::simulate() {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-    glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+    const glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+    const glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
     constexpr float cameraSpeed = 0.05f; // adjust accordingly
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         cameraPos += cameraSpeed * cameraFront;
@@ -58,16 +58,13 @@ void testScene::simulate() {
     yaw -= mouseVelX * 0.005;
     pitch -= mouseVelY * 0.005;
 
-    (cameraDir).x = cos(yaw) * cos(pitch);
-    (cameraDir).y = sin(pitch);
-    (cameraDir).z = sin(yaw) * cos(pitch);
+    cameraDir.x = cos(yaw) * cos(pitch);
+    cameraDir.y = sin(pitch);
+    cameraDir.z = sin(yaw) * cos(pitch);
 }
 
 void testScene::render() {
     // The code that I wrote when folowing the tutorial
-    GLFWwindow *window = gs.window;
-    glm::vec3 cameraPos = gs.cameraPos;
-    glm::vec3 cameraDir = gs.cameraDir;
 
     double time = glfwGetTime();
 

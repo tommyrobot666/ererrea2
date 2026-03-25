@@ -9,7 +9,6 @@
 #define GAME_WINDOW_HEIGHT 600
 
 class testScene : public scene {
-private:
     inline static const glm::vec3 cubePositions[] = {
         glm::vec3(0.0f, 0.0f, 0.0f),
         glm::vec3(2.0f, 5.0f, -15.0f),

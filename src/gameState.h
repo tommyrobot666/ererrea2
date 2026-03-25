@@ -45,7 +45,6 @@ public:
     void onFrameEnd();
 
     [[nodiscard]] renderer& r() const {
-        assert(this->pointerToRenderer != nullptr);
         return *this->pointerToRenderer;
     }
 };
