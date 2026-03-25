@@ -14,7 +14,7 @@
 
 class gameState {
 public:
-    GLFWwindow *window;
+    GLFWwindow *window = nullptr;
     double lastMouseX = GAME_WINDOW_WIDTH / 2, lastMouseY = GAME_WINDOW_HEIGHT / 2;
     double mouseVelX = 0, mouseVelY = 0;
     glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -23,18 +23,24 @@ public:
     double pitch = 0.0f;
     double lastFrameTime = glfwGetTime();
     double deltaTime = 0;
-    scene *currentScene;
-    scene *nextScene;
-    renderer r; // this will be init manualy
-    glm::mat4 view;
+    scene *currentScene = nullptr;
+    scene *nextScene = nullptr;
+    renderer *pointerToRenderer = nullptr; // this will be init manualy
+    glm::mat4 view = glm::mat4(1.0f);
 
-    gameState();
+    gameState() = default;
+
+    void initGameState(GLFWwindow *window,renderer *pointerToRenderer);
 
     static void mouseCallback(GLFWwindow *window, double xpos, double ypos);
 
     void onFrameStart();
 
     void onFrameEnd();
+
+    [[nodiscard]] renderer& r() const {
+        return *this->pointerToRenderer;
+    }
 };
 
 static gameState gs = gameState();

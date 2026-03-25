@@ -16,8 +16,8 @@
 void testScene::load() {
     // get textures and stuff
     gs.cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-    texture = gs.r.loadPngTexture("smile.png");
-    VAO = gs.r.createVertexObject(vertexObjectGenerators::basicCube::vertices(), {},
+    texture = renderer::loadPngTexture("smile.png");
+    VAO = gs.r().createVertexObject(vertexObjectGenerators::basicCube::vertices(), {},
                                   0, vertexObjectGenerators::basicCube::verticesSize()).VAO;
 }
 
@@ -91,7 +91,7 @@ void testScene::render() {
         // trans is reused as final position
         trans = proj * gs.view * trans;
 
-        gs.r.setShaderTransform(&trans);
+        gs.r().setShaderTransform(&trans);
 
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }

@@ -9,7 +9,10 @@
 #define GAME_WINDOW_WIDTH 800
 #define GAME_WINDOW_HEIGHT 600
 
-gameState::gameState() {}
+void gameState::initGameState(GLFWwindow *window,renderer *pointerToRenderer) {
+    this->window = window;
+    this->pointerToRenderer = pointerToRenderer;
+}
 
 void gameState::mouseCallback(GLFWwindow *window, double xpos, double ypos) {
     gs.mouseVelX = gs.lastMouseX - xpos;

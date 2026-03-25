@@ -50,13 +50,16 @@ int main() {
         return -1;
     }
     glViewport(0, 0,GAME_WINDOW_WIDTH,GAME_WINDOW_HEIGHT);
-    gs.r = renderer();
+    renderer coreRenderer = renderer();
+    // gs.pointerToRenderer = &coreRenderer;
+    gs.initGameState(window,&coreRenderer);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, gameState::mouseCallback);
 
     testScene test = testScene(); // the new keyword does exist and makes it on the heap
     gs.currentScene = &test;
+    test.load();
 
     while (!glfwWindowShouldClose(window)) {
         gs.onFrameStart();
