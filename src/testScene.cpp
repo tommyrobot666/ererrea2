@@ -5,10 +5,13 @@
 #include <renderer.h>
 #include <vertexObjectGenerators.h>
 #include <testScene.h>
+#include <testAlertBeep.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+#include <iostream>
 
 #define GAME_WINDOW_WIDTH 800
 #define GAME_WINDOW_HEIGHT 600
@@ -18,7 +21,7 @@ void testScene::load() {
     gs.cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
     texture = renderer::loadPngTexture("smile.png");
     VAO = gs.r().createVertexObject(vertexObjectGenerators::basicCube::vertices(), {},
-                                  0, vertexObjectGenerators::basicCube::verticesSize()).VAO;
+                                    0, vertexObjectGenerators::basicCube::verticesSize()).VAO;
 }
 
 void testScene::simulate() {
@@ -76,9 +79,10 @@ void testScene::render() {
                                       100.0f);
 
     glBindTexture(GL_TEXTURE_2D, texture);
-    // glBindVertexArray(VAO); TODO
+    glBindVertexArray(VAO);
+    gs.r().defaultShader();
 
-    for (size_t i = 0; i < 10; i++) {
+    for (size_t i = 0; i < 11; i++) {
         // object transform
         auto trans = glm::mat4(1.0f); // identity
         trans = glm::translate(trans, cubePositions[i]); // now translation
@@ -88,9 +92,22 @@ void testScene::render() {
         // trans is reused as final position
         trans = proj * gs.view * trans;
 
+        auto out = trans * glm::vec4(1.0f);
+        std::cout << "+" << out[0] << "," << out[1] << "," << out[2] << "," << out[3] << "::" << i << "\n";
+        if (std::abs(out[0]) < 1 && std::abs(out[1]) < 1 && std::abs(out[2]) < 1) {
+            std::cout << "A CUBE SHOULD BE ON SCREEN\n";
+            beep();
+        }
+
         gs.r().setShaderTransform(&trans);
 
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
-    // glBindVertexArray(0); // i think this is the reason why glBindVertexArray(VAO) gets called again TODO
+
+    auto trans = glm::scale(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -3.0f, 0.0f)),
+                                         glm::vec3(10.0f, 1.0f, 10.0f));
+    gs.r().setShaderTransform(&trans);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    glBindVertexArray(0); // i think this is the reason why glBindVertexArray(VAO) gets called again
 }

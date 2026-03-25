@@ -28,12 +28,34 @@ void gameState::onFrameStart() {
 
     // camera location
     view = glm::lookAt(cameraPos, cameraPos + cameraDir, glm::vec3(0.0, 1.0, 0.0));
+
+    if (nextScene != nullptr) {
+        switchingScene = true;
+    }
 }
 
 void gameState::onFrameEnd() {
     mouseVelX = 0;
     mouseVelY = 0;
     lastFrameTime = glfwGetTime();
+
+    if (switchingScene) {
+        delete(currentScene);
+        currentScene = nextScene;
+        currentScene->load();
+        nextScene = nullptr;
+        switchingScene = false;
+    }
+}
+
+void gameState::switchScene(scene* newNextScene) {
+    if (currentScene) {
+        assert(nextScene == nullptr);
+        nextScene = newNextScene;
+    } else {
+        currentScene = newNextScene;
+        currentScene->load();
+    }
 }
 
 gameState gs = gameState();

@@ -14,6 +14,7 @@
 
 class gameState {
     bool initCalled = false; // for debuging
+    scene *nextScene = nullptr;
 public:
     GLFWwindow *window = nullptr;
     double lastMouseX = GAME_WINDOW_WIDTH / 2, lastMouseY = GAME_WINDOW_HEIGHT / 2;
@@ -25,9 +26,9 @@ public:
     double lastFrameTime = glfwGetTime();
     double deltaTime = 0;
     scene *currentScene = nullptr;
-    scene *nextScene = nullptr;
     renderer *pointerToRenderer = nullptr; // this will be init manualy
     glm::mat4 view = glm::mat4(1.0f);
+    bool switchingScene = false; // use this to detect if it's the last frame
 
     gameState() = default;
 
@@ -43,6 +44,8 @@ public:
     void onFrameStart();
 
     void onFrameEnd();
+
+    void switchScene(scene* newNextScene);
 
     [[nodiscard]] renderer& r() const {
         return *this->pointerToRenderer;
