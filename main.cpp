@@ -11,6 +11,7 @@
 #include <gameState.h>
 #include <renderer.h>
 #include <testScene.h>
+#include <glDebugLogger.h>
 
 #define GAME_WINDOW_WIDTH 800
 #define GAME_WINDOW_HEIGHT 600
@@ -33,6 +34,7 @@ void renderFrame() {
 
 int main() {
     glfwInit();
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true); // enable debug messsages
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -50,6 +52,19 @@ int main() {
         return -1;
     }
     glViewport(0, 0,GAME_WINDOW_WIDTH,GAME_WINDOW_HEIGHT);
+
+    // copied and paseted
+    // from https://learnopengl.com/In-Practice/Debugging
+    int flags; glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+    if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
+    {
+        // initialize debug output
+        glEnable(GL_DEBUG_OUTPUT);
+        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+        glDebugMessageCallback(glDebugOutput, nullptr);
+        glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+    }
+
     renderer coreRenderer = renderer();
     gs.initGameState(window,&coreRenderer);
 
