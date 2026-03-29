@@ -35,8 +35,9 @@ void renderFrame() {
 int main() {
     glfwInit();
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true); // enable debug messsages
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // set GLFW to version 4.3
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); // if the version is any lower, the debug causes segfault
+
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     GLFWwindow *window = glfwCreateWindow(GAME_WINDOW_WIDTH, GAME_WINDOW_HEIGHT, "tErerrea2", NULL, NULL);
     if (window == NULL) {
