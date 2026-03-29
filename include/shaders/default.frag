@@ -8,5 +8,5 @@ layout (binding = 0) uniform sampler2D Texture;
 
 void main()
 {
-    FragColor = VertColor * texture(Texture, VertUV);
+    FragColor = vec4(.3f,.7f,.2f,1f);// VertColor * texture(Texture, VertUV);
 } )====="
