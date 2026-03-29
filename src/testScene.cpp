@@ -77,7 +77,7 @@ void testScene::render() {
     // fov, aspect ratio, near plane distance, far plane distance
     glm::mat4 proj = glm::perspective(glm::radians(70.0f), (float) GAME_WINDOW_WIDTH / (float) GAME_WINDOW_HEIGHT, 0.1f,
                                       100.0f);
-
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
     glBindVertexArray(VAO);
     gs.r().defaultShader();
@@ -104,8 +104,15 @@ void testScene::render() {
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 
+    //floor
     auto trans = glm::scale(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -3.0f, 0.0f)),
                                          glm::vec3(10.0f, 1.0f, 10.0f));
+    trans = proj * gs.view * trans;
+    gs.r().setShaderTransform(&trans);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    // cover up a bunch of the screen to test rendering
+    trans = glm::scale(glm::mat4(1.0f),glm::vec3(3.0f, 3.0f, 3.0f));
     gs.r().setShaderTransform(&trans);
     glDrawArrays(GL_TRIANGLES, 0, 36);
 
