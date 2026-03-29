@@ -21,7 +21,7 @@ void testScene::load() {
     gs.cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
     texture = renderer::loadPngTexture("smile.png");
     VAO = gs.r().createVertexObject(vertexObjectGenerators::basicCube::vertices(), {},
-                                    0, vertexObjectGenerators::basicCube::verticesSize()).VAO;
+                                    0, vertexObjectGenerators::basicCube::verticesSize())->VAO;
 }
 
 void testScene::simulate() {

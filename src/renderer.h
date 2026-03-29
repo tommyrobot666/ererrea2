@@ -22,7 +22,7 @@ public:
 
 
 class renderer {
-    std::vector<vertexObject> vertexObjects = std::vector<vertexObject>();
+    std::vector<vertexObject*> vertexObjects = std::vector<vertexObject*>();
     unsigned int shaderProgram;
     unsigned int transformLoc;
 
@@ -31,7 +31,7 @@ class renderer {
 public:
     renderer();
 
-    vertexObject createVertexObject(float vertices[], unsigned int indices[], unsigned int vertCount,
+    vertexObject* createVertexObject(float vertices[], unsigned int indices[], unsigned int vertCount,
                                     unsigned int triangles);
 
     void setShaderTransform(glm::mat4 *trans) const;

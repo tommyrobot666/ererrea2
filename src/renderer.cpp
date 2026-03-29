@@ -104,7 +104,7 @@ renderer::renderer() {
     glEnable(GL_DEPTH_TEST);
 }
 
-vertexObject renderer::createVertexObject(float vertices[], unsigned int indices[], unsigned int vertCount,
+vertexObject* renderer::createVertexObject(float vertices[], unsigned int indices[], unsigned int vertCount,
                                           unsigned int triangles) {
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);
@@ -132,7 +132,7 @@ vertexObject renderer::createVertexObject(float vertices[], unsigned int indices
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    vertexObject vo = vertexObject(VAO, VBO, EBO, vertCount, triangles);
+    vertexObject* vo = new vertexObject(VAO, VBO, EBO, vertCount, triangles);
 
     vertexObjects.push_back(vo);
 
