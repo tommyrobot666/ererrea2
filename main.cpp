@@ -69,7 +69,7 @@ int main() {
     renderer coreRenderer = renderer();
     gs.initGameState(window,&coreRenderer);
 
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, gameState::mouseCallback);
 
     testScene *test = new testScene(); // the new keyword does exist and makes it on the heap
