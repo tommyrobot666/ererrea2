@@ -40,3 +40,14 @@ set(CMAKE_EXE_LINKER_FLAGS " -static")
 #target_link_libraries(myLib libgcc libstdc++)
 
 target_link_libraries(ererrea2 PRIVATE glad glfw stb_image glm)
+
+project(oldmain)
+add_executable(${CMAKE_PROJECT_NAME} oldmain.cpp)
+target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC
+        $<$<CONFIG:DEBUG>:RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/">
+        $<$<NOT:$<CONFIG:DEBUG>>:RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/">
+)
+target_include_directories(oldmain PUBLIC include)
+target_include_directories(oldmain PUBLIC src)
+set(CMAKE_EXE_LINKER_FLAGS " -static")
+target_link_libraries(oldmain PRIVATE glad glfw stb_image glm)
