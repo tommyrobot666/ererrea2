@@ -6,9 +6,9 @@
 
 #include <stb_image.h>
 
-#include <renderer.h>
+#include <../renderer.h>
 
-#include "vertexObjectGenerators.h"
+#include "../vertexObjectGenerators.h"
 
 #ifndef RESOURCES_PATH
 #define RESOURCES_PATH

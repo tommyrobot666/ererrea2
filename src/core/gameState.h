@@ -5,8 +5,8 @@
 
 #include <glm/glm.hpp>
 
-#include <scene.h>
-#include <renderer.h>
+#include <../scene.h>
+#include <../renderer.h>
 
 #define GAME_WINDOW_WIDTH 800
 #define GAME_WINDOW_HEIGHT 600

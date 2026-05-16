@@ -1,8 +1,8 @@
 #pragma once
-#include <scene.h>
+#include <../scene.h>
 #include <glm/glm.hpp>
 
-#include <renderer.h>
+#include <../renderer.h>
 
 class otherTestScene : public scene{
     unsigned int texture;

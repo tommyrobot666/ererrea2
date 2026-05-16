@@ -1,4 +1,4 @@
-#include "otherTestScene.h"
+#include "../otherTestScene.h"
 
 #include <iostream>
 #include <glad/glad.h>
@@ -7,8 +7,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "gameState.h"
-#include "vertexObjectGenerators.h"
+#include "../core/gameState.h"
+#include "../vertexObjectGenerators.h"
 
 #define GAME_WINDOW_WIDTH 800
 #define GAME_WINDOW_HEIGHT 600

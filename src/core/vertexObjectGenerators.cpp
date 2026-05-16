@@ -1,4 +1,4 @@
-#include <vertexObjectGenerators.h>
+#include <../vertexObjectGenerators.h>
 
 namespace vertexObjectGenerators {
     namespace basicCube {

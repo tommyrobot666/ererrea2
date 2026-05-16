@@ -1,4 +1,4 @@
-#include "glDebugLogger.h"
+#include "../glDebugLogger.h"
 
 #include <glad/glad.h>
 
