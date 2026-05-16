@@ -1,14 +1,12 @@
 #include <glad/glad.h>
-
 #include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
 
 #include <stb_image.h>
 
-#include <../renderer.h>
-
-#include "../vertexObjectGenerators.h"
+#include <core/renderer.h>
+#include <core/vertexObjectGenerators.h>
 
 #ifndef RESOURCES_PATH
 #define RESOURCES_PATH

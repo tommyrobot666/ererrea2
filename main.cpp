@@ -8,10 +8,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <src/core/gameState.h>
-#include <src/core/renderer.h>
-#include <glDebugLogger.h>
-#include <src/core/otherTestScene.h>
+#include <core/gameState.h>
+#include <core/renderer.h>
+#include <core/glDebugLogger.h>
+#include <test/otherTestScene.h>
 
 #define GAME_WINDOW_WIDTH 800
 #define GAME_WINDOW_HEIGHT 600

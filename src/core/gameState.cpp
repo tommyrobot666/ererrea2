@@ -4,7 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <../gameState.h>
+#include <core/gameState.h>
 
 #define GAME_WINDOW_WIDTH 800
 #define GAME_WINDOW_HEIGHT 600
