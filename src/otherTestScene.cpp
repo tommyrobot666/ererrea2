@@ -8,6 +8,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "gameState.h"
+#include "vertexObjectGenerators.h"
 
 #define GAME_WINDOW_WIDTH 800
 #define GAME_WINDOW_HEIGHT 600
@@ -74,19 +75,17 @@ void simulateFrame(GLFWwindow *window, glm::vec3 *cameraPos, float *yaw, float *
     processInput(window,cameraPos,yaw,pitch);
 }
 
-void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgram, unsigned int texture, unsigned int transformLoc, glm::vec3 cubePositions[], glm::vec3 *cameraPos, glm::vec3 *cameraDir){
+void renderFrame(vertexObject& VO, unsigned int texture, glm::vec3 cubePositions[]){
     double time = glfwGetTime();
 
-    glClearColor(std::sin(time),std::sin(time+(3.14/2)),std::cos(time),1.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    renderer::clear(std::sin(time),std::sin(time+(3.14/2)),std::cos(time),1.0);
 
     // fov, aspect ratio, near plane distance, far plane distance
     glm::mat4 proj = glm::perspective(glm::radians(70.0f), (float)GAME_WINDOW_WIDTH/(float)GAME_WINDOW_HEIGHT, 0.1f, 100.0f);
 
-    glUseProgram(shaderProgram);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glBindVertexArray(VAO);
+    gs.r().defaultShader();
+    renderer::currentTexture(texture);
+    VO.currentBind();
 
     for (size_t i = 0; i < 10; i++){
         // object transform
@@ -99,10 +98,7 @@ void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgra
         trans = proj * gs.view * trans;
 
         gs.r().setShaderTransform(&trans);
-
-        // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-
+        VO.drawArray();
     }
 
     //floor
@@ -110,7 +106,7 @@ void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgra
                                          glm::vec3(30.0f, 1.0f, 30.0f));
     trans = proj * gs.view * trans;
     gs.r().setShaderTransform(&trans);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    VO.drawArray();
 
     glBindVertexArray(0); // i think this is the reason why glBindVertexArray(VAO) gets called again
 }
@@ -118,55 +114,8 @@ void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgra
 
 
 void otherTestScene::load() {
-    float vertices[288] = {
-        // positions           // colors       // uvs
-        -0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
-        0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
-        0.5f,  0.5f, -0.5f,    1.0f,1.0f,1.0f, 1.0f, 1.0f,
-        0.5f,  0.5f, -0.5f,    1.0f,1.0f,1.0f, 1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
-
-        -0.5f, -0.5f,  0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
-        0.5f, -0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
-
-        -0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,    1.0f,1.0f,1.0f, 1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
-
-        0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
-        0.5f,  0.5f, -0.5f,    1.0f,1.0f,1.0f, 1.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
-        0.5f, -0.5f,  0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
-
-        -0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 1.0f, 1.0f,
-        0.5f, -0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
-        0.5f, -0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
-
-        -0.5f,  0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f,
-        0.5f,  0.5f, -0.5f,    1.0f,1.0f,1.0f, 1.0f, 1.0f,
-        0.5f,  0.5f, 0.5f,    1.0f,1.0f,1.0f,  1.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f
-    };
-    unsigned int indices[6] = {  // note that we start from 0!
-        0, 1, 3,   // first triangle
-        1, 2, 3    // second triangle
-    };
-    this->VAO = renderer::createVertexObject(vertices,indices,sizeof(vertices),sizeof(indices))->VAO;
+    this->VO = renderer::createVertexObject(vertexObjectGenerators::basicCube::vertices(),{},
+        vertexObjectGenerators::basicCube::verticesSize()*vertexObjectGenerators::SizeOfVertex,0);
     this->texture = renderer::loadPngTexture("smile.png");
 
     gs.cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
@@ -178,7 +127,7 @@ void otherTestScene::load() {
 }
 
 void otherTestScene::render() {
-    renderFrame(gs.window,this->VAO,gs.r().shaderProgram,this->texture,gs.r().transformLoc,cubePoses(),&gs.cameraPos,&gs.cameraDir);
+    renderFrame(*this->VO,this->texture,cubePoses());
 }
 
 void otherTestScene::simulate() {

@@ -2,12 +2,13 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-#include <vector>
 #include <iostream>
 
 #include <stb_image.h>
 
 #include <renderer.h>
+
+#include "vertexObjectGenerators.h"
 
 #ifndef RESOURCES_PATH
 #define RESOURCES_PATH
@@ -36,8 +37,16 @@ vertexObject::~vertexObject() {
     glDeleteBuffers(1, &EBO);
 }
 
+void vertexObject::currentBind() {
+    glBindVertexArray(VAO);
+}
+
 void vertexObject::draw() {
     glDrawElements(GL_TRIANGLES, vertices, GL_UNSIGNED_INT, 0);
+}
+
+void vertexObject::drawArray() {
+    glDrawArrays(GL_TRIANGLES, 0, triangles);
 }
 
 
@@ -137,11 +146,7 @@ vertexObject* renderer::createVertexObject(float vertices[], unsigned int indice
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
-    vertexObject* vo = new vertexObject(VAO, VBO, EBO, sizeOfVertices/sizeof(float), sizeOfIndices/sizeof(float));
-
-    // vertexObjects.push_back(vo); scenes will manage their own meshes
-
-    return vo;
+    return new vertexObject(VAO, VBO, EBO, sizeOfIndices/sizeof(int), sizeOfVertices/vertexObjectGenerators::SizeOfVertex);
 }
 
 void renderer::setShaderTransform(glm::mat4 *trans) const {
@@ -169,4 +174,14 @@ unsigned int renderer::loadPngTexture(std::string path) {
     }
     stbi_image_free(data);
     return texture;
+}
+
+void renderer::currentTexture(unsigned int texture) {
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
+}
+
+void renderer::clear(float r, float g, float b, float a) {
+    glClearColor(r,g,b,a);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

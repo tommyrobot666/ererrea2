@@ -1,10 +1,12 @@
 #pragma once
-#include "scene.h"
+#include <scene.h>
 #include <glm/glm.hpp>
+
+#include <renderer.h>
 
 class otherTestScene : public scene{
     unsigned int texture;
-    unsigned int VAO;
+    vertexObject* VO;
     unsigned int shaderProgram;
     unsigned int transformLoc;
     // remember not to put const on a static var
