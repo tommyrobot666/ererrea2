@@ -13,13 +13,6 @@
 #define GAME_WINDOW_WIDTH 800
 #define GAME_WINDOW_HEIGHT 600
 
-const char* defaultVertexShaderSource2 = {
-#include <shaders/default.vert>
-};
-const char* defaultFragmentShaderSource2 = {
-#include <shaders/default.frag>
-};
-
 glm::vec3 * otherTestScene::cubePoses() {
     return new glm::vec3[] {
         glm::vec3( 0.0f,  0.0f,  0.0f),

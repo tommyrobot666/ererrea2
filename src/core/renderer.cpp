@@ -2,6 +2,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 #include <stb_image.h>
 
@@ -11,13 +13,6 @@
 #ifndef RESOURCES_PATH
 #define RESOURCES_PATH
 #endif
-
-const char *defaultVertexShaderSource = {
-#include <shaders/default.vert>
-};
-const char *defaultFragmentShaderSource = {
-#include <shaders/default.frag>
-};
 
 
 vertexObject::vertexObject(unsigned int VAO, unsigned int VBO, unsigned int EBO, unsigned int vertices,
@@ -53,7 +48,13 @@ unsigned int renderer::setUpShaders() {
     char infoLog[512];
     unsigned int vertexShader;
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &defaultVertexShaderSource, NULL);
+    std::ifstream vertFile(RESOURCES_PATH "shaders/default.vert");
+    std::stringstream vertFileStream;
+    vertFileStream << vertFile.rdbuf();
+    vertFile.close();
+    std::string vertFileData = vertFileStream.str();
+    const char* vertFileDataChar = vertFileData.c_str();
+    glShaderSource(vertexShader, 1, &vertFileDataChar, NULL);
     glCompileShader(vertexShader);
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
     if (!success) {
@@ -62,7 +63,13 @@ unsigned int renderer::setUpShaders() {
     }
     unsigned int fragmentShader;
     fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &defaultFragmentShaderSource, NULL);
+    std::ifstream fragFile(RESOURCES_PATH "shaders/default.frag");
+    std::stringstream fragFileStream;
+    fragFileStream << fragFile.rdbuf();
+    fragFile.close();
+    std::string fragFileData = fragFileStream.str();
+    const char* fragFileDataChar = fragFileData.c_str();
+    glShaderSource(fragmentShader, 1, &fragFileDataChar, NULL);
     glCompileShader(fragmentShader);
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
     if (!success) {
