@@ -81,12 +81,6 @@ void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgra
     glClearColor(std::sin(time),std::sin(time+(3.14/2)),std::cos(time),1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // std::cout << std::sin(time) << "   " << time << "\n";
-
-    // camera location
-    glm::mat4 view;
-    view = glm::lookAt(*cameraPos, *cameraPos+*cameraDir, glm::vec3(0.0, 1.0, 0.0));
-
     // fov, aspect ratio, near plane distance, far plane distance
     glm::mat4 proj = glm::perspective(glm::radians(70.0f), (float)GAME_WINDOW_WIDTH/(float)GAME_WINDOW_HEIGHT, 0.1f, 100.0f);
 
@@ -102,10 +96,7 @@ void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgra
         trans = glm::scale(trans, glm::vec3(.5f, .5f, .5f)); // and scale
 
         // trans is reused as final position
-        trans = proj * view * trans;
-
-        glm::vec4 out = trans * glm::vec4(1.0f);
-        std::cout << out[0] << "," << out[1] << "," << out[2] << " :" << i <<"\n";
+        trans = proj * gs.view * trans;
 
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
@@ -118,52 +109,13 @@ void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgra
 
 
 
-unsigned int setUpShaders(){
-    int  success;
-    char infoLog[512];
-    unsigned int vertexShader;
-    vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &defaultVertexShaderSource2, NULL);
-    glCompileShader(vertexShader);
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if(!success)
-    {
-        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        std::cout << "Default vertex shader failed\n" << infoLog;
-    }
-    unsigned int fragmentShader;
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &defaultFragmentShaderSource2, NULL);
-    glCompileShader(fragmentShader);
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if(!success)
-    {
-        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-        std::cout << "Default fragment shader failed\n" << infoLog;
-    }
-    unsigned int shaderProgram;
-    shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if(!success) {
-        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-        std::cout << "Shader program failed\n" << infoLog;
-    }
-    glDeleteShader(vertexShader); // the shaders are in the program now
-    glDeleteShader(fragmentShader);
-    return shaderProgram;
-}
-
-
 void otherTestScene::load() {
-    unsigned int shaderProgram = setUpShaders();
+    unsigned int shaderProgram = renderer::setUpShaders();
     this->shaderProgram = shaderProgram;
     unsigned int transformLoc = glGetUniformLocation(shaderProgram, "transform");
     this->transformLoc = transformLoc;
 
-    float vertices[] = {
+    float vertices[288] = {
         // positions           // colors       // uvs
         -0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
         0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 1.0f, 0.0f,
@@ -207,39 +159,11 @@ void otherTestScene::load() {
         -0.5f,  0.5f,  0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
         -0.5f,  0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 1.0f
     };
-    unsigned int indices[] = {  // note that we start from 0!
+    unsigned int indices[6] = {  // note that we start from 0!
         0, 1, 3,   // first triangle
         1, 2, 3    // second triangle
     };
-
-    unsigned int VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-    this->VAO = VAO;
-
-    unsigned int VBO;
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    //GL_STATIC_DRAW is for unchanging things, GL_DYNAMIC_DRAW is for changing things
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    unsigned int EBO;
-    glGenBuffers(1, &EBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    //GL_STATIC_DRAW is for unchanging things, GL_DYNAMIC_DRAW is for changing things
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    // tell it how vertices is formatted
-    // position attribute
-    // layout location, items, type, idk, stride length, offset.
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    // color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3* sizeof(float)));
-    glEnableVertexAttribArray(1);
-    // uv
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
+    this->VAO = renderer::createVertexObject(vertices,indices,sizeof(vertices),sizeof(indices))->VAO;
 
     //GL_REPEAT,GL_MIRRORED_REPEAT,GL_CLAMP_TO_EDGE,GL_CLAMP_TO_BORDER (like MonoGame)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -260,22 +184,7 @@ void otherTestScene::load() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     stbi_set_flip_vertically_on_load(true);
-    int width, height, nrChannels;
-    unsigned char *data = stbi_load(RESOURCES_PATH"smile.png", &width, &height, &nrChannels, STBI_rgb_alpha);
-    unsigned int texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glActiveTexture(GL_TEXTURE0);
-    if (data){
-        // texture target, mipmap levels, load in format, size, idk, stored in format, data
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    } else
-    {
-        std::cout << "Failed to load texture\n";
-    }
-    stbi_image_free(data);
-    this->texture = texture;
+    this->texture = renderer::loadPngTexture("smile.png");
 
     glEnable(GL_DEPTH_TEST);
 

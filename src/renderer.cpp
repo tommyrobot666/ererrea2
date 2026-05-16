@@ -104,8 +104,8 @@ renderer::renderer() {
     glEnable(GL_DEPTH_TEST);
 }
 
-vertexObject* renderer::createVertexObject(float vertices[], unsigned int indices[], unsigned int vertCount,
-                                          unsigned int triangles) {
+vertexObject* renderer::createVertexObject(float vertices[], unsigned int indices[], unsigned int sizeOfVertices,
+                                          unsigned int sizeOfIndices) {
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
@@ -114,12 +114,12 @@ vertexObject* renderer::createVertexObject(float vertices[], unsigned int indice
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     //GL_STATIC_DRAW is for unchanging things, GL_DYNAMIC_DRAW is for changing things
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeOfVertices, vertices, GL_STATIC_DRAW);
 
     unsigned int EBO;
     glGenBuffers(1, &EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeOfIndices, indices, GL_STATIC_DRAW);
 
     // tell it how vertices is formatted
     // position attribute
@@ -133,9 +133,9 @@ vertexObject* renderer::createVertexObject(float vertices[], unsigned int indice
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
-    vertexObject* vo = new vertexObject(VAO, VBO, EBO, vertCount, triangles);
+    vertexObject* vo = new vertexObject(VAO, VBO, EBO, sizeOfVertices/sizeof(float), sizeOfIndices/sizeof(float));
 
-    vertexObjects.push_back(vo);
+    // vertexObjects.push_back(vo); scenes will manage their own meshes
 
     return vo;
 }
@@ -161,7 +161,7 @@ unsigned int renderer::loadPngTexture(std::string path) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     } else {
-        std::cout << "Failed to load texture\n";
+        std::cout << "Failed to load texture\n" << stbi_failure_reason();
     }
     stbi_image_free(data);
     return texture;

@@ -26,13 +26,13 @@ class renderer {
     unsigned int shaderProgram;
     unsigned int transformLoc;
 
-    unsigned int setUpShaders();
-
 public:
     renderer();
 
-    vertexObject* createVertexObject(float vertices[], unsigned int indices[], unsigned int vertCount,
-                                    unsigned int triangles);
+    static unsigned int setUpShaders();
+
+    static vertexObject* createVertexObject(float vertices[], unsigned int indices[], unsigned int sizeOfVertices,
+                                          unsigned int sizeOfIndices);
 
     void setShaderTransform(glm::mat4 *trans) const;
 
