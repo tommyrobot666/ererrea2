@@ -10,9 +10,8 @@
 
 #include <gameState.h>
 #include <renderer.h>
-// #include <testScene.h>
 #include <glDebugLogger.h>
-#include "otherTestScene.h"
+#include <otherTestScene.h>
 
 #define GAME_WINDOW_WIDTH 800
 #define GAME_WINDOW_HEIGHT 600
@@ -67,10 +66,9 @@ int main() {
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
     }
 
-    // renderer coreRenderer = renderer();
-    gs.initGameState(window,nullptr);
+    auto* coreRenderer = new renderer();
+    gs.initGameState(window,coreRenderer);
 
-    // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, gameState::mouseCallback);
 
     auto *test = new otherTestScene(); // the new keyword does exist and makes it on the heap

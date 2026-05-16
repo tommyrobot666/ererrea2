@@ -22,11 +22,10 @@ public:
 
 
 class renderer {
-    std::vector<vertexObject*> vertexObjects = std::vector<vertexObject*>();
+public:
     unsigned int shaderProgram;
     unsigned int transformLoc;
 
-public:
     renderer();
 
     static unsigned int setUpShaders();

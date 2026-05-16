@@ -3,7 +3,6 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <stb_image.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -85,6 +84,7 @@ void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgra
     glm::mat4 proj = glm::perspective(glm::radians(70.0f), (float)GAME_WINDOW_WIDTH/(float)GAME_WINDOW_HEIGHT, 0.1f, 100.0f);
 
     glUseProgram(shaderProgram);
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
     glBindVertexArray(VAO);
 
@@ -92,29 +92,32 @@ void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgra
         // object transform
         glm::mat4 trans = glm::mat4(1.0f); // identity
         trans = glm::translate(trans, cubePositions[i]); // now translation
-        trans = glm::rotate(trans, (float)time, glm::vec3(0.0, 0.5, 1.0)); // also rotate
+        trans = glm::rotate(trans, static_cast<float>(time), glm::vec3(0.0, 0.5, 1.0)); // also rotate
         trans = glm::scale(trans, glm::vec3(.5f, .5f, .5f)); // and scale
 
         // trans is reused as final position
         trans = proj * gs.view * trans;
 
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+        gs.r().setShaderTransform(&trans);
 
         // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
     }
+
+    //floor
+    auto trans = glm::scale(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -3.0f, 0.0f)),
+                                         glm::vec3(30.0f, 1.0f, 30.0f));
+    trans = proj * gs.view * trans;
+    gs.r().setShaderTransform(&trans);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+
     glBindVertexArray(0); // i think this is the reason why glBindVertexArray(VAO) gets called again
 }
 
 
 
 void otherTestScene::load() {
-    unsigned int shaderProgram = renderer::setUpShaders();
-    this->shaderProgram = shaderProgram;
-    unsigned int transformLoc = glGetUniformLocation(shaderProgram, "transform");
-    this->transformLoc = transformLoc;
-
     float vertices[288] = {
         // positions           // colors       // uvs
         -0.5f, -0.5f, -0.5f,    1.0f,1.0f,1.0f, 0.0f, 0.0f,
@@ -164,30 +167,7 @@ void otherTestScene::load() {
         1, 2, 3    // second triangle
     };
     this->VAO = renderer::createVertexObject(vertices,indices,sizeof(vertices),sizeof(indices))->VAO;
-
-    //GL_REPEAT,GL_MIRRORED_REPEAT,GL_CLAMP_TO_EDGE,GL_CLAMP_TO_BORDER (like MonoGame)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
-    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);  // for GL_CLAMP_TO_BORDER
-
-    //mipmap stuff
-    // NEAREST is exact value, LINEAR blurrs between
-    // GL_[MIPMAP]_MIPMAP_[TEXEL]
-    // [MIPMAP] affects interpoliate for mipmap selection
-    // [TEXEL] affects interpoliate for pixels
-    // 2*2 = 4 mipmap constants for glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_x_FILTER, x)
-
-    // GL_NEAREST is exact value, GL_LINEAR blurrs between
-    // GL_TEXTURE_MIN_FILTER is scaled down, GL_TEXTURE_MAG_FILTER is scaled up
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    stbi_set_flip_vertically_on_load(true);
     this->texture = renderer::loadPngTexture("smile.png");
-
-    glEnable(GL_DEPTH_TEST);
-
 
     gs.cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
     gs.cameraDir = glm::normalize(gs.cameraPos - glm::vec3(0.0f, 0.0f, 1.0f));
@@ -198,7 +178,7 @@ void otherTestScene::load() {
 }
 
 void otherTestScene::render() {
-    renderFrame(gs.window,this->VAO,this->shaderProgram,this->texture,this->transformLoc,cubePoses(),&gs.cameraPos,&gs.cameraDir);
+    renderFrame(gs.window,this->VAO,gs.r().shaderProgram,this->texture,gs.r().transformLoc,cubePoses(),&gs.cameraPos,&gs.cameraDir);
 }
 
 void otherTestScene::simulate() {
