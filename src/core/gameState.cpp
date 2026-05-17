@@ -9,13 +9,13 @@
 #define GAME_WINDOW_WIDTH 800
 #define GAME_WINDOW_HEIGHT 600
 
-void gameState::initGameState(GLFWwindow *window,renderer *pointerToRenderer) {
+void GameState::initGameState(GLFWwindow *window,Renderer *pointerToRenderer) {
     this->window = window;
     this->pointerToRenderer = pointerToRenderer;
     initCalled = true;
 }
 
-void gameState::mouseCallback(GLFWwindow *window, double xpos, double ypos) {
+void GameState::mouseCallback(GLFWwindow *window, double xpos, double ypos) {
     gs.mouseVelX = gs.lastMouseX - xpos;
     gs.mouseVelY = gs.lastMouseY - ypos;
 
@@ -23,7 +23,7 @@ void gameState::mouseCallback(GLFWwindow *window, double xpos, double ypos) {
     gs.lastMouseY = ypos;
 }
 
-void gameState::onFrameStart() {
+void GameState::onFrameStart() {
     deltaTime = glfwGetTime() - lastFrameTime;
 
     // camera location
@@ -34,7 +34,7 @@ void gameState::onFrameStart() {
     }
 }
 
-void gameState::onFrameEnd() {
+void GameState::onFrameEnd() {
     mouseVelX = 0;
     mouseVelY = 0;
     lastFrameTime = glfwGetTime();
@@ -48,7 +48,7 @@ void gameState::onFrameEnd() {
     }
 }
 
-void gameState::switchScene(scene* newNextScene) {
+void GameState::switchScene(Scene* newNextScene) {
     if (currentScene) {
         assert(nextScene == nullptr);
         nextScene = newNextScene;
@@ -58,4 +58,4 @@ void gameState::switchScene(scene* newNextScene) {
     }
 }
 
-gameState gs = gameState();
+GameState gs = GameState();

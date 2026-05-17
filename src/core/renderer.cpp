@@ -15,7 +15,7 @@
 #endif
 
 
-vertexObject::vertexObject(unsigned int VAO, unsigned int VBO, unsigned int EBO, unsigned int vertices,
+VertexObject::VertexObject(unsigned int VAO, unsigned int VBO, unsigned int EBO, unsigned int vertices,
                            unsigned int triangles) {
     this->VAO = VAO;
     this->VBO = VBO;
@@ -24,26 +24,26 @@ vertexObject::vertexObject(unsigned int VAO, unsigned int VBO, unsigned int EBO,
     this->triangles = triangles;
 }
 
-vertexObject::~vertexObject() {
+VertexObject::~VertexObject() {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
 }
 
-void vertexObject::currentBind() {
+void VertexObject::currentBind() {
     glBindVertexArray(VAO);
 }
 
-void vertexObject::draw() {
+void VertexObject::draw() {
     glDrawElements(GL_TRIANGLES, vertices, GL_UNSIGNED_INT, 0);
 }
 
-void vertexObject::drawArray() {
+void VertexObject::drawArray() {
     glDrawArrays(GL_TRIANGLES, 0, triangles);
 }
 
 
-unsigned int renderer::setUpShaders() {
+unsigned int Renderer::setUpShaders() {
     int success;
     char infoLog[512];
     unsigned int vertexShader;
@@ -111,7 +111,7 @@ void setUpTextureDrawing() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
-renderer::renderer() {
+Renderer::Renderer() {
     shaderProgram = setUpShaders();
     transformLoc = glGetUniformLocation(shaderProgram, "transform");
 
@@ -122,7 +122,7 @@ renderer::renderer() {
     glEnable(GL_DEPTH_TEST);
 }
 
-vertexObject* renderer::createVertexObject(float vertices[], unsigned int indices[], unsigned int sizeOfVertices,
+VertexObject* Renderer::createVertexObject(float vertices[], unsigned int indices[], unsigned int sizeOfVertices,
                                           unsigned int sizeOfIndices) {
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);
@@ -151,18 +151,18 @@ vertexObject* renderer::createVertexObject(float vertices[], unsigned int indice
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
-    return new vertexObject(VAO, VBO, EBO, sizeOfIndices/sizeof(int), sizeOfVertices/vertexObjectGenerators::SizeOfVertex);
+    return new VertexObject(VAO, VBO, EBO, sizeOfIndices/sizeof(int), sizeOfVertices/vertexObjectGenerators::SizeOfVertex);
 }
 
-void renderer::setShaderTransform(glm::mat4 *trans) const {
+void Renderer::setShaderTransform(glm::mat4 *trans) const {
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(*trans));
 }
 
-void renderer::defaultShader() const {
+void Renderer::defaultShader() const {
     glUseProgram(shaderProgram);
 }
 
-unsigned int renderer::loadPngTexture(std::string path) {
+unsigned int Renderer::loadPngTexture(std::string path) {
     int width, height, nrChannels;
     unsigned char *data = stbi_load((RESOURCES_PATH "textures/" + path).c_str(), &width, &height, &nrChannels,
                                     STBI_rgb_alpha);
@@ -181,12 +181,12 @@ unsigned int renderer::loadPngTexture(std::string path) {
     return texture;
 }
 
-void renderer::currentTexture(unsigned int texture) {
+void Renderer::currentTexture(unsigned int texture) {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
 }
 
-void renderer::clear(float r, float g, float b, float a) {
+void Renderer::clear(float r, float g, float b, float a) {
     glClearColor(r,g,b,a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

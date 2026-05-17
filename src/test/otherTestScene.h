@@ -4,9 +4,9 @@
 
 #include <core/renderer.h>
 
-class otherTestScene : public scene{
+class OtherTestScene : public Scene{
     unsigned int texture;
-    vertexObject* VO;
+    VertexObject* VO;
     unsigned int shaderProgram;
     unsigned int transformLoc;
     // remember not to put const on a static var

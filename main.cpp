@@ -66,12 +66,12 @@ int main() {
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
     }
 
-    auto* coreRenderer = new renderer();
+    auto* coreRenderer = new Renderer();
     gs.initGameState(window,coreRenderer);
 
-    glfwSetCursorPosCallback(window, gameState::mouseCallback);
+    glfwSetCursorPosCallback(window, GameState::mouseCallback);
 
-    auto *test = new otherTestScene(); // the new keyword does exist and makes it on the heap
+    auto *test = new OtherTestScene(); // the new keyword does exist and makes it on the heap
     gs.switchScene(test);
 
     while (!glfwWindowShouldClose(window)) {

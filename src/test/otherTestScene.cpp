@@ -13,7 +13,7 @@
 #define GAME_WINDOW_WIDTH 800
 #define GAME_WINDOW_HEIGHT 600
 
-glm::vec3 * otherTestScene::cubePoses() {
+glm::vec3 * OtherTestScene::cubePoses() {
     return new glm::vec3[] {
         glm::vec3( 0.0f,  0.0f,  0.0f),
         glm::vec3( 2.0f,  5.0f, -15.0f),
@@ -68,16 +68,16 @@ void simulateFrame(GLFWwindow *window, glm::vec3 *cameraPos, float *yaw, float *
     processInput(window,cameraPos,yaw,pitch);
 }
 
-void renderFrame(vertexObject& VO, unsigned int texture, glm::vec3 cubePositions[]){
+void renderFrame(VertexObject& VO, unsigned int texture, glm::vec3 cubePositions[]){
     double time = glfwGetTime();
 
-    renderer::clear(std::sin(time),std::sin(time+(3.14/2)),std::cos(time),1.0);
+    Renderer::clear(std::sin(time),std::sin(time+(3.14/2)),std::cos(time),1.0);
 
     // fov, aspect ratio, near plane distance, far plane distance
     glm::mat4 proj = glm::perspective(glm::radians(70.0f), (float)GAME_WINDOW_WIDTH/(float)GAME_WINDOW_HEIGHT, 0.1f, 100.0f);
 
     gs.r().defaultShader();
-    renderer::currentTexture(texture);
+    Renderer::currentTexture(texture);
     VO.currentBind();
 
     for (size_t i = 0; i < 10; i++){
@@ -106,10 +106,10 @@ void renderFrame(vertexObject& VO, unsigned int texture, glm::vec3 cubePositions
 
 
 
-void otherTestScene::load() {
-    this->VO = renderer::createVertexObject(vertexObjectGenerators::basicCube::vertices(),{},
+void OtherTestScene::load() {
+    this->VO = Renderer::createVertexObject(vertexObjectGenerators::basicCube::vertices(),{},
         vertexObjectGenerators::basicCube::verticesSize()*vertexObjectGenerators::SizeOfVertex,0);
-    this->texture = renderer::loadPngTexture("smile.png");
+    this->texture = Renderer::loadPngTexture("smile.png");
 
     gs.cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
     gs.cameraDir = glm::normalize(gs.cameraPos - glm::vec3(0.0f, 0.0f, 1.0f));
@@ -119,11 +119,11 @@ void otherTestScene::load() {
     glfwSetInputMode(gs.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
-void otherTestScene::render() {
+void OtherTestScene::render() {
     renderFrame(*this->VO,this->texture,cubePoses());
 }
 
-void otherTestScene::simulate() {
+void OtherTestScene::simulate() {
     simulateFrame(gs.window,&gs.cameraPos,reinterpret_cast<float*>(&gs.yaw),reinterpret_cast<float*>(&gs.pitch),&gs.cameraDir);
 }
 

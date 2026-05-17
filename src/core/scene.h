@@ -1,8 +1,8 @@
 #pragma once
 
-class scene {
+class Scene {
 public:
-    virtual ~scene() = default;
+    virtual ~Scene() = default;
 
     virtual void load() {}
 

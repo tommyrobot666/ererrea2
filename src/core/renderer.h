@@ -4,7 +4,7 @@
 
 #include <string>
 
-class vertexObject {
+class VertexObject {
 public:
     unsigned int VAO;
     unsigned int VBO;
@@ -12,9 +12,9 @@ public:
     unsigned int vertices;
     unsigned int triangles; // use for glDrawArrays
 
-    vertexObject(unsigned int VAO, unsigned int VBO, unsigned int EBO, unsigned int vertices, unsigned int triangles);
+    VertexObject(unsigned int VAO, unsigned int VBO, unsigned int EBO, unsigned int vertices, unsigned int triangles);
 
-    ~vertexObject();
+    ~VertexObject();
 
     void currentBind();
 
@@ -24,16 +24,16 @@ public:
 };
 
 
-class renderer {
+class Renderer {
 public:
     unsigned int shaderProgram;
     unsigned int transformLoc;
 
-    renderer();
+    Renderer();
 
     static unsigned int setUpShaders();
 
-    static vertexObject* createVertexObject(float vertices[], unsigned int indices[], unsigned int sizeOfVertices,
+    static VertexObject* createVertexObject(float vertices[], unsigned int indices[], unsigned int sizeOfVertices,
                                           unsigned int sizeOfIndices);
 
     void setShaderTransform(glm::mat4 *trans) const;

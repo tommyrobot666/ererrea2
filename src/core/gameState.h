@@ -12,9 +12,9 @@
 #define GAME_WINDOW_HEIGHT 600
 
 
-class gameState {
+class GameState {
     bool initCalled = false; // for debuging
-    scene *nextScene = nullptr;
+    Scene *nextScene = nullptr;
 public:
     GLFWwindow *window = nullptr;
     double lastMouseX = GAME_WINDOW_WIDTH / 2, lastMouseY = GAME_WINDOW_HEIGHT / 2;
@@ -25,19 +25,19 @@ public:
     double pitch = 0.0f;
     double lastFrameTime = glfwGetTime();
     double deltaTime = 0;
-    scene *currentScene = nullptr;
-    renderer *pointerToRenderer = nullptr; // this will be init manualy
+    Scene *currentScene = nullptr;
+    Renderer *pointerToRenderer = nullptr; // this will be init manualy
     glm::mat4 view = glm::mat4(1.0f);
     bool switchingScene = false; // use this to detect if it's the last frame
 
-    gameState() = default;
+    GameState() = default;
 
-    gameState(const gameState&)=delete;
-    gameState& operator=(const gameState&)=delete;
-    gameState(const gameState&&)=delete;
-    gameState& operator=(const gameState&&)=delete;
+    GameState(const GameState&)=delete;
+    GameState& operator=(const GameState&)=delete;
+    GameState(const GameState&&)=delete;
+    GameState& operator=(const GameState&&)=delete;
 
-    void initGameState(GLFWwindow *window,renderer *pointerToRenderer);
+    void initGameState(GLFWwindow *window,Renderer *pointerToRenderer);
 
     static void mouseCallback(GLFWwindow *window, double xpos, double ypos);
 
@@ -45,13 +45,13 @@ public:
 
     void onFrameEnd();
 
-    void switchScene(scene* newNextScene);
+    void switchScene(Scene* newNextScene);
 
-    [[nodiscard]] renderer& r() const {
+    [[nodiscard]] Renderer& r() const {
         return *this->pointerToRenderer;
     }
 };
 
-extern gameState gs;
+extern GameState gs;
 
 #endif
