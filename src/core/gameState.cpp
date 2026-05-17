@@ -40,6 +40,7 @@ void GameState::onFrameEnd() {
     lastFrameTime = glfwGetTime();
 
     if (switchingScene) {
+        currentScene->close();
         delete(currentScene);
         currentScene = nextScene;
         currentScene->load();
@@ -53,6 +54,7 @@ void GameState::switchScene(Scene* newNextScene) {
         assert(nextScene == nullptr);
         nextScene = newNextScene;
     } else {
+        // when the games just started, no scene
         currentScene = newNextScene;
         currentScene->load();
     }

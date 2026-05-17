@@ -2,7 +2,7 @@
 
 class Scene {
 public:
-    virtual ~Scene() = default;
+    virtual void close() {}
 
     virtual void load() {}
 

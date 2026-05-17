@@ -12,6 +12,7 @@
 #include <core/renderer.h>
 #include <core/glDebugLogger.h>
 #include <test/otherTestScene.h>
+#include <ereacore/ereaGameScene.h>
 
 #define GAME_WINDOW_WIDTH 800
 #define GAME_WINDOW_HEIGHT 600
@@ -71,7 +72,7 @@ int main() {
 
     glfwSetCursorPosCallback(window, GameState::mouseCallback);
 
-    auto *test = new OtherTestScene(); // the new keyword does exist and makes it on the heap
+    auto *test = new ereaGameScene(); // the new keyword does exist and makes it on the heap
     gs.switchScene(test);
 
     while (!glfwWindowShouldClose(window)) {

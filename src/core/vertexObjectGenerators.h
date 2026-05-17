@@ -9,6 +9,13 @@ namespace vertexObjectGenerators {
         int verticesSize();
     }
 
+    namespace cube {
+        float* vertices();
+        int* indices();
+        int verticeCount();
+        int indiceCount();
+    }
+
     namespace quad {
         int *indices();
 
