@@ -1,4 +1,5 @@
 #include <ereacore/ereaGameScene.h>
+#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <3dListUtil.h>
@@ -39,10 +40,40 @@ void ereaGameScene::load() {
 
     gs.r().defaultShader();
     cubeModel->currentBind();
+
+    gs.cameraPos = glm::vec3(0,9,0);
 }
 
 void ereaGameScene::simulate() {
+    if (glfwGetKey(gs.window, GLFW_KEY_LEFT) == GLFW_PRESS)
+        gs.yaw -= 1.3f*gs.deltaTime;
+    if (glfwGetKey(gs.window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+        gs.yaw += 1.3f*gs.deltaTime;
+    if (glfwGetKey(gs.window, GLFW_KEY_DOWN) == GLFW_PRESS)
+        gs.pitch -= 1.3f*gs.deltaTime;
+    if (glfwGetKey(gs.window, GLFW_KEY_UP) == GLFW_PRESS)
+        gs.pitch += 1.3f*gs.deltaTime;
 
+    
+    float sprint = 1.0f;
+    if (glfwGetKey(gs.window, GLFW_KEY_LEFT_SHIFT))
+        sprint = 5.0f;
+    
+    if (glfwGetKey(gs.window, GLFW_KEY_W) == GLFW_PRESS)
+        gs.cameraPos.z += 2.7f*gs.deltaTime*sprint;
+    if (glfwGetKey(gs.window, GLFW_KEY_S) == GLFW_PRESS)
+        gs.cameraPos.z -= 2.7f*gs.deltaTime*sprint;
+    if (glfwGetKey(gs.window, GLFW_KEY_A) == GLFW_PRESS)
+        gs.cameraPos.x -= 2.7f*gs.deltaTime*sprint;
+    if (glfwGetKey(gs.window, GLFW_KEY_D) == GLFW_PRESS)
+        gs.cameraPos.x += 2.7f*gs.deltaTime*sprint;
+    if (glfwGetKey(gs.window, GLFW_KEY_Q) == GLFW_PRESS)
+        gs.cameraPos.y -= 2.7f*gs.deltaTime*sprint;
+    if (glfwGetKey(gs.window, GLFW_KEY_E) == GLFW_PRESS)
+        gs.cameraPos.y += 2.7f*gs.deltaTime*sprint;
+
+    if(glfwGetKey(gs.window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(gs.window, true);
 }
 
 void ereaGameScene::render() {
@@ -80,7 +111,7 @@ void ereaGameScene::render() {
                     Renderer::currentTexture(texture);
 
                     glm::mat4 trans = glm::translate(glm::mat4(1.0f),glm::vec3(x,y,z));
-                    trans = trans*chunkOffset*proj*gs.view;
+                    trans = proj*gs.view*trans*chunkOffset;
                     gs.r().setShaderTransform(&trans);
                     cubeModel->draw();
                 }

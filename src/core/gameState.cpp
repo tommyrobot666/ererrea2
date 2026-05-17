@@ -27,6 +27,9 @@ void GameState::onFrameStart() {
     deltaTime = glfwGetTime() - lastFrameTime;
 
     // camera location
+    cameraDir.x = cos(yaw) * cos(pitch);
+    cameraDir.y = sin(pitch);
+    cameraDir.z = sin(yaw) * cos(pitch);
     view = glm::lookAt(cameraPos, cameraPos + cameraDir, glm::vec3(0.0, 1.0, 0.0));
 
     if (nextScene != nullptr) {
