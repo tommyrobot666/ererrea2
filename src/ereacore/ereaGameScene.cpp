@@ -6,8 +6,20 @@
 #include <core/gameState.h>
 
 void ereaGameScene::load() {
-    // chunks.push_back(Chunk(0,0,0));
-    chunks.emplace_back(0,0,0);
+    auto chunk = Chunk(0,0,0);
+    chunk.fillUnits(0,7,0,16,8,16,Unit::GRASS);
+    chunk.fillUnits(0,5,0,16,7,16,Unit::DIRT);
+    chunk.fillUnits(0,0,0,16,5,16,Unit::STONE);
+    chunk.fillUnits(0,0,0,8,5,8,Unit::ORE);
+
+    chunks.push_back(chunk);
+
+    chunks.emplace_back(1,0,0);
+    auto chunk2 = chunks[1];
+    chunk2.fillUnits(0,7,0,16,8,16,Unit::GRASS);
+    chunk2.fillUnits(0,5,0,16,7,16,Unit::DIRT);
+    chunk2.fillUnits(0,0,0,16,5,16,Unit::STONE);
+    chunk2.fillUnits(0,0,0,8,5,8,Unit::ORE);
 
     float* vertices = vertexObjectGenerators::cube::vertices();
     int *indices = vertexObjectGenerators::cube::indices();
@@ -20,7 +32,13 @@ void ereaGameScene::load() {
     free(vertices);
     free(indices);
 
+    grassTexture = Renderer::loadPngTexture("grass.png");
+    dirtTexture = Renderer::loadPngTexture("dort.png");
+    stoneTexture = Renderer::loadPngTexture("stone.png");
+    oreTexture = Renderer::loadPngTexture("ore.png");
+
     gs.r().defaultShader();
+    cubeModel->currentBind();
 }
 
 void ereaGameScene::simulate() {
@@ -36,11 +54,30 @@ void ereaGameScene::render() {
         glm::mat4 chunkOffset = glm::translate(glm::mat4(1.0f),glm::vec3(chunk.x*Chunk::LENGTH,chunk.y*Chunk::LENGTH,chunk.z*Chunk::LENGTH));
 
         for (int x = 0; x < Chunk::LENGTH; ++x){
-            for (int y = 0; y <= Chunk::LENGTH; ++y) {
-                for (int z = 0; z <= Chunk::LENGTH; ++z) {
+            for (int y = 0; y < Chunk::LENGTH; ++y) {
+                for (int z = 0; z < Chunk::LENGTH; ++z) {
                     if (chunk.units[posToIdx(x,y,z,Chunk::LENGTH)] == Unit::NONE) continue;
 
-                    // Renderer::currentTexture(texture); get unit texture
+
+                    unsigned int texture;
+                    switch (chunk.units[posToIdx(x,y,z,Chunk::LENGTH)])
+                    {
+                        case NONE:
+                            throw;
+                        case GRASS:
+                            texture = grassTexture;
+                            break;
+                        case DIRT:
+                            texture = dirtTexture;
+                            break;
+                        case STONE:
+                            texture = stoneTexture;
+                            break;
+                        case ORE:
+                            texture = oreTexture;
+                            break;
+                    }
+                    Renderer::currentTexture(texture);
 
                     glm::mat4 trans = glm::translate(glm::mat4(1.0f),glm::vec3(x,y,z));
                     trans = trans*chunkOffset*proj*gs.view;
@@ -55,5 +92,9 @@ void ereaGameScene::render() {
 void ereaGameScene::close() {
     delete(cubeModel);
     // delete(chunks);
+    Renderer::freeTexture(grassTexture);
+    Renderer::freeTexture(dirtTexture);
+    Renderer::freeTexture(stoneTexture);
+    Renderer::freeTexture(oreTexture);
 }
 

@@ -7,6 +7,10 @@
 class ereaGameScene : public Scene {
     std::vector<Chunk> chunks;
     VertexObject* cubeModel;
+    unsigned int grassTexture;
+    unsigned int dirtTexture;
+    unsigned int stoneTexture;
+    unsigned int oreTexture;
     public:
     void load() override;
     void simulate() override;
