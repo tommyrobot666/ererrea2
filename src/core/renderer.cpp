@@ -112,10 +112,8 @@ void setUpTextureDrawing() {
 }
 
 void Renderer::textureDrawingNearest() {
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
 
 Renderer::Renderer() {
@@ -186,6 +184,12 @@ unsigned int Renderer::loadPngTexture(std::string path) {
     }
     stbi_image_free(data);
     return texture;
+}
+
+unsigned int Renderer::loadPngTextureNearest(std::string path) {
+    unsigned int ret = loadPngTexture(path);
+    textureDrawingNearest();
+    return ret;
 }
 
 void Renderer::currentTexture(unsigned int texture) {

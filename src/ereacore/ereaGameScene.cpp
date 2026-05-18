@@ -22,8 +22,6 @@ void ereaGameScene::load() {
     chunk2.fillUnits(0,0,0,16,5,16,Unit::STONE);
     chunk2.fillUnits(0,0,0,8,5,8,Unit::ORE);
 
-    Renderer::textureDrawingNearest();
-
     float* vertices = vertexObjectGenerators::cube::vertices();
     int *indices = vertexObjectGenerators::cube::indices();
     cubeModel = Renderer::createVertexObject(
@@ -36,9 +34,10 @@ void ereaGameScene::load() {
     free(indices);
 
     grassTexture = Renderer::loadPngTexture("grass.png");
-    dirtTexture = Renderer::loadPngTexture("dort.png");
-    stoneTexture = Renderer::loadPngTexture("stone.png");
-    oreTexture = Renderer::loadPngTexture("ore.png");
+    Renderer::textureDrawingNearest(); // texture settings only apply to bound texture
+    dirtTexture = Renderer::loadPngTextureNearest("dort.png");
+    stoneTexture = Renderer::loadPngTextureNearest("stone.png");
+    oreTexture = Renderer::loadPngTextureNearest("ore.png");
 
     gs.r().defaultShader();
     cubeModel->currentBind();

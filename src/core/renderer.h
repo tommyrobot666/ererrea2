@@ -42,6 +42,8 @@ public:
 
     static unsigned int loadPngTexture(std::string path);
 
+    static unsigned int loadPngTextureNearest(std::string path);
+
     static void currentTexture(unsigned int texture);
 
     static void clear(float r, float g, float b, float a);
