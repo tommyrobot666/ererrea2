@@ -16,7 +16,7 @@ void ereaGameScene::load() {
     chunks.push_back(chunk);
 
     chunks.emplace_back(1,0,0);
-    auto chunk2 = chunks[1];
+    auto& chunk2 = chunks[1]; // use & instead of *
     chunk2.fillUnits(0,7,0,16,8,16,Unit::GRASS);
     chunk2.fillUnits(0,5,0,16,7,16,Unit::DIRT);
     chunk2.fillUnits(0,0,0,16,5,16,Unit::STONE);
