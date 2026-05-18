@@ -59,27 +59,23 @@ namespace vertexObjectGenerators {
 
      namespace cube {
         float* vertices(){
-            return new float[8*floatsInVertex]{
+            return new float[12*floatsInVertex]{
                 //pos     color      uv
-                // 1f,1f,1f, 1f,1f,1f, 1f,1f,
-                // 0f,1f,1f, 1f,1f,1f, 0f,1f,
-                // 1f,0f,1f, 1f,1f,1f, 1f,0f,
-                // 0f,0f,1f, 1f,1f,1f, 0f,0f,
-                //
-                // 1f,1f,0f, 1f,1f,1f, 1f,1f,
-                // 0f,1f,0f, 1f,1f,1f, 0f,1f,
-                // 1f,0f,0f, 1f,1f,1f, 1f,0f,
-                // 0f,0f,0f, 1f,1f,1f, 0f,0f
-                
                 f1,f1,f1, f1,f1,f1, f1,f1,
                 f0,f1,f1, f1,f1,f1, f0,f1,
                 f1,f0,f1, f1,f1,f1, f1,f0,
                 f0,f0,f1, f1,f1,f1, f0,f0,
 
-                f1,f1,f0, f1,f1,f1, f1,f1,
-                f0,f1,f0, f1,f1,f1, f0,f1,
-                f1,f0,f0, f1,f1,f1, f1,f0,
-                f0,f0,f0, f1,f1,f1, f0,f0
+                f1,f1,f0, f1,f1,f1, f0,f1,
+                f0,f1,f0, f1,f1,f1, f0,f0,
+                f1,f0,f0, f1,f1,f1, f0,f0,
+                f0,f0,f0, f1,f1,f1, f0,f1,
+
+                f0,f0,f1, f1,f1,f1, f1,f1,//3
+                f0,f0,f0, f1,f1,f1, f1,f0,//7
+                f1,f0,f0, f1,f1,f1, f1,f1,//6
+                f1,f1,f0, f1,f1,f1, f1,f0//4
+
             };
         }
         int* indices(){
@@ -88,24 +84,24 @@ namespace vertexObjectGenerators {
                 0,1,2,
                 2,1,3,
                 // 111 -> 010
-                0,4,1,
-                1,4,5,
+                0,11,1,
+                1,11,5,
                 // 111 -> 100
                 0,2,4,
                 4,2,6,
 
                 // 110 -> 000
-                4,5,6,
-                6,5,7,
+                4,5,10,
+                10,5,9,
                 // 000 -> 011
-                7,5,3,
-                3,5,1,
+                9,5,8,
+                8,5,1,
                 // 000 -> 101
-                7,6,3,
-                3,6,2
+                7,6,8,
+                8,6,2
             };
         }
-        int verticeCount() {return 8;}
+        int verticeCount() {return 12;}
         int indiceCount() {return 36;}
     }
 

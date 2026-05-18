@@ -47,4 +47,6 @@ public:
     static void clear(float r, float g, float b, float a);
 
     static void freeTexture(unsigned int texture);
+
+    static void textureDrawingNearest();
 };

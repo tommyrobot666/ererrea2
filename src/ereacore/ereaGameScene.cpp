@@ -22,6 +22,8 @@ void ereaGameScene::load() {
     chunk2.fillUnits(0,0,0,16,5,16,Unit::STONE);
     chunk2.fillUnits(0,0,0,8,5,8,Unit::ORE);
 
+    Renderer::textureDrawingNearest();
+
     float* vertices = vertexObjectGenerators::cube::vertices();
     int *indices = vertexObjectGenerators::cube::indices();
     cubeModel = Renderer::createVertexObject(
