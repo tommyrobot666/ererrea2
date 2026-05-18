@@ -22,11 +22,13 @@ void ereaGameScene::load() {
     chunk2.fillUnits(0,0,0,16,5,16,Unit::STONE);
     chunk2.fillUnits(0,0,0,8,5,8,Unit::ORE);
 
-    for (int x = 3; x < 20; x++) {
-        for (int z = 3; z < 20; z++) {
-            chunks.emplace_back(x,0,z);
-            auto& chunk = chunks.back();
-            chunkGenerator.generateChunk(chunk);
+    for (int x = 2; x < 10; x++) {
+        for (int y = -2; y < 3; y++) {
+            for (int z = 0; z < 8; z++) {
+                chunks.emplace_back(x,y,z);
+                auto& chunk = chunks.back();
+                chunkGenerator.generateChunk(chunk);
+            }
         }
     }
 
@@ -55,19 +57,18 @@ void ereaGameScene::load() {
 }
 
 void moveCamera() {
-    if (glfwGetKey(gs.window, GLFW_KEY_LEFT) == GLFW_PRESS)
-        gs.yaw -= 1.3f*gs.deltaTime;
-    if (glfwGetKey(gs.window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-        gs.yaw += 1.3f*gs.deltaTime;
-    if (glfwGetKey(gs.window, GLFW_KEY_DOWN) == GLFW_PRESS)
-        gs.pitch -= 1.3f*gs.deltaTime;
-    if (glfwGetKey(gs.window, GLFW_KEY_UP) == GLFW_PRESS)
-        gs.pitch += 1.3f*gs.deltaTime;
-
-
     float sprint = 1.0f;
     if (glfwGetKey(gs.window, GLFW_KEY_LEFT_SHIFT))
-        sprint = 7.0f;
+        sprint = 28.0f;
+
+    if (glfwGetKey(gs.window, GLFW_KEY_LEFT) == GLFW_PRESS)
+        gs.yaw -= 1.3f*gs.deltaTime*sprint;
+    if (glfwGetKey(gs.window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+        gs.yaw += 1.3f*gs.deltaTime*sprint;
+    if (glfwGetKey(gs.window, GLFW_KEY_DOWN) == GLFW_PRESS)
+        gs.pitch -= 1.3f*gs.deltaTime*sprint;
+    if (glfwGetKey(gs.window, GLFW_KEY_UP) == GLFW_PRESS)
+        gs.pitch += 1.3f*gs.deltaTime*sprint;
 
     if (glfwGetKey(gs.window, GLFW_KEY_W) == GLFW_PRESS)
         gs.cameraPos.z += 2.7f*gs.deltaTime*sprint;
@@ -88,7 +89,7 @@ void moveCamera() {
 
 void ereaGameScene::interactWithUnits() {
     ListUtilVecInt cameraChunkPos = stepGridPos(gs.cameraPos.x,gs.cameraPos.y,gs.cameraPos.z,Chunk::LENGTH);
-    int maxChunkDistance = 2;
+    int maxChunkDistance = 1;
     for (int x = cameraChunkPos.x-maxChunkDistance; x < cameraChunkPos.x+maxChunkDistance; ++x) {
         for (int y = cameraChunkPos.y-maxChunkDistance; y < cameraChunkPos.y+maxChunkDistance; ++y) {
             for (int z = cameraChunkPos.z-maxChunkDistance; z < cameraChunkPos.z+maxChunkDistance; ++z) {
@@ -105,8 +106,6 @@ void ereaGameScene::interactWithUnits() {
                                 if (chunk->units[posToIdx(xx,yy,zz,Chunk::LENGTH)] == Unit::GRASS
                                     || chunk->units[posToIdx(xx,yy,zz,Chunk::LENGTH)] == Unit::DIRT) {
                                     chunk->setUnit(xx,yy,zz,Unit::DIRT);
-                                } else {
-                                    chunk->setUnit(xx,yy,zz,Unit::NONE);
                                 }
                             }
                         }
@@ -131,7 +130,7 @@ void ereaGameScene::render() {
     for (auto& chunk : chunks) {
         if (dist(ListUtilVec{static_cast<double>(cameraChunkPos.x-chunk.x),
             static_cast<double>(cameraChunkPos.y-chunk.y),
-            static_cast<double>(cameraChunkPos.z-chunk.z)}) > 2) continue;
+            static_cast<double>(cameraChunkPos.z-chunk.z)}) > 3) continue;
 
         glm::mat4 chunkOffset = glm::translate(glm::mat4(1.0f),glm::vec3(chunk.x*Chunk::LENGTH,chunk.y*Chunk::LENGTH,chunk.z*Chunk::LENGTH));
 

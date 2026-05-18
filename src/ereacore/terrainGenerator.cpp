@@ -56,9 +56,13 @@ double terrainGenerator::linear2dNoise(double x, double y) {
 void terrainGenerator::generateChunk(Chunk &chunk) {
     for (int x = 0; x < Chunk::LENGTH; ++x) {
         for (int z = 0; z < Chunk::LENGTH; ++z) {
-            double val = linear2dNoise(static_cast<double>(x)/Chunk::LENGTH + chunk.x, static_cast<double>(z)/Chunk::LENGTH + chunk.z);
-            int v = (val*Chunk::LENGTH);
-            chunk.fillUnits(x,0,z,x+1,v,z+1,Unit::DIRT);
+            double scaled = 2.3;
+            double val = linear2dNoise((static_cast<double>(x)/Chunk::LENGTH + chunk.x)*scaled, (static_cast<double>(z)/Chunk::LENGTH + chunk.z)*scaled);
+            int globalV = (val*Chunk::LENGTH*4)-Chunk::LENGTH*3;
+            int localV = globalV-chunk.y*Chunk::LENGTH;
+            if (localV < 0) localV = 0; if (localV > Chunk::LENGTH) localV = Chunk::LENGTH;
+            Unit unit = globalV%3==0?Unit::DIRT:(globalV%3==1?Unit::ORE:Unit::STONE);
+            chunk.fillUnits(x,0,z,x+1,localV,z+1,unit);
         }
     }
 }
