@@ -45,7 +45,7 @@ void ereaGameScene::load() {
     gs.cameraPos = glm::vec3(0,9,0);
 }
 
-void ereaGameScene::simulate() {
+void moveCamera() {
     if (glfwGetKey(gs.window, GLFW_KEY_LEFT) == GLFW_PRESS)
         gs.yaw -= 1.3f*gs.deltaTime;
     if (glfwGetKey(gs.window, GLFW_KEY_RIGHT) == GLFW_PRESS)
@@ -55,11 +55,11 @@ void ereaGameScene::simulate() {
     if (glfwGetKey(gs.window, GLFW_KEY_UP) == GLFW_PRESS)
         gs.pitch += 1.3f*gs.deltaTime;
 
-    
+
     float sprint = 1.0f;
     if (glfwGetKey(gs.window, GLFW_KEY_LEFT_SHIFT))
-        sprint = 5.0f;
-    
+        sprint = 7.0f;
+
     if (glfwGetKey(gs.window, GLFW_KEY_W) == GLFW_PRESS)
         gs.cameraPos.z += 2.7f*gs.deltaTime*sprint;
     if (glfwGetKey(gs.window, GLFW_KEY_S) == GLFW_PRESS)
@@ -77,12 +77,41 @@ void ereaGameScene::simulate() {
         glfwSetWindowShouldClose(gs.window, true);
 }
 
+void ereaGameScene::interactWithUnits() {
+    ListUtilVec cameraChunkPos = stepGridPos(gs.cameraPos.x,gs.cameraPos.y,gs.cameraPos.z,Chunk::LENGTH);
+    int maxChunkDistance = 2;
+    for (int x = cameraChunkPos.x-maxChunkDistance; x < cameraChunkPos.x+maxChunkDistance; ++x) {
+        for (int y = cameraChunkPos.y-maxChunkDistance; y < cameraChunkPos.y+maxChunkDistance; ++y) {
+            for (int z = cameraChunkPos.z-maxChunkDistance; z < cameraChunkPos.z+maxChunkDistance; ++z) {
+                Chunk* chunk = Chunk::findChunkOrNone(chunks,x,y,z);
+                if (chunk == nullptr) continue;
+                for (int xx = 0; xx < Chunk::LENGTH; ++xx) {
+                    for (int yy = 0; yy < Chunk::LENGTH; ++yy) {
+                        for (int zz = 0; zz < Chunk::LENGTH; ++zz) {
+                            if (std::sqrt((xx+x*Chunk::LENGTH-gs.cameraPos.x)*(xx+x*Chunk::LENGTH-gs.cameraPos.x)+
+                                (yy+y*Chunk::LENGTH-gs.cameraPos.y)*(yy+y*Chunk::LENGTH-gs.cameraPos.y)+
+                                (zz+z*Chunk::LENGTH-gs.cameraPos.z)*(zz+z*Chunk::LENGTH-gs.cameraPos.z)) < 10) {
+                                chunk->setUnit(xx,yy,zz,Unit::NONE);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+void ereaGameScene::simulate() {
+    moveCamera();
+    interactWithUnits();
+}
+
 void ereaGameScene::render() {
     Renderer::clear(1.0f,1.0f,1.0f,1.0f);
 
     glm::mat4 proj = glm::perspective(glm::radians(70.0f), (float)GAME_WINDOW_WIDTH/(float)GAME_WINDOW_HEIGHT, 0.1f, 100.0f);
 
-    for (auto chunk : chunks) {
+    for (auto& chunk : chunks) {
         glm::mat4 chunkOffset = glm::translate(glm::mat4(1.0f),glm::vec3(chunk.x*Chunk::LENGTH,chunk.y*Chunk::LENGTH,chunk.z*Chunk::LENGTH));
 
         for (int x = 0; x < Chunk::LENGTH; ++x){

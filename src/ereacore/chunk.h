@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <ereacore/unit.h>
 
 class Chunk {
@@ -13,4 +14,6 @@ class Chunk {
     void setUnit(int x,int y,int z,Unit unit);
 
     void fillUnits(int x1,int y1,int z1,int x2,int y2,int z2,Unit unit);
+
+    static Chunk* findChunkOrNone(std::vector<Chunk>& chunks, int x, int y, int z);
 };

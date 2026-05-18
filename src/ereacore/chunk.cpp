@@ -17,3 +17,12 @@ void Chunk::fillUnits(int x1, int y1, int z1, int x2, int y2, int z2,Unit unit) 
     }
 }
 
+Chunk* Chunk::findChunkOrNone(std::vector<Chunk>& chunks, int x, int y, int z) {
+    for (auto & chunk : chunks) {
+        if (chunk.x == x && chunk.y == y && chunk.z == z) {
+            return &chunk;
+        }
+    }
+    return nullptr;
+}
+

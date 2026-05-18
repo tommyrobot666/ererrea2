@@ -11,6 +11,7 @@ class ereaGameScene : public Scene {
     unsigned int dirtTexture;
     unsigned int stoneTexture;
     unsigned int oreTexture;
+    void interactWithUnits();
     public:
     void load() override;
     void simulate() override;
