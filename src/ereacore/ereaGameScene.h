@@ -3,6 +3,7 @@
 #include <core/scene.h>
 #include <core/renderer.h>
 #include <ereacore/chunk.h>
+#include <ereacore/terrainGenerator.h>
 
 class ereaGameScene : public Scene {
     std::vector<Chunk> chunks;
@@ -11,6 +12,7 @@ class ereaGameScene : public Scene {
     unsigned int dirtTexture;
     unsigned int stoneTexture;
     unsigned int oreTexture;
+    terrainGenerator chunkGenerator;
     void interactWithUnits();
     public:
     void load() override;

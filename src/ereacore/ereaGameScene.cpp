@@ -7,13 +7,13 @@
 #include <core/gameState.h>
 
 void ereaGameScene::load() {
-    auto chunk = Chunk(0,0,0);
-    chunk.fillUnits(0,7,0,16,8,16,Unit::GRASS);
-    chunk.fillUnits(0,5,0,16,7,16,Unit::DIRT);
-    chunk.fillUnits(0,0,0,16,5,16,Unit::STONE);
-    chunk.fillUnits(0,0,0,8,5,8,Unit::ORE);
+    auto chunk1 = Chunk(0,0,0);
+    chunk1.fillUnits(0,7,0,16,8,16,Unit::GRASS);
+    chunk1.fillUnits(0,5,0,16,7,16,Unit::DIRT);
+    chunk1.fillUnits(0,0,0,16,5,16,Unit::STONE);
+    chunk1.fillUnits(0,0,0,8,5,8,Unit::ORE);
 
-    chunks.push_back(chunk);
+    chunks.push_back(chunk1);
 
     chunks.emplace_back(1,0,0);
     auto& chunk2 = chunks[1]; // use & instead of *
@@ -21,6 +21,15 @@ void ereaGameScene::load() {
     chunk2.fillUnits(0,5,0,16,7,16,Unit::DIRT);
     chunk2.fillUnits(0,0,0,16,5,16,Unit::STONE);
     chunk2.fillUnits(0,0,0,8,5,8,Unit::ORE);
+
+    for (int x = 3; x < 20; x++) {
+        for (int z = 3; z < 20; z++) {
+            chunks.emplace_back(x,0,z);
+            auto& chunk = chunks.back();
+            chunkGenerator.generateChunk(chunk);
+        }
+    }
+
 
     float* vertices = vertexObjectGenerators::cube::vertices();
     int *indices = vertexObjectGenerators::cube::indices();
@@ -118,7 +127,12 @@ void ereaGameScene::render() {
 
     glm::mat4 proj = glm::perspective(glm::radians(70.0f), (float)GAME_WINDOW_WIDTH/(float)GAME_WINDOW_HEIGHT, 0.1f, 100.0f);
 
+    ListUtilVecInt cameraChunkPos = stepGridPos(gs.cameraPos.x,gs.cameraPos.y,gs.cameraPos.z,Chunk::LENGTH);
     for (auto& chunk : chunks) {
+        if (dist(ListUtilVec{static_cast<double>(cameraChunkPos.x-chunk.x),
+            static_cast<double>(cameraChunkPos.y-chunk.y),
+            static_cast<double>(cameraChunkPos.z-chunk.z)}) > 2) continue;
+
         glm::mat4 chunkOffset = glm::translate(glm::mat4(1.0f),glm::vec3(chunk.x*Chunk::LENGTH,chunk.y*Chunk::LENGTH,chunk.z*Chunk::LENGTH));
 
         for (int x = 0; x < Chunk::LENGTH; ++x){
