@@ -22,8 +22,8 @@ void ereaGameScene::load() {
     chunk2.fillUnits(0,0,0,16,5,16,Unit::STONE);
     chunk2.fillUnits(0,0,0,8,5,8,Unit::ORE);
 
-    for (int x = 2; x < 10; x++) {
-        for (int y = -2; y < 3; y++) {
+    for (int x = 0; x < 8; x++) {
+        for (int y = -1; y < 2; y++) {
             for (int z = 0; z < 8; z++) {
                 chunks.emplace_back(x,y,z);
                 auto& chunk = chunks.back();
@@ -59,7 +59,7 @@ void ereaGameScene::load() {
 void moveCamera() {
     float sprint = 1.0f;
     if (glfwGetKey(gs.window, GLFW_KEY_LEFT_SHIFT))
-        sprint = 28.0f;
+        sprint = 68.0f;
 
     if (glfwGetKey(gs.window, GLFW_KEY_LEFT) == GLFW_PRESS)
         gs.yaw -= 1.3f*gs.deltaTime*sprint;
@@ -89,7 +89,7 @@ void moveCamera() {
 
 void ereaGameScene::interactWithUnits() {
     ListUtilVecInt cameraChunkPos = stepGridPos(gs.cameraPos.x,gs.cameraPos.y,gs.cameraPos.z,Chunk::LENGTH);
-    int maxChunkDistance = 1;
+    int maxChunkDistance = 2;
     for (int x = cameraChunkPos.x-maxChunkDistance; x < cameraChunkPos.x+maxChunkDistance; ++x) {
         for (int y = cameraChunkPos.y-maxChunkDistance; y < cameraChunkPos.y+maxChunkDistance; ++y) {
             for (int z = cameraChunkPos.z-maxChunkDistance; z < cameraChunkPos.z+maxChunkDistance; ++z) {
