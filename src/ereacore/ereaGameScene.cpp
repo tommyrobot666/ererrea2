@@ -78,7 +78,7 @@ void moveCamera() {
 }
 
 void ereaGameScene::interactWithUnits() {
-    ListUtilVec cameraChunkPos = stepGridPos(gs.cameraPos.x,gs.cameraPos.y,gs.cameraPos.z,Chunk::LENGTH);
+    ListUtilVecInt cameraChunkPos = stepGridPos(gs.cameraPos.x,gs.cameraPos.y,gs.cameraPos.z,Chunk::LENGTH);
     int maxChunkDistance = 2;
     for (int x = cameraChunkPos.x-maxChunkDistance; x < cameraChunkPos.x+maxChunkDistance; ++x) {
         for (int y = cameraChunkPos.y-maxChunkDistance; y < cameraChunkPos.y+maxChunkDistance; ++y) {
@@ -88,10 +88,17 @@ void ereaGameScene::interactWithUnits() {
                 for (int xx = 0; xx < Chunk::LENGTH; ++xx) {
                     for (int yy = 0; yy < Chunk::LENGTH; ++yy) {
                         for (int zz = 0; zz < Chunk::LENGTH; ++zz) {
-                            if (std::sqrt((xx+x*Chunk::LENGTH-gs.cameraPos.x)*(xx+x*Chunk::LENGTH-gs.cameraPos.x)+
-                                (yy+y*Chunk::LENGTH-gs.cameraPos.y)*(yy+y*Chunk::LENGTH-gs.cameraPos.y)+
-                                (zz+z*Chunk::LENGTH-gs.cameraPos.z)*(zz+z*Chunk::LENGTH-gs.cameraPos.z)) < 10) {
-                                chunk->setUnit(xx,yy,zz,Unit::NONE);
+                            // for every unit in nearby chunks
+
+                            if (dist(ListUtilVec{xx+x*Chunk::LENGTH-gs.cameraPos.x,
+                                    yy+y*Chunk::LENGTH-gs.cameraPos.y,
+                                    zz+z*Chunk::LENGTH-gs.cameraPos.z}) < 10) {
+                                if (chunk->units[posToIdx(xx,yy,zz,Chunk::LENGTH)] == Unit::GRASS
+                                    || chunk->units[posToIdx(xx,yy,zz,Chunk::LENGTH)] == Unit::DIRT) {
+                                    chunk->setUnit(xx,yy,zz,Unit::DIRT);
+                                } else {
+                                    chunk->setUnit(xx,yy,zz,Unit::NONE);
+                                }
                             }
                         }
                     }
