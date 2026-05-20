@@ -62,20 +62,19 @@ void terrainGenerator::generateChunk(Chunk &chunk) {
     }
     float perlinValues[Chunk::LENGTH*Chunk::LENGTH];
     const float unitPoses[Chunk::LENGTH] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
-    // float scaled = 1/0.09;
-    // perlin->SetScale(scaled);
+    perlin->SetScale(2);
     perlin->GenPositionArray2D(perlinValues,Chunk::LENGTH*Chunk::LENGTH,
         unitPoses,unitPoses,
-        chunk.x*Chunk::LENGTH,chunk.y*Chunk::LENGTH,seed);
+        chunk.x*Chunk::LENGTH,chunk.z*Chunk::LENGTH,seed);
 
     for (int x = 0; x < Chunk::LENGTH; ++x) {
         for (int z = 0; z < Chunk::LENGTH; ++z) {
-            float val = perlinValues[posToIdx(x,z,0,Chunk::LENGTH)];
-            int globalV = (val*Chunk::LENGTH*2)-Chunk::LENGTH*1;
-            int localV = globalV-chunk.y*Chunk::LENGTH;
-            localV = (localV<0?0:(localV>Chunk::LENGTH?Chunk::LENGTH:localV));
+            float val = (perlinValues[posToIdx(x,z,0,Chunk::LENGTH)]+1)/2;
+            int globalV = val*Chunk::LENGTH;
+            // int localV = globalV-chunk.y*Chunk::LENGTH;
+            // localV = (localV<0?0:(localV>Chunk::LENGTH?Chunk::LENGTH:localV));
             Unit unit = globalV%3==0?Unit::DIRT:(globalV%3==1?Unit::ORE:Unit::STONE);
-            chunk.fillUnits(x,0,z,x+1,localV,z+1,unit);
+            chunk.fillUnits(x,globalV-1,z,x+1,globalV,z+1,unit);
         }
     }
 }

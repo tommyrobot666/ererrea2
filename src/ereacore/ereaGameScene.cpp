@@ -7,24 +7,24 @@
 #include <core/gameState.h>
 
 void ereaGameScene::load() {
-    auto chunk1 = Chunk(0,0,0);
-    chunk1.fillUnits(0,7,0,16,8,16,Unit::GRASS);
-    chunk1.fillUnits(0,5,0,16,7,16,Unit::DIRT);
-    chunk1.fillUnits(0,0,0,16,5,16,Unit::STONE);
-    chunk1.fillUnits(0,0,0,8,5,8,Unit::ORE);
+    // auto chunk1 = Chunk(0,0,0);
+    // chunk1.fillUnits(0,7,0,16,8,16,Unit::GRASS);
+    // chunk1.fillUnits(0,5,0,16,7,16,Unit::DIRT);
+    // chunk1.fillUnits(0,0,0,16,5,16,Unit::STONE);
+    // chunk1.fillUnits(0,0,0,8,5,8,Unit::ORE);
+    //
+    // chunks.push_back(chunk1);
+    //
+    // chunks.emplace_back(1,0,0);
+    // auto& chunk2 = chunks[1]; // use & instead of *
+    // chunk2.fillUnits(0,7,0,16,8,16,Unit::GRASS);
+    // chunk2.fillUnits(0,5,0,16,7,16,Unit::DIRT);
+    // chunk2.fillUnits(0,0,0,16,5,16,Unit::STONE);
+    // chunk2.fillUnits(0,0,0,8,5,8,Unit::ORE);
 
-    chunks.push_back(chunk1);
-
-    chunks.emplace_back(1,0,0);
-    auto& chunk2 = chunks[1]; // use & instead of *
-    chunk2.fillUnits(0,7,0,16,8,16,Unit::GRASS);
-    chunk2.fillUnits(0,5,0,16,7,16,Unit::DIRT);
-    chunk2.fillUnits(0,0,0,16,5,16,Unit::STONE);
-    chunk2.fillUnits(0,0,0,8,5,8,Unit::ORE);
-
-    for (int x = 0; x < 8; x++) {
-        for (int y = -1; y < 2; y++) {
-            for (int z = 0; z < 8; z++) {
+    for (int x = 0; x < 11; x++) {
+        for (int y = 0; y < 1; y++) {
+            for (int z = 0; z < 11; z++) {
                 chunks.emplace_back(x,y,z);
                 auto& chunk = chunks.back();
                 chunkGenerator.generateChunk(chunk);
