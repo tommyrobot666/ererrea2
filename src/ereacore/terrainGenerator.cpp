@@ -1,3 +1,4 @@
+#include <glad/glad.h>
 #include <FastNoise/FastNoise.h>
 #include <random>
 #include <3dListUtil.h>
@@ -62,19 +63,29 @@ void terrainGenerator::generateChunk(Chunk &chunk) {
     }
     float perlinValues[Chunk::LENGTH*Chunk::LENGTH];
     const float unitPoses[Chunk::LENGTH] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
-    perlin->SetScale(2);
+    perlin->SetScale(5);
+    perlin->SetOutputMax(Chunk::LENGTH);
+    perlin->SetOutputMin(0);
     perlin->GenPositionArray2D(perlinValues,Chunk::LENGTH*Chunk::LENGTH,
         unitPoses,unitPoses,
         chunk.x*Chunk::LENGTH,chunk.z*Chunk::LENGTH,seed);
 
     for (int x = 0; x < Chunk::LENGTH; ++x) {
         for (int z = 0; z < Chunk::LENGTH; ++z) {
-            float val = (perlinValues[posToIdx(x,z,0,Chunk::LENGTH)]+1)/2;
-            int globalV = val*Chunk::LENGTH;
-            // int localV = globalV-chunk.y*Chunk::LENGTH;
-            // localV = (localV<0?0:(localV>Chunk::LENGTH?Chunk::LENGTH:localV));
-            Unit unit = globalV%3==0?Unit::DIRT:(globalV%3==1?Unit::ORE:Unit::STONE);
-            chunk.fillUnits(x,globalV-1,z,x+1,globalV,z+1,unit);
+            int val = perlinValues[posToIdx(x,z,0,Chunk::LENGTH)];
+            int localV = val-chunk.y*Chunk::LENGTH;
+            localV = (localV<0?0:(localV>Chunk::LENGTH?Chunk::LENGTH:localV));
+            Unit unit = val%3==0?Unit::DIRT:(val%3==1?Unit::ORE:Unit::STONE);
+            chunk.fillUnits(x,localV-1,z,x+1,localV,z+1,unit);
         }
     }
+
+    perlin->SetOutputMax(1);
+    perlin->SetOutputMin(0);
+    perlin->GenPositionArray2D(perlinValues,Chunk::LENGTH*Chunk::LENGTH,
+        unitPoses,unitPoses,
+        chunk.x*Chunk::LENGTH,chunk.z*Chunk::LENGTH,seed);
+    glBindTexture(GL_TEXTURE_2D, debugTex);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, Chunk::LENGTH, Chunk::LENGTH, 0, GL_RED, GL_UNSIGNED_BYTE, perlinValues);
+    glGenerateMipmap(GL_TEXTURE_2D);
 }

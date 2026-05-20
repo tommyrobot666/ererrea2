@@ -21,9 +21,11 @@ void ereaGameScene::load() {
     // chunk2.fillUnits(0,5,0,16,7,16,Unit::DIRT);
     // chunk2.fillUnits(0,0,0,16,5,16,Unit::STONE);
     // chunk2.fillUnits(0,0,0,8,5,8,Unit::ORE);
+    dirtTexture = Renderer::loadPngTextureNearest("dort.png");
+    chunkGenerator.debugTex = dirtTexture;
 
     for (int x = 0; x < 11; x++) {
-        for (int y = 0; y < 1; y++) {
+        for (int y = -1; y < 2; y++) {
             for (int z = 0; z < 11; z++) {
                 chunks.emplace_back(x,y,z);
                 auto& chunk = chunks.back();
@@ -46,7 +48,7 @@ void ereaGameScene::load() {
 
     grassTexture = Renderer::loadPngTexture("grass.png");
     Renderer::textureDrawingNearest(); // texture settings only apply to bound texture
-    dirtTexture = Renderer::loadPngTextureNearest("dort.png");
+    // dirtTexture = Renderer::loadPngTextureNearest("dort.png");
     stoneTexture = Renderer::loadPngTextureNearest("stone.png");
     oreTexture = Renderer::loadPngTextureNearest("ore.png");
 

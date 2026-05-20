@@ -13,4 +13,5 @@ class terrainGenerator {
     double linear2dNoise9(double x, double y);
     public:
     void generateChunk(Chunk& chunk);
+    int debugTex;
 };
