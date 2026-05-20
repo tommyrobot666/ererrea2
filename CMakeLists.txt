@@ -1,18 +1,17 @@
 cmake_minimum_required(VERSION 3.28.3)
 
 set(CMAKE_CXX_STANDARD 17)
-#set(CMAKE_C_STANDARD 17)
-#set(CMAKE_CXX_COMPILER g++)
-#set(CMAKE_C_COMPILER gcc)
 set(GLFW_BUILD_WAYLAND OFF)
 set(GLFW_BUILD_X11 OFF)
+set(GLFW_BUILD_DOCS OFF)
+set(FASTNOISE2_TOOLS OFF)
+set(FASTNOISE2_TESTS OFF)
+set(FASTNOISE2_UTILITY OFF)
 
 if(MSVC)
     set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreaded$<$<CONFIG:Debug>:Debug>)
     set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreaded$<$<CONFIG:Release>:Release>)
 endif ()
-
-set(GLFW_BUILD_DOCS OFF) # removed docs from libs
 
 # I DO NOT REMEMBER [ANYONE] TELLING ME THAT ADD_SUBDIRECTORY MUST BE AFTER PROJECT
 
@@ -22,6 +21,7 @@ add_subdirectory(libs/glad)
 add_subdirectory(libs/glfw-3.4)
 add_subdirectory(libs/stb)
 add_subdirectory(libs/glm)
+add_subdirectory(libs/FastNoise2)
 
 file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS src/*.cpp)
 add_executable(${CMAKE_PROJECT_NAME} main.cpp ${MY_SOURCES})
@@ -39,7 +39,7 @@ target_include_directories(ererrea2 PUBLIC src)
 set(CMAKE_EXE_LINKER_FLAGS " -static")
 #target_link_libraries(myLib libgcc libstdc++)
 
-target_link_libraries(ererrea2 PRIVATE glad glfw stb_image glm)
+target_link_libraries(ererrea2 PRIVATE glad glfw stb_image glm FastNoise2)
 
 project(oldmain)
 add_executable(${CMAKE_PROJECT_NAME} oldmain.cpp)
