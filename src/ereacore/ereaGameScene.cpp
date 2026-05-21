@@ -23,10 +23,13 @@ void ereaGameScene::load() {
     // chunk2.fillUnits(0,0,0,8,5,8,Unit::ORE);
     dirtTexture = Renderer::loadPngTextureNearest("dort.png");
     chunkGenerator.debugTex = dirtTexture;
+    chunkGenerator.debugtex();
 
-    for (int x = 0; x < 11; x++) {
-        for (int y = -1; y < 2; y++) {
-            for (int z = 0; z < 11; z++) {
+    chunkGenerator.seed = 123;
+
+    for (int x = 0; x < 3; x++) {
+        for (int y = 0; y < 1; y++) {
+            for (int z = 0; z < 3; z++) {
                 chunks.emplace_back(x,y,z);
                 auto& chunk = chunks.back();
                 chunkGenerator.generateChunk(chunk);

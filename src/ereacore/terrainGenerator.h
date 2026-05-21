@@ -11,11 +11,12 @@ class terrainGenerator {
     FastNoise::SmartNode<FastNoise::FractalFBm> fractal;
     FastNoise::SmartNode<FastNoise::Remap> remap;
     FastNoise::SmartNode<FastNoise::Remap> debugRemap;
-    int seed = 0;
     double sample2dNoise(int x, int y);
     double linear2dNoise9(double x, double y);
     public:
+    int seed = 0;
     terrainGenerator();
+    void debugtex();
     void generateChunk(Chunk& chunk);
     int debugTex;
 };
