@@ -63,7 +63,7 @@ void terrainGenerator::generateChunk(Chunk &chunk) {
     }
     float perlinValues[Chunk::LENGTH*Chunk::LENGTH];
     const float unitPoses[Chunk::LENGTH] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
-    perlin->SetScale(5);
+    perlin->SetScale(20);
     perlin->SetOutputMax(Chunk::LENGTH);
     perlin->SetOutputMin(0);
     perlin->GenPositionArray2D(perlinValues,Chunk::LENGTH*Chunk::LENGTH,
@@ -75,17 +75,16 @@ void terrainGenerator::generateChunk(Chunk &chunk) {
             int val = perlinValues[posToIdx(x,z,0,Chunk::LENGTH)];
             int localV = val-chunk.y*Chunk::LENGTH;
             localV = (localV<0?0:(localV>Chunk::LENGTH?Chunk::LENGTH:localV));
-            Unit unit = val%3==0?Unit::DIRT:(val%3==1?Unit::ORE:Unit::STONE);
+            Unit unit = Unit::DIRT;//val%3==0?Unit::DIRT:(val%3==1?Unit::ORE:Unit::STONE);
             chunk.fillUnits(x,localV-1,z,x+1,localV,z+1,unit);
         }
     }
-
+    int debugSize = 32;//64;//256;
+    float debugValues[debugSize*debugSize];
     perlin->SetOutputMax(1);
     perlin->SetOutputMin(0);
-    perlin->GenPositionArray2D(perlinValues,Chunk::LENGTH*Chunk::LENGTH,
-        unitPoses,unitPoses,
-        chunk.x*Chunk::LENGTH,chunk.z*Chunk::LENGTH,seed);
+    perlin->GenUniformGrid2D(debugValues,chunk.x*debugSize,chunk.z*debugSize,debugSize,debugSize,1,1,seed);
     glBindTexture(GL_TEXTURE_2D, debugTex);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, Chunk::LENGTH, Chunk::LENGTH, 0, GL_RED, GL_UNSIGNED_BYTE, perlinValues);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, debugSize,debugSize, 0, GL_RED, GL_UNSIGNED_BYTE, debugValues);
     glGenerateMipmap(GL_TEXTURE_2D);
 }
