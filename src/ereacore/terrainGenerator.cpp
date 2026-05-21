@@ -55,6 +55,28 @@ double terrainGenerator::linear2dNoise9(double x, double y) {
     return finalValue;
 }
 
+terrainGenerator::terrainGenerator() {
+    simplex = FastNoise::New<FastNoise::Simplex>();
+    simplex->SetScale(1);
+    fractal = FastNoise::New<FastNoise::FractalFBm>();
+    fractal->SetSource(simplex);
+    fractal->SetOctaveCount(7);
+    fractal->SetGain(.3);
+    remap = FastNoise::New<FastNoise::Remap>();
+    remap->SetSource(fractal);
+    remap->SetFromMin(-1);
+    remap->SetFromMax(1);
+    remap->SetToMin(0);
+    remap->SetToMax(Chunk::LENGTH);
+
+    debugRemap = FastNoise::New<FastNoise::Remap>();
+    debugRemap->SetSource(fractal);
+    debugRemap->SetFromMin(-1);
+    debugRemap->SetFromMax(1);
+    debugRemap->SetToMin(0);
+    debugRemap->SetToMax(1);
+}
+
 void terrainGenerator::generateChunk(Chunk &chunk) {
     if (chunk.y > 1) return;
     if (chunk.y < -1) {
@@ -63,10 +85,7 @@ void terrainGenerator::generateChunk(Chunk &chunk) {
     }
     float perlinValues[Chunk::LENGTH*Chunk::LENGTH];
     const float unitPoses[Chunk::LENGTH] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
-    perlin->SetScale(20);
-    perlin->SetOutputMax(Chunk::LENGTH);
-    perlin->SetOutputMin(0);
-    perlin->GenPositionArray2D(perlinValues,Chunk::LENGTH*Chunk::LENGTH,
+    remap->GenPositionArray2D(perlinValues,Chunk::LENGTH*Chunk::LENGTH,
         unitPoses,unitPoses,
         chunk.x*Chunk::LENGTH,chunk.z*Chunk::LENGTH,seed);
 
@@ -79,11 +98,9 @@ void terrainGenerator::generateChunk(Chunk &chunk) {
             chunk.fillUnits(x,localV-1,z,x+1,localV,z+1,unit);
         }
     }
-    int debugSize = 32;//64;//256;
+    constexpr int debugSize = 32;//64;//256;
     float debugValues[debugSize*debugSize];
-    perlin->SetOutputMax(1);
-    perlin->SetOutputMin(0);
-    perlin->GenUniformGrid2D(debugValues,chunk.x*debugSize,chunk.z*debugSize,debugSize,debugSize,1,1,seed);
+    debugRemap->GenUniformGrid2D(debugValues,chunk.x*debugSize,chunk.z*debugSize,debugSize,debugSize,1,1,seed);
     glBindTexture(GL_TEXTURE_2D, debugTex);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, debugSize,debugSize, 0, GL_RED, GL_UNSIGNED_BYTE, debugValues);
     glGenerateMipmap(GL_TEXTURE_2D);

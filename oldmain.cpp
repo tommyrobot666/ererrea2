@@ -14,10 +14,10 @@
 #endif
 
 const char* defaultVertexShaderSource = {
-    #include <shaders/default.vert>
+    0
 };
 const char* defaultFragmentShaderSource = {
-    #include <shaders/default.frag>
+    0
 };
 
 float lastMouseX = GAME_WINDOW_WIDTH/2, lastMouseY = GAME_WINDOW_HEIGHT/2;
@@ -35,6 +35,8 @@ void renderFrame(GLFWwindow *window, unsigned int VAO, unsigned int shaderProgra
 unsigned int setUpShaders();
 
 int main() {
+    std::cout << "SHADER CODE HAS BEEN REMOVED, THIS WILL CRASH";
+
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
