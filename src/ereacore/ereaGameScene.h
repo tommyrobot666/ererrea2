@@ -13,6 +13,7 @@ class ereaGameScene : public Scene {
     unsigned int stoneTexture;
     unsigned int oreTexture;
     // terrainGenerator chunkGenerator;
+    void generateNearbyChunks();
     void interactWithUnits();
     public:
     void load() override;

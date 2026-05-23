@@ -93,6 +93,39 @@ void moveCamera() {
         glfwSetWindowShouldClose(gs.window, true);
 }
 
+void generateChunk(Chunk& chunk) {
+    if (chunk.y > 0) {
+        // just air
+        return;
+    }
+    if (chunk.y < 0) {
+        chunk.fillUnits(0,0,0,16,16,16,Unit::STONE);
+        chunk.fillUnits(0,2,-8,8,7,0,Unit::ORE);
+        return;
+    }
+    // else
+    chunk.fillUnits(0,7,0,16,8,16,Unit::GRASS);
+    chunk.fillUnits(0,5,0,16,7,16,Unit::DIRT);
+    chunk.fillUnits(0,0,0,16,5,16,Unit::STONE);
+    chunk.fillUnits(0,0,0,8,5,8,Unit::ORE);
+}
+
+void ereaGameScene::generateNearbyChunks() {
+    ListUtilVecInt cameraChunkPos = stepGridPos(gs.cameraPos.x,gs.cameraPos.y,gs.cameraPos.z,Chunk::LENGTH);
+    int maxChunkDistance = 2;
+    for (int x = cameraChunkPos.x-maxChunkDistance; x < cameraChunkPos.x+maxChunkDistance; ++x) {
+        for (int y = cameraChunkPos.y-maxChunkDistance; y < cameraChunkPos.y+maxChunkDistance; ++y) {
+            for (int z = cameraChunkPos.z-maxChunkDistance; z < cameraChunkPos.z+maxChunkDistance; ++z) {
+                Chunk* isChunk = Chunk::findChunkOrNone(chunks,x,y,z);
+                if (isChunk != nullptr) continue;
+                chunks.emplace_back(x,y,z);
+                auto& chunk = chunks.back();
+                generateChunk(chunk);
+            }
+        }
+    }
+}
+
 void ereaGameScene::interactWithUnits() {
     ListUtilVecInt cameraChunkPos = stepGridPos(gs.cameraPos.x,gs.cameraPos.y,gs.cameraPos.z,Chunk::LENGTH);
     int maxChunkDistance = 2;
@@ -124,6 +157,7 @@ void ereaGameScene::interactWithUnits() {
 
 void ereaGameScene::simulate() {
     moveCamera();
+    generateNearbyChunks();
     interactWithUnits();
 }
 
@@ -136,7 +170,7 @@ void ereaGameScene::render() {
     for (auto& chunk : chunks) {
         if (dist(ListUtilVec{static_cast<double>(cameraChunkPos.x-chunk.x),
             static_cast<double>(cameraChunkPos.y-chunk.y),
-            static_cast<double>(cameraChunkPos.z-chunk.z)}) > 3) continue;
+            static_cast<double>(cameraChunkPos.z-chunk.z)}) > 1) continue;
 
         glm::mat4 chunkOffset = glm::translate(glm::mat4(1.0f),glm::vec3(chunk.x*Chunk::LENGTH,chunk.y*Chunk::LENGTH,chunk.z*Chunk::LENGTH));
 
