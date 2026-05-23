@@ -127,31 +127,61 @@ void ereaGameScene::generateNearbyChunks() {
 }
 
 void ereaGameScene::interactWithUnits() {
-    ListUtilVecInt cameraChunkPos = stepGridPos(gs.cameraPos.x,gs.cameraPos.y,gs.cameraPos.z,Chunk::LENGTH);
-    int maxChunkDistance = 2;
-    for (int x = cameraChunkPos.x-maxChunkDistance; x < cameraChunkPos.x+maxChunkDistance; ++x) {
-        for (int y = cameraChunkPos.y-maxChunkDistance; y < cameraChunkPos.y+maxChunkDistance; ++y) {
-            for (int z = cameraChunkPos.z-maxChunkDistance; z < cameraChunkPos.z+maxChunkDistance; ++z) {
-                Chunk* chunk = Chunk::findChunkOrNone(chunks,x,y,z);
-                if (chunk == nullptr) continue;
-                for (int xx = 0; xx < Chunk::LENGTH; ++xx) {
-                    for (int yy = 0; yy < Chunk::LENGTH; ++yy) {
-                        for (int zz = 0; zz < Chunk::LENGTH; ++zz) {
-                            // for every unit in nearby chunks
+    // only works when ray is positive numbers because posToIdx isn't made for negiative nombers
 
-                            if (dist(ListUtilVec{xx+x*Chunk::LENGTH-gs.cameraPos.x,
-                                    yy+y*Chunk::LENGTH-gs.cameraPos.y,
-                                    zz+z*Chunk::LENGTH-gs.cameraPos.z}) < 10) {
-                                if (chunk->units[posToIdx(xx,yy,zz,Chunk::LENGTH)] == Unit::GRASS
-                                    || chunk->units[posToIdx(xx,yy,zz,Chunk::LENGTH)] == Unit::DIRT) {
-                                    chunk->setUnit(xx,yy,zz,Unit::DIRT);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+    int maxChunkDistance = 2;
+    if (glfwGetKey(gs.window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+        auto rayDir = glm::vec{gs.cameraDir};
+        auto rayPos = glm::vec{gs.cameraPos};
+
+        bool isAir = true;
+        while (isAir && length(rayPos-gs.cameraPos) < maxChunkDistance*Chunk::LENGTH) {
+            rayPos += rayDir;
+            Chunk* chunk = Chunk::findChunkOrNone(chunks,
+                rayPos.x/Chunk::LENGTH,rayPos.y/Chunk::LENGTH,rayPos.z/Chunk::LENGTH);
+            if (chunk == nullptr) continue;
+            if (chunk->units[posToIdx(
+                static_cast<int>(abs(rayPos.x))%Chunk::LENGTH,
+                static_cast<int>(abs(rayPos.y))%Chunk::LENGTH,
+                static_cast<int>(abs(rayPos.z))%Chunk::LENGTH,
+                Chunk::LENGTH)] != Unit::NONE) isAir = false;
         }
+
+        Chunk* chunk = Chunk::findChunkOrNone(chunks,
+                rayPos.x/Chunk::LENGTH,rayPos.y/Chunk::LENGTH,rayPos.z/Chunk::LENGTH);
+        if (chunk != nullptr) {
+            chunk->units[posToIdx(
+                static_cast<int>(abs(rayPos.x))%Chunk::LENGTH,
+                static_cast<int>(abs(rayPos.y))%Chunk::LENGTH,
+                static_cast<int>(abs(rayPos.z))%Chunk::LENGTH,
+                Chunk::LENGTH)] = Unit::NONE;
+        }
+    }
+
+    auto rayDir = glm::vec{gs.cameraDir};
+    auto rayPos = glm::vec{gs.cameraPos};
+
+    bool isAir = true;
+    while (isAir && length(rayPos-gs.cameraPos) < maxChunkDistance*Chunk::LENGTH) {
+        rayPos += rayDir;
+        Chunk* chunk = Chunk::findChunkOrNone(chunks,
+            rayPos.x/Chunk::LENGTH,rayPos.y/Chunk::LENGTH,rayPos.z/Chunk::LENGTH);
+        if (chunk == nullptr) continue;
+        if (chunk->units[posToIdx(
+            static_cast<int>(abs(rayPos.x))%Chunk::LENGTH,
+            static_cast<int>(abs(rayPos.y))%Chunk::LENGTH,
+            static_cast<int>(abs(rayPos.z))%Chunk::LENGTH,
+            Chunk::LENGTH)] != Unit::NONE) isAir = false;
+    }
+
+    Chunk* chunk = Chunk::findChunkOrNone(chunks,
+            rayPos.x/Chunk::LENGTH,rayPos.y/Chunk::LENGTH,rayPos.z/Chunk::LENGTH);
+    if (chunk != nullptr) {
+        chunk->units[posToIdx(
+            static_cast<int>(abs(rayPos.x))%Chunk::LENGTH,
+            static_cast<int>(abs(rayPos.y))%Chunk::LENGTH,
+            static_cast<int>(abs(rayPos.z))%Chunk::LENGTH,
+            Chunk::LENGTH)] = Unit::STONE;
     }
 }
 
