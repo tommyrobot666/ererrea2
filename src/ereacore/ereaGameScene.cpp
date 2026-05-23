@@ -7,35 +7,36 @@
 #include <core/gameState.h>
 
 void ereaGameScene::load() {
-    // auto chunk1 = Chunk(0,0,0);
-    // chunk1.fillUnits(0,7,0,16,8,16,Unit::GRASS);
-    // chunk1.fillUnits(0,5,0,16,7,16,Unit::DIRT);
-    // chunk1.fillUnits(0,0,0,16,5,16,Unit::STONE);
-    // chunk1.fillUnits(0,0,0,8,5,8,Unit::ORE);
-    //
-    // chunks.push_back(chunk1);
-    //
-    // chunks.emplace_back(1,0,0);
-    // auto& chunk2 = chunks[1]; // use & instead of *
-    // chunk2.fillUnits(0,7,0,16,8,16,Unit::GRASS);
-    // chunk2.fillUnits(0,5,0,16,7,16,Unit::DIRT);
-    // chunk2.fillUnits(0,0,0,16,5,16,Unit::STONE);
-    // chunk2.fillUnits(0,0,0,8,5,8,Unit::ORE);
-    dirtTexture = Renderer::loadPngTextureNearest("dort.png");
-    chunkGenerator.debugTex = dirtTexture;
-    chunkGenerator.debugtex();
+    auto chunk1 = Chunk(0,0,0);
+    chunk1.fillUnits(0,7,0,16,8,16,Unit::GRASS);
+    chunk1.fillUnits(0,5,0,16,7,16,Unit::DIRT);
+    chunk1.fillUnits(0,0,0,16,5,16,Unit::STONE);
+    chunk1.fillUnits(0,0,0,8,5,8,Unit::ORE);
 
-    chunkGenerator.seed = 123;
+    chunks.push_back(chunk1);
 
-    for (int x = 0; x < 3; x++) {
-        for (int y = 0; y < 1; y++) {
-            for (int z = 0; z < 3; z++) {
-                chunks.emplace_back(x,y,z);
-                auto& chunk = chunks.back();
-                chunkGenerator.generateChunk(chunk);
-            }
-        }
-    }
+    chunks.emplace_back(1,0,0);
+    auto& chunk2 = chunks[1]; // use & instead of *
+    chunk2.fillUnits(0,7,0,16,8,16,Unit::GRASS);
+    chunk2.fillUnits(0,5,0,16,7,16,Unit::DIRT);
+    chunk2.fillUnits(0,0,0,16,5,16,Unit::STONE);
+    chunk2.fillUnits(0,0,0,8,5,8,Unit::ORE);
+    // dirtTexture = Renderer::loadPngTextureNearest("dort.png");
+
+    // chunkGenerator.debugTex = dirtTexture;
+    // chunkGenerator.debugtex();
+    //
+    // chunkGenerator.seed = 123;
+    //
+    // for (int x = 0; x < 3; x++) {
+    //     for (int y = 0; y < 1; y++) {
+    //         for (int z = 0; z < 3; z++) {
+    //             chunks.emplace_back(x,y,z);
+    //             auto& chunk = chunks.back();
+    //             chunkGenerator.generateChunk(chunk);
+    //         }
+    //     }
+    // }
 
 
     float* vertices = vertexObjectGenerators::cube::vertices();
@@ -51,7 +52,7 @@ void ereaGameScene::load() {
 
     grassTexture = Renderer::loadPngTexture("grass.png");
     Renderer::textureDrawingNearest(); // texture settings only apply to bound texture
-    // dirtTexture = Renderer::loadPngTextureNearest("dort.png");
+    dirtTexture = Renderer::loadPngTextureNearest("dort.png");
     stoneTexture = Renderer::loadPngTextureNearest("stone.png");
     oreTexture = Renderer::loadPngTextureNearest("ore.png");
 
