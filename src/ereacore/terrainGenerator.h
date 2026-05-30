@@ -17,6 +17,7 @@ class terrainGenerator {
     int seed = 0;
     terrainGenerator();
     void debugtex();
+    void generateNearbyChunks(std::vector<Chunk>& chunks);
     void generateChunk(Chunk& chunk);
     int debugTex;
 };
