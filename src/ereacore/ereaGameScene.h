@@ -4,14 +4,11 @@
 #include <core/renderer.h>
 #include <ereacore/chunk.h>
 // #include <ereacore/terrainGenerator.h>
+#include <ereacore/BlockRenderer.h>
 
 class ereaGameScene : public Scene {
     std::vector<Chunk> chunks;
-    VertexObject* cubeModel;
-    unsigned int grassTexture;
-    unsigned int dirtTexture;
-    unsigned int stoneTexture;
-    unsigned int oreTexture;
+    BlockRenderer blockRenderer = {};
     // terrainGenerator chunkGenerator;
     void generateNearbyChunks();
     void interactWithUnits();
