@@ -1,5 +1,4 @@
-#ifndef G_GAME_STATE_H // next header, just use #pragma once instead
-#define G_GAME_STATE_H
+#pragma once
 
 #include <GLFW/glfw3.h>
 
@@ -8,16 +7,13 @@
 #include <core/scene.h>
 #include <core/renderer.h>
 
-#define GAME_WINDOW_WIDTH 800
-#define GAME_WINDOW_HEIGHT 600
-
 
 class GameState {
-    bool initCalled = false; // for debuging
     Scene *nextScene = nullptr;
 public:
+    double gameWindowWidth = 800, gameWindowHeight = 600;
     GLFWwindow *window = nullptr;
-    double lastMouseX = GAME_WINDOW_WIDTH / 2, lastMouseY = GAME_WINDOW_HEIGHT / 2;
+    double lastMouseX = gameWindowWidth / 2, lastMouseY = gameWindowHeight / 2;
     double mouseVelX = 0, mouseVelY = 0;
     glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 cameraDir = glm::normalize(cameraPos - glm::vec3(0.0f, 0.0f, 1.0f));
@@ -53,5 +49,3 @@ public:
 };
 
 extern GameState gs;
-
-#endif

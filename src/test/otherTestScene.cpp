@@ -107,8 +107,8 @@ void renderFrame(VertexObject& VO, unsigned int texture, glm::vec3 cubePositions
 
 
 void OtherTestScene::load() {
-    this->VO = Renderer::createVertexObject(vertexObjectGenerators::basicCube::vertices(),{},
-        vertexObjectGenerators::basicCube::verticesSize()*vertexObjectGenerators::SizeOfVertex,0);
+    this->VO = new VertexObject(Renderer::createVertexObject(vertexObjectGenerators::basicCube::vertices(),{},
+        vertexObjectGenerators::basicCube::verticesSize()*vertexObjectGenerators::SizeOfVertex,0));
     this->texture = Renderer::loadPngTexture("smile.png");
 
     gs.cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);

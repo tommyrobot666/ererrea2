@@ -14,6 +14,8 @@ public:
 
     VertexObject(unsigned int VAO, unsigned int VBO, unsigned int EBO, unsigned int vertices, unsigned int triangles);
 
+    VertexObject();
+
     ~VertexObject();
 
     void currentBind();
@@ -33,7 +35,7 @@ public:
 
     static unsigned int setUpShaders();
 
-    static VertexObject* createVertexObject(float vertices[], unsigned int indices[], unsigned int sizeOfVertices,
+    static VertexObject createVertexObject(float vertices[], unsigned int indices[], unsigned int sizeOfVertices,
                                           unsigned int sizeOfIndices);
 
     void setShaderTransform(glm::mat4 *trans) const;

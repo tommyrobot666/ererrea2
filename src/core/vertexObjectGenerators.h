@@ -18,9 +18,7 @@ namespace vertexObjectGenerators {
 
     namespace quad {
         int *indices();
-
         float *vertices();
-
         int size();
     }
 }

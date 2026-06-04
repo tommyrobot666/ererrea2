@@ -4,11 +4,10 @@
 #include <core/gameState.h>
 
 void ereaGameScene::load() {
-    // chunkGenerator.debugTex = dirtTexture;
-    // chunkGenerator.debugtex();
     chunkGenerator.seed = 123;
 
-    blockRenderer.load();
+    unitRenderer.load();
+    // chunkGenerator.debugtex(unitRenderer.dirtTexture);
 
     gs.cameraPos = glm::vec3(0,9,0);
 }
@@ -22,13 +21,10 @@ void ereaGameScene::simulate() {
 void ereaGameScene::render() {
     Renderer::clear(1.0f,1.0f,1.0f,1.0f);
 
-    glm::mat4 proj = glm::perspective(glm::radians(70.0f), (float)GAME_WINDOW_WIDTH/(float)GAME_WINDOW_HEIGHT, 0.1f, 100.0f);
+    glm::mat4 proj = glm::perspective(glm::radians(70.0f), (float)gs.gameWindowWidth/(float)gs.gameWindowHeight, 0.1f, 100.0f);
 
-    blockRenderer.render(chunks, proj);
+    unitRenderer.render(chunks, proj);
 }
 
-void ereaGameScene::close() {
-    // delete(chunks);
-    blockRenderer.close();
-}
+void ereaGameScene::close() {}
 

@@ -1,4 +1,4 @@
-#include <ereacore/BlockRenderer.h>
+#include <ereacore/UnitRenderer.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -10,9 +10,16 @@
 
 #include <ereacore/chunk.h>
 
-void BlockRenderer::render(std::vector<Chunk>& chunks, glm::mat4& proj) {
+UnitRenderer::~UnitRenderer() {
+    Renderer::freeTexture(grassTexture);
+    Renderer::freeTexture(dirtTexture);
+    Renderer::freeTexture(stoneTexture);
+    Renderer::freeTexture(oreTexture);
+}
+
+void UnitRenderer::render(std::vector<Chunk>& chunks, glm::mat4& proj) {
     gs.r().defaultShader();
-    cubeModel->currentBind();
+    cubeModel.currentBind();
 
     ListUtilVecInt cameraChunkPos = stepGridPos(gs.cameraPos.x,gs.cameraPos.y,gs.cameraPos.z,Chunk::LENGTH);
     for (auto& chunk : chunks) {
@@ -51,14 +58,16 @@ void BlockRenderer::render(std::vector<Chunk>& chunks, glm::mat4& proj) {
                     glm::mat4 trans = glm::translate(glm::mat4(1.0f),glm::vec3(x,y,z));
                     trans = proj*gs.view*trans*chunkOffset;
                     gs.r().setShaderTransform(&trans);
-                    cubeModel->draw();
+                    cubeModel.draw();
                 }
             }
         }
     }
 }
 
-void BlockRenderer::load() {
+void UnitRenderer::load() {
+    assert(!loaded);
+
     float* vertices = vertexObjectGenerators::cube::vertices();
     int *indices = vertexObjectGenerators::cube::indices();
     cubeModel = Renderer::createVertexObject(
@@ -75,12 +84,6 @@ void BlockRenderer::load() {
     dirtTexture = Renderer::loadPngTextureNearest("dort.png");
     stoneTexture = Renderer::loadPngTextureNearest("stone.png");
     oreTexture = Renderer::loadPngTextureNearest("ore.png");
-}
 
-void BlockRenderer::close() {
-    delete(cubeModel);
-    Renderer::freeTexture(grassTexture);
-    Renderer::freeTexture(dirtTexture);
-    Renderer::freeTexture(stoneTexture);
-    Renderer::freeTexture(oreTexture);
+    loaded = true;
 }

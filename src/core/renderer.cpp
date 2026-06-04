@@ -16,13 +16,9 @@
 
 
 VertexObject::VertexObject(unsigned int VAO, unsigned int VBO, unsigned int EBO, unsigned int vertices,
-                           unsigned int triangles) {
-    this->VAO = VAO;
-    this->VBO = VBO;
-    this->EBO = EBO;
-    this->vertices = vertices;
-    this->triangles = triangles;
-}
+                           unsigned int triangles) : VAO(VAO), VBO(VBO), EBO(EBO), vertices(vertices), triangles(triangles) {}
+
+VertexObject::VertexObject() : VAO(-1), VBO(-1), EBO(-1), vertices(0), triangles(0) {}
 
 VertexObject::~VertexObject() {
     glDeleteVertexArrays(1, &VAO);
@@ -127,7 +123,7 @@ Renderer::Renderer() {
     glEnable(GL_DEPTH_TEST);
 }
 
-VertexObject* Renderer::createVertexObject(float vertices[], unsigned int indices[], unsigned int sizeOfVertices,
+VertexObject Renderer::createVertexObject(float vertices[], unsigned int indices[], unsigned int sizeOfVertices,
                                           unsigned int sizeOfIndices) {
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);
@@ -156,7 +152,7 @@ VertexObject* Renderer::createVertexObject(float vertices[], unsigned int indice
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
-    return new VertexObject(VAO, VBO, EBO, sizeOfIndices/sizeof(int), sizeOfVertices/vertexObjectGenerators::SizeOfVertex);
+    return {VAO, VBO, EBO, static_cast<unsigned int>(sizeOfIndices/sizeof(int)), sizeOfVertices/vertexObjectGenerators::SizeOfVertex};
 }
 
 void Renderer::setShaderTransform(glm::mat4 *trans) const {

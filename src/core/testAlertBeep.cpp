@@ -1,4 +1,3 @@
-#include <cstdlib>
 #include <core/testAlertBeep.h>
 // Source - https://stackoverflow.com/a/42963277
 // Posted by ndrewxie
@@ -6,17 +5,17 @@
 
 #ifdef WINDOWS
 #include <Windows.h>
-void beep() {
+void debug::beep() {
     Beep(440, 1000);
 }
 #elif LINUX
 #include <cstdlib>
-void beep() {
+void debug::beep() {
     std::system("echo -e "\007" >/dev/tty10");
 }
 #else
 #include <iostream>
-void beep() {
+void debug::beep() {
     std::cout << "\a" << std::flush;
 }
 #endif

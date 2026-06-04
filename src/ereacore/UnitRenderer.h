@@ -4,14 +4,16 @@
 #include <core/renderer.h>
 #include <ereacore/chunk.h>
 
-class BlockRenderer {
+class UnitRenderer {
 public:
-    VertexObject* cubeModel;
+    VertexObject cubeModel;
     unsigned int grassTexture;
     unsigned int dirtTexture;
     unsigned int stoneTexture;
     unsigned int oreTexture;
+    bool loaded = false;
+    UnitRenderer() : grassTexture(), dirtTexture(), stoneTexture(), oreTexture() {};
+    ~UnitRenderer();
     void render(std::vector<Chunk>& chunks, glm::mat4& proj);
     void load();
-    void close();
 };

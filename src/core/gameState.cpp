@@ -6,13 +6,9 @@
 
 #include <core/gameState.h>
 
-#define GAME_WINDOW_WIDTH 800
-#define GAME_WINDOW_HEIGHT 600
-
 void GameState::initGameState(GLFWwindow *window,Renderer *pointerToRenderer) {
     this->window = window;
     this->pointerToRenderer = pointerToRenderer;
-    initCalled = true;
 }
 
 void GameState::mouseCallback(GLFWwindow *window, double xpos, double ypos) {
@@ -43,10 +39,10 @@ void GameState::onFrameEnd() {
     lastFrameTime = glfwGetTime();
 
     if (switchingScene) {
-        currentScene->close();
+        currentScene->tryClose();
         delete(currentScene);
         currentScene = nextScene;
-        currentScene->load();
+        currentScene->tryLoad();
         nextScene = nullptr;
         switchingScene = false;
     }
@@ -59,7 +55,7 @@ void GameState::switchScene(Scene* newNextScene) {
     } else {
         // when the games just started, no scene
         currentScene = newNextScene;
-        currentScene->load();
+        currentScene->tryLoad();
     }
 }
 

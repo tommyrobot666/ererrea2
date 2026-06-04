@@ -3,12 +3,12 @@
 #include <core/scene.h>
 #include <ereacore/chunk.h>
 #include <ereacore/terrainGenerator.h>
-#include <ereacore/BlockRenderer.h>
+#include <ereacore/UnitRenderer.h>
 #include <ereacore/PlayerWorldInteraction.h>
 
 class ereaGameScene : public Scene {
     std::vector<Chunk> chunks;
-    BlockRenderer blockRenderer = {};
+    UnitRenderer unitRenderer;
     terrainGenerator chunkGenerator;
     PlayerWorldInteraction playerWorldInteraction;
     public:
