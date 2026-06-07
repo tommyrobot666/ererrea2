@@ -12,6 +12,7 @@ class ereaGameScene : public Scene {
     terrainGenerator chunkGenerator;
     PlayerWorldInteraction playerWorldInteraction;
     public:
+    ~ereaGameScene() override = default;
     void load() override;
     void simulate() override;
     void render() override;

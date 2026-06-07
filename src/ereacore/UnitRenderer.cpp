@@ -19,7 +19,7 @@ UnitRenderer::~UnitRenderer() {
 
 void UnitRenderer::render(std::vector<Chunk>& chunks, glm::mat4& proj) {
     gs.r().defaultShader();
-    cubeModel.currentBind();
+    cubeModel->currentBind();
 
     ListUtilVecInt cameraChunkPos = stepGridPos(gs.cameraPos.x,gs.cameraPos.y,gs.cameraPos.z,Chunk::LENGTH);
     for (auto& chunk : chunks) {
@@ -58,7 +58,7 @@ void UnitRenderer::render(std::vector<Chunk>& chunks, glm::mat4& proj) {
                     glm::mat4 trans = glm::translate(glm::mat4(1.0f),glm::vec3(x,y,z));
                     trans = proj*gs.view*trans*chunkOffset;
                     gs.r().setShaderTransform(&trans);
-                    cubeModel.draw();
+                    cubeModel->draw();
                 }
             }
         }

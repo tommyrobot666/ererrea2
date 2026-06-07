@@ -123,7 +123,7 @@ Renderer::Renderer() {
     glEnable(GL_DEPTH_TEST);
 }
 
-VertexObject Renderer::createVertexObject(float vertices[], unsigned int indices[], unsigned int sizeOfVertices,
+VertexObject* Renderer::createVertexObject(float vertices[], unsigned int indices[], unsigned int sizeOfVertices,
                                           unsigned int sizeOfIndices) {
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);
@@ -152,7 +152,7 @@ VertexObject Renderer::createVertexObject(float vertices[], unsigned int indices
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
-    return {VAO, VBO, EBO, static_cast<unsigned int>(sizeOfIndices/sizeof(int)), sizeOfVertices/vertexObjectGenerators::SizeOfVertex};
+    return new VertexObject{VAO, VBO, EBO, static_cast<unsigned int>(sizeOfIndices/sizeof(int)), sizeOfVertices/vertexObjectGenerators::SizeOfVertex};
 }
 
 void Renderer::setShaderTransform(glm::mat4 *trans) const {

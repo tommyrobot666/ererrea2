@@ -9,7 +9,7 @@ class Scene {
     virtual void load() {}
 
 public:
-    virtual ~Scene();
+    virtual ~Scene() = default;
 
     // It's the opposite of tryLoad?
     void tryClose() {
