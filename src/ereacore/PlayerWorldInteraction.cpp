@@ -38,59 +38,31 @@ void PlayerWorldInteraction::moveCamera() {
 
 void PlayerWorldInteraction::interactWithUnits(std::vector<Chunk>& chunks) {
     // only works when ray is positive numbers because posToIdx isn't made for negiative nombers
+    auto lookAtUnitPos = rayCast(chunks,gs.cameraDir,gs.cameraPos,2);
 
     int maxChunkDistance = 2;
     if (glfwGetKey(gs.window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-        auto rayDir = glm::vec{gs.cameraDir};
-        auto rayPos = glm::vec{gs.cameraPos};
-
-        bool isAir = true;
-        while (isAir && length(rayPos-gs.cameraPos) < maxChunkDistance*Chunk::LENGTH) {
-            rayPos += rayDir;
-            Chunk* chunk = Chunk::findChunkOrNone(chunks,
-                rayPos.x/Chunk::LENGTH,rayPos.y/Chunk::LENGTH,rayPos.z/Chunk::LENGTH);
-            if (chunk == nullptr) continue;
-            if (chunk->units[posToIdx(
-                static_cast<int>(abs(rayPos.x))%Chunk::LENGTH,
-                static_cast<int>(abs(rayPos.y))%Chunk::LENGTH,
-                static_cast<int>(abs(rayPos.z))%Chunk::LENGTH,
-                Chunk::LENGTH)] != Unit::NONE) isAir = false;
-        }
-
-        Chunk* chunk = Chunk::findChunkOrNone(chunks,
-                rayPos.x/Chunk::LENGTH,rayPos.y/Chunk::LENGTH,rayPos.z/Chunk::LENGTH);
-        if (chunk != nullptr) {
-            chunk->units[posToIdx(
-                static_cast<int>(abs(rayPos.x))%Chunk::LENGTH,
-                static_cast<int>(abs(rayPos.y))%Chunk::LENGTH,
-                static_cast<int>(abs(rayPos.z))%Chunk::LENGTH,
-                Chunk::LENGTH)] = Unit::NONE;
-        }
+        Chunk::setUnitAtGlobalPos(Unit::NONE,chunks,lookAtUnitPos.x,lookAtUnitPos.y,lookAtUnitPos.z);
+    } else {
+        if (Chunk::getUnitAtGlobalPos(chunks,lookAtUnitPos.x,lookAtUnitPos.y,lookAtUnitPos.z) != Unit::ORE)
+        Chunk::setUnitAtGlobalPos(Unit::STONE,chunks,lookAtUnitPos.x,lookAtUnitPos.y,lookAtUnitPos.z);
     }
 
-    auto rayDir = glm::vec{gs.cameraDir};
-    auto rayPos = glm::vec{gs.cameraPos};
+    if (glfwGetKey(gs.window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS) {
+        auto lookAtUnitFrontPos = ListUtilVecInt{
+                lookAtUnitPos.x-static_cast<int>(gs.cameraDir.x),
+                lookAtUnitPos.y-static_cast<int>(gs.cameraDir.y),
+                lookAtUnitPos.z-static_cast<int>(gs.cameraDir.z)};
+        Chunk::setUnitAtGlobalPos(Unit::ORE,chunks,lookAtUnitFrontPos.x,lookAtUnitFrontPos.y,lookAtUnitFrontPos.z);
+    }
+}
 
+ListUtilVecInt PlayerWorldInteraction::rayCast(std::vector<Chunk> &chunks, glm::vec3 &rayDir, glm::vec3 &rayStartPos, int maxChunkDistance) {
     bool isAir = true;
-    while (isAir && length(rayPos-gs.cameraPos) < maxChunkDistance*Chunk::LENGTH) {
+    glm::vec3 rayPos = glm::vec{rayStartPos};
+    while (isAir && length(rayPos-rayStartPos) < static_cast<float>(maxChunkDistance)*Chunk::LENGTH) {
         rayPos += rayDir;
-        Chunk* chunk = Chunk::findChunkOrNone(chunks,
-            rayPos.x/Chunk::LENGTH,rayPos.y/Chunk::LENGTH,rayPos.z/Chunk::LENGTH);
-        if (chunk == nullptr) continue;
-        if (chunk->units[posToIdx(
-            static_cast<int>(abs(rayPos.x))%Chunk::LENGTH,
-            static_cast<int>(abs(rayPos.y))%Chunk::LENGTH,
-            static_cast<int>(abs(rayPos.z))%Chunk::LENGTH,
-            Chunk::LENGTH)] != Unit::NONE) isAir = false;
+        if (Chunk::getUnitAtGlobalPos(chunks,rayPos.x,rayPos.y,rayPos.z) != Unit::NONE) isAir = false;
     }
-
-    Chunk* chunk = Chunk::findChunkOrNone(chunks,
-            rayPos.x/Chunk::LENGTH,rayPos.y/Chunk::LENGTH,rayPos.z/Chunk::LENGTH);
-    if (chunk != nullptr) {
-        chunk->units[posToIdx(
-            static_cast<int>(abs(rayPos.x))%Chunk::LENGTH,
-            static_cast<int>(abs(rayPos.y))%Chunk::LENGTH,
-            static_cast<int>(abs(rayPos.z))%Chunk::LENGTH,
-            Chunk::LENGTH)] = Unit::STONE;
-    }
+    return {static_cast<int>(rayPos.x),static_cast<int>(rayPos.y),static_cast<int>(rayPos.z)};
 }

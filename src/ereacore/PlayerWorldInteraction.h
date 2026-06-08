@@ -2,9 +2,12 @@
 
 #include <vector>
 #include <ereacore/chunk.h>
+#include <glm/vec3.hpp>
+#include <3dListUtil.h>
 
 class PlayerWorldInteraction {
     public:
     void moveCamera();
     void interactWithUnits(std::vector<Chunk>& chunks);
+    static ListUtilVecInt rayCast(std::vector<Chunk>& chunks, glm::vec3& rayDir, glm::vec3& rayStartPos, int maxChunkDistance);
 };

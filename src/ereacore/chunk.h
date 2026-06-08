@@ -15,5 +15,11 @@ class Chunk {
 
     void fillUnits(int x1,int y1,int z1,int x2,int y2,int z2,Unit unit);
 
+    Unit getUnit(int x,int y,int z);
+
     static Chunk* findChunkOrNone(std::vector<Chunk>& chunks, int x, int y, int z);
+
+    static Unit getUnitAtGlobalPos(std::vector<Chunk>& chunks, int x, int y, int z);
+
+    static void setUnitAtGlobalPos(Unit unit, std::vector<Chunk>& chunks, int x, int y, int z);
 };

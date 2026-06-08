@@ -17,6 +17,10 @@ void Chunk::fillUnits(int x1, int y1, int z1, int x2, int y2, int z2,Unit unit) 
     }
 }
 
+Unit Chunk::getUnit(int x, int y, int z) {
+    return units[posToIdx(x,y,z,LENGTH)];
+}
+
 Chunk* Chunk::findChunkOrNone(std::vector<Chunk>& chunks, int x, int y, int z) {
     for (auto & chunk : chunks) {
         if (chunk.x == x && chunk.y == y && chunk.z == z) {
@@ -24,5 +28,26 @@ Chunk* Chunk::findChunkOrNone(std::vector<Chunk>& chunks, int x, int y, int z) {
         }
     }
     return nullptr;
+}
+
+/// Returns air if chunk doesn't exist
+Unit Chunk::getUnitAtGlobalPos(std::vector<Chunk> &chunks, int x, int y, int z) {
+    auto chunkPos = stepGridPos(x,y,z,LENGTH);
+    int localPosX = x-chunkPos.x*LENGTH, localPosY = y-chunkPos.y*LENGTH, localPosZ = z-chunkPos.z*LENGTH;
+    auto chunk = findChunkOrNone(chunks,chunkPos.x, chunkPos.y, chunkPos.z);
+    if (chunk) {
+        return chunk->getUnit(localPosX, localPosY, localPosZ);
+    }
+    return Unit::NONE;
+}
+
+/// Does nothing if chunk doesn't exist
+void Chunk::setUnitAtGlobalPos(Unit unit, std::vector<Chunk> &chunks, int x, int y, int z) {
+    auto chunkPos = stepGridPos(x,y,z,LENGTH);
+    int localPosX = x-chunkPos.x*LENGTH, localPosY = y-chunkPos.y*LENGTH, localPosZ = z-chunkPos.z*LENGTH;
+    auto chunk = findChunkOrNone(chunks,chunkPos.x, chunkPos.y, chunkPos.z);
+    if (chunk) {
+        chunk->setUnit(localPosX, localPosY, localPosZ,unit);
+    }
 }
 
