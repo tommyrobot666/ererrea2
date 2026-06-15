@@ -37,10 +37,8 @@ void PlayerWorldInteraction::moveCamera() {
 }
 
 void PlayerWorldInteraction::interactWithUnits(std::vector<Chunk>& chunks) {
-    // only works when ray is positive numbers because posToIdx isn't made for negiative nombers
     auto lookAtUnitPos = rayCast(chunks,gs.cameraDir,gs.cameraPos,2);
 
-    int maxChunkDistance = 2;
     if (glfwGetKey(gs.window, GLFW_KEY_SPACE) == GLFW_PRESS) {
         Chunk::setUnitAtGlobalPos(Unit::NONE,chunks,lookAtUnitPos.x,lookAtUnitPos.y,lookAtUnitPos.z);
     } else {

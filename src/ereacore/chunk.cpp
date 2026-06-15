@@ -1,5 +1,23 @@
 #include <ereacore/chunk.h>
 #include <3dListUtil.h>
+#include <iostream>
+
+
+void Chunk::globalPosHandleNegatives(ListUtilVecInt &chunkPos, int &localPosX, int &localPosY, int &localPosZ) {
+    if (localPosX < 0) {
+        chunkPos.x--;
+        localPosX = LENGTH+localPosX+1;
+    }
+    if (localPosY < 0) {
+        chunkPos.y--;
+        localPosY = LENGTH+localPosY+1;
+    }
+    if (localPosZ < 0) {
+        chunkPos.z--;
+        localPosZ = LENGTH+localPosZ+1;
+    }
+    // std::cout << chunkPos.x << "," << chunkPos.y << "," << chunkPos.z << ":" << localPosX << "," << localPosY << "," << localPosZ << "\n";
+}
 
 Chunk::Chunk(const int x, const int y, const int z) : x(x), y(y), z(z) {}
 
@@ -34,6 +52,8 @@ Chunk* Chunk::findChunkOrNone(std::vector<Chunk>& chunks, int x, int y, int z) {
 Unit Chunk::getUnitAtGlobalPos(std::vector<Chunk> &chunks, int x, int y, int z) {
     auto chunkPos = stepGridPos(x,y,z,LENGTH);
     int localPosX = x-chunkPos.x*LENGTH, localPosY = y-chunkPos.y*LENGTH, localPosZ = z-chunkPos.z*LENGTH;
+    globalPosHandleNegatives(chunkPos,localPosX,localPosY,localPosZ);
+    // std::cout << chunkPos.x << "," << chunkPos.y << "," << chunkPos.z << ":" << localPosX << "," << localPosY << "," << localPosZ << "\n";
     auto chunk = findChunkOrNone(chunks,chunkPos.x, chunkPos.y, chunkPos.z);
     if (chunk) {
         return chunk->getUnit(localPosX, localPosY, localPosZ);
@@ -45,6 +65,7 @@ Unit Chunk::getUnitAtGlobalPos(std::vector<Chunk> &chunks, int x, int y, int z) 
 void Chunk::setUnitAtGlobalPos(Unit unit, std::vector<Chunk> &chunks, int x, int y, int z) {
     auto chunkPos = stepGridPos(x,y,z,LENGTH);
     int localPosX = x-chunkPos.x*LENGTH, localPosY = y-chunkPos.y*LENGTH, localPosZ = z-chunkPos.z*LENGTH;
+    globalPosHandleNegatives(chunkPos,localPosX,localPosY,localPosZ);
     auto chunk = findChunkOrNone(chunks,chunkPos.x, chunkPos.y, chunkPos.z);
     if (chunk) {
         chunk->setUnit(localPosX, localPosY, localPosZ,unit);

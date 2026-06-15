@@ -2,8 +2,11 @@
 
 #include <vector>
 #include <ereacore/unit.h>
+#include <3dListUtil.h>
 
 class Chunk {
+    static void globalPosHandleNegatives(ListUtilVecInt &chunkPos, int &localPosX, int &localPosY, int &localPosZ);
+
     public:
     static constexpr int LENGTH = 16;
     const int x,y,z;
