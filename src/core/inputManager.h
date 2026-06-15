@@ -6,7 +6,9 @@
 class Keybind {
     public:
     std::set<int> keys;
-    Keybind() {};
+    Keybind() {}
+
+    Keybind(int key);
     Keybind(int* keys, int len);
 };
 
@@ -26,4 +28,5 @@ class InputManager {
     int getLastScancode();
     bool isKeyPressed(int key);
     bool isKeyReleased(int key);
+    bool excape();
 };

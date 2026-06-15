@@ -71,6 +71,7 @@ int main() {
     gs.initGameState(window,coreRenderer);
 
     glfwSetCursorPosCallback(window, GameState::mouseCallback);
+    glfwSetKeyCallback(window, InputManager::keyCallback);
 
     auto *test = new ereaGameScene(); // the new keyword does exist and makes it on the heap
     gs.switchScene(test);

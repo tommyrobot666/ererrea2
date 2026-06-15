@@ -5,35 +5,40 @@
 #include <3dListUtil.h>
 #include <core/gameState.h>
 #include <ereacore/chunk.h>
+#include <ereacore/keybinds.h>
 
 void PlayerWorldInteraction::moveCamera() {
     float sprint = 1.0f;
-    if (glfwGetKey(gs.window, GLFW_KEY_LEFT_SHIFT))
+    if (gs.input->isPressed(keybinds.sprint))
         sprint = 68.0f;
 
+    // if (gs.input->isPressed(keybinds.left))
     if (glfwGetKey(gs.window, GLFW_KEY_LEFT) == GLFW_PRESS)
         gs.yaw -= 1.3f*gs.deltaTime*sprint;
+    // if (gs.input->isPressed(keybinds.right))
     if (glfwGetKey(gs.window, GLFW_KEY_RIGHT) == GLFW_PRESS)
         gs.yaw += 1.3f*gs.deltaTime*sprint;
+    // if (gs.input->isPressed(keybinds.down))
     if (glfwGetKey(gs.window, GLFW_KEY_DOWN) == GLFW_PRESS)
         gs.pitch -= 1.3f*gs.deltaTime*sprint;
+    // if (gs.input->isPressed(keybinds.up))
     if (glfwGetKey(gs.window, GLFW_KEY_UP) == GLFW_PRESS)
         gs.pitch += 1.3f*gs.deltaTime*sprint;
 
-    if (glfwGetKey(gs.window, GLFW_KEY_W) == GLFW_PRESS)
+    if (gs.input->isPressed(keybinds.posZ))
         gs.cameraPos.z += 2.7f*gs.deltaTime*sprint;
-    if (glfwGetKey(gs.window, GLFW_KEY_S) == GLFW_PRESS)
+    if (gs.input->isPressed(keybinds.negZ))
         gs.cameraPos.z -= 2.7f*gs.deltaTime*sprint;
-    if (glfwGetKey(gs.window, GLFW_KEY_A) == GLFW_PRESS)
+    if (gs.input->isPressed(keybinds.posX))
         gs.cameraPos.x -= 2.7f*gs.deltaTime*sprint;
-    if (glfwGetKey(gs.window, GLFW_KEY_D) == GLFW_PRESS)
+    if (gs.input->isPressed(keybinds.negX))
         gs.cameraPos.x += 2.7f*gs.deltaTime*sprint;
-    if (glfwGetKey(gs.window, GLFW_KEY_Q) == GLFW_PRESS)
+    if (gs.input->isPressed(keybinds.posY))
         gs.cameraPos.y -= 2.7f*gs.deltaTime*sprint;
-    if (glfwGetKey(gs.window, GLFW_KEY_E) == GLFW_PRESS)
+    if (gs.input->isPressed(keybinds.negY))
         gs.cameraPos.y += 2.7f*gs.deltaTime*sprint;
 
-    if(glfwGetKey(gs.window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    if(gs.input->excape())
         glfwSetWindowShouldClose(gs.window, true);
 }
 
@@ -43,14 +48,14 @@ void PlayerWorldInteraction::interactWithUnits(std::vector<Chunk>& chunks) {
     auto lookAtUnitPos = ListUtilVecInt(*raycastHit);
     delete raycastHit;
 
-    if (glfwGetKey(gs.window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+    if (gs.input->isJustPressed(keybinds.mine)) {
         Chunk::setUnitAtGlobalPos(Unit::NONE,chunks,lookAtUnitPos.x,lookAtUnitPos.y,lookAtUnitPos.z);
     } else {
         if (Chunk::getUnitAtGlobalPos(chunks,lookAtUnitPos.x,lookAtUnitPos.y,lookAtUnitPos.z) != Unit::ORE)
         Chunk::setUnitAtGlobalPos(Unit::STONE,chunks,lookAtUnitPos.x,lookAtUnitPos.y,lookAtUnitPos.z);
     }
 
-    if (glfwGetKey(gs.window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS) {
+    if (gs.input->isJustPressed(keybinds.place)) {
         auto lookAtUnitFrontPos = ListUtilVecInt{
                 lookAtUnitPos.x-static_cast<int>(gs.cameraDir.x),
                 lookAtUnitPos.y-static_cast<int>(gs.cameraDir.y),

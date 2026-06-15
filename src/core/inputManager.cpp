@@ -2,6 +2,10 @@
 #include <core/gameState.h>
 #include <GLFW/glfw3.h>
 
+Keybind::Keybind(int key) {
+    keys.insert(glfwGetKeyScancode(key));
+}
+
 Keybind::Keybind(int *keys, int len) {
     for (int i = 0; i < len; ++i) {
         this->keys.insert(glfwGetKeyScancode(keys[i]));
@@ -68,4 +72,8 @@ bool InputManager::isKeyPressed(int key) {
 
 bool InputManager::isKeyReleased(int key) {
     return glfwGetKey(window, key) == GLFW_RELEASE;
+}
+
+bool InputManager::excape() {
+    return glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS;
 }
