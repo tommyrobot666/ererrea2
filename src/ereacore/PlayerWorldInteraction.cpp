@@ -1,5 +1,6 @@
 #include <ereacore/PlayerWorldInteraction.h>
 
+// #include <iostream>
 #include <GLFW/glfw3.h>
 #include <3dListUtil.h>
 #include <core/gameState.h>
@@ -37,7 +38,10 @@ void PlayerWorldInteraction::moveCamera() {
 }
 
 void PlayerWorldInteraction::interactWithUnits(std::vector<Chunk>& chunks) {
-    auto lookAtUnitPos = rayCast(chunks,gs.cameraDir,gs.cameraPos,2);
+    auto raycastHit = rayCastNullable(chunks,gs.cameraDir,gs.cameraPos,2);
+    if (raycastHit == nullptr) return;
+    auto lookAtUnitPos = ListUtilVecInt(*raycastHit);
+    delete raycastHit;
 
     if (glfwGetKey(gs.window, GLFW_KEY_SPACE) == GLFW_PRESS) {
         Chunk::setUnitAtGlobalPos(Unit::NONE,chunks,lookAtUnitPos.x,lookAtUnitPos.y,lookAtUnitPos.z);
@@ -63,4 +67,19 @@ ListUtilVecInt PlayerWorldInteraction::rayCast(std::vector<Chunk> &chunks, glm::
         if (Chunk::getUnitAtGlobalPos(chunks,rayPos.x,rayPos.y,rayPos.z) != Unit::NONE) isAir = false;
     }
     return {static_cast<int>(rayPos.x),static_cast<int>(rayPos.y),static_cast<int>(rayPos.z)};
+}
+
+// to interpret going till max distance as a "fail"
+ListUtilVecInt* PlayerWorldInteraction::rayCastNullable(std::vector<Chunk> &chunks, glm::vec3 &rayDir,
+    glm::vec3 &rayStartPos, int maxChunkDistance) {
+    auto hit = rayCast(chunks,rayDir,rayStartPos,maxChunkDistance);
+    // std::cout << hit.x << "," << hit.y << "," << hit.z << "\n";
+    // the -1.8 at the end is a margin to prevent what should be a fail being interpreted as a success
+    // 1.8 is a bit more than the distance between the corners of a unit square
+    if (length(glm::vec3(hit.x,hit.y,hit.z)-rayStartPos) >= static_cast<float>(maxChunkDistance)*Chunk::LENGTH-1.8) {
+        // std::cout << "out\n";
+        return nullptr;
+    } else {
+        return new ListUtilVecInt(hit);
+    }
 }
