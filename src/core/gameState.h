@@ -6,6 +6,7 @@
 
 #include <core/scene.h>
 #include <core/renderer.h>
+#include <core/inputManager.h>
 
 
 class GameState {
@@ -23,6 +24,7 @@ public:
     double deltaTime = 0;
     Scene *currentScene = nullptr;
     Renderer *pointerToRenderer = nullptr; // this will be init manualy
+    InputManager *input = nullptr;
     glm::mat4 view = glm::mat4(1.0f);
     bool switchingScene = false; // use this to detect if it's the last frame
 

@@ -9,6 +9,7 @@
 void GameState::initGameState(GLFWwindow *window,Renderer *pointerToRenderer) {
     this->window = window;
     this->pointerToRenderer = pointerToRenderer;
+    this->input = new InputManager(window);
 }
 
 void GameState::mouseCallback(GLFWwindow *window, double xpos, double ypos) {
@@ -37,6 +38,7 @@ void GameState::onFrameEnd() {
     mouseVelX = 0;
     mouseVelY = 0;
     lastFrameTime = glfwGetTime();
+    input->nextFrame();
 
     if (switchingScene) {
         currentScene->tryClose();
