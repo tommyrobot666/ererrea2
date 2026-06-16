@@ -1,3 +1,4 @@
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
@@ -10,6 +11,12 @@ void GameState::initGameState(GLFWwindow *window,Renderer *pointerToRenderer) {
     this->window = window;
     this->pointerToRenderer = pointerToRenderer;
     this->input = new InputManager(window);
+}
+
+void GameState::sizeCallback(GLFWwindow *window, int width, int height) {
+    glViewport(0,0,width,height);
+    gs.gameWindowWidth = width;
+    gs.gameWindowHeight = height;
 }
 
 void GameState::mouseCallback(GLFWwindow *window, double xpos, double ypos) {

@@ -37,6 +37,8 @@ public:
 
     void initGameState(GLFWwindow *window,Renderer *pointerToRenderer);
 
+    static void sizeCallback(GLFWwindow *window, int width, int height);
+
     static void mouseCallback(GLFWwindow *window, double xpos, double ypos);
 
     void onFrameStart();

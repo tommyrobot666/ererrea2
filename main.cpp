@@ -14,9 +14,6 @@
 #include <test/otherTestScene.h>
 #include <ereacore/ereaGameScene.h>
 
-#define GAME_WINDOW_WIDTH 800
-#define GAME_WINDOW_HEIGHT 600
-
 #ifndef RESOURCES_PATH
 #define RESOURCES_PATH
 #endif
@@ -34,13 +31,15 @@ void renderFrame() {
 }
 
 int main() {
+    int gameWindowWidth = 800, gameWindowHeight = 600;
+
     glfwInit();
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true); // enable debug messsages
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // set GLFW to version 4.3
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); // if the version is any lower, the debug causes segfault
 
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    GLFWwindow *window = glfwCreateWindow(GAME_WINDOW_WIDTH, GAME_WINDOW_HEIGHT, "tErerrea2", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(gameWindowWidth, gameWindowHeight, "tErerrea2", NULL, NULL);
     if (window == NULL) {
         std::cout << "Failed to create window\n";
         glfwTerminate();
@@ -53,7 +52,7 @@ int main() {
         std::cout << "Failed to initialize GLAD\n";
         return -1;
     }
-    glViewport(0, 0,GAME_WINDOW_WIDTH,GAME_WINDOW_HEIGHT);
+    glViewport(0, 0,gameWindowWidth,gameWindowHeight);
 
     // copied and paseted
     // from https://learnopengl.com/In-Practice/Debugging
@@ -70,6 +69,7 @@ int main() {
     auto* coreRenderer = new Renderer();
     gs.initGameState(window,coreRenderer);
 
+    glfwSetWindowSizeCallback(window, GameState::sizeCallback);
     glfwSetCursorPosCallback(window, GameState::mouseCallback);
     glfwSetKeyCallback(window, InputManager::keyCallback);
 
