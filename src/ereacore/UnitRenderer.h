@@ -5,9 +5,20 @@
 #include <ereacore/chunk.h>
 
 class UnitRenderer {
-    glm::vec3 unitFaces0[6] = {};
-    glm::vec3 unitFaces1[6] = {};
+    glm::vec3 unitFaces[6] = {};
 public:
+    class Vertex {
+    public:
+        Vertex(glm::vec3 pos,glm::vec2 uv) : pos(pos),uv(uv) {};
+        glm::vec3 pos;
+        glm::vec2 uv;
+
+        bool operator==(const Vertex & value) const {
+            return pos == value.pos && uv == value.uv;
+        };
+    };
+
+
     VertexObject* cubeModel;
     unsigned int grassTexture;
     unsigned int dirtTexture;
@@ -17,15 +28,8 @@ public:
     UnitRenderer() : cubeModel(), grassTexture(), dirtTexture(), stoneTexture(), oreTexture() {};
     ~UnitRenderer();
     void render(std::vector<Chunk>& chunks, glm::mat4& proj);
+    void get_or_add_vertex(std::vector<UnitRenderer::Vertex> vertices, UnitRenderer::Vertex v, int &i);
     VertexObject* generateChunkMesh(Chunk& chunk);
     void generateQuadCache();
     void load();
-
-    class Vertex {
-        public:
-        Vertex(glm::vec3 pos,glm::vec2 uv,glm::vec4 atlas) : pos(pos),uv(uv),atlas(atlas) {};
-        glm::vec3 pos;
-        glm::vec2 uv;
-        glm::vec4 atlas;
-    };
 };

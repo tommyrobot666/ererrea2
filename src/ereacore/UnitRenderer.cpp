@@ -66,6 +66,21 @@ void UnitRenderer::render(std::vector<Chunk>& chunks, glm::mat4& proj) {
     }
 }
 
+void UnitRenderer::get_or_add_vertex(std::vector<UnitRenderer::Vertex> vertices, UnitRenderer::Vertex v, int &i) {
+    bool alreadyExists = false;
+    for (int j = 0; j < vertices.size(); ++j) {
+        auto vertex = vertices[j];
+        if (v == vertex) {
+            alreadyExists = true;
+            i = j;
+        }
+    }
+    if (!alreadyExists) {
+        i = vertices.size();
+        vertices.push_back(v);
+    }
+}
+
 VertexObject* UnitRenderer::generateChunkMesh(Chunk &chunk) {
     std::vector<Vertex> vertices;
     std::vector<int> indices;
@@ -95,44 +110,37 @@ VertexObject* UnitRenderer::generateChunkMesh(Chunk &chunk) {
                 }
 
                 glm::vec3 pos = glm::vec3(x,y,z);
-                int i = -1;
-                for (glm::vec3 direction : Direction::ALL_VEC) {
-                    i++;
+                for (int i = 0; i < 3; i++) {
+                    glm::vec3 direction = Direction::ALL_VEC[i];
                     auto neighbor = pos+direction;
+                    int unitFacesStart = i * vertexObjectGenerators::floatsInVertex * 4;
                     // TODO don't get units out of bounds
                     if (chunk.getUnit(neighbor.x,neighbor.y,neighbor.z) != Unit::NONE) continue;
-                    auto v0 = Vertex{unitFaces0[i],glm::vec2{0,0},atlasCords};
+
+                    auto v0 = Vertex{unitFaces[unitFacesStart],glm::vec2{atlasCords.x,atlasCords.y}};
                     int i0;
-                    bool v0AlreadyExists = false;
-                    for (int j = 0; j < vertices.size(); ++j) {
-                        auto vertex = vertices[j];
-                        if (v0 == vertex) {
-                            v0AlreadyExists = true;
-                            i0 = j;
-                        }
-                    }
-                    if (!v0AlreadyExists) {
-                        i0 = vertices.size();
-                        vertices.push_back(v0);
-                    }
+                    get_or_add_vertex(vertices, v0, i0);
 
-                    auto v1 = Vertex{unitFaces1[i],glm::vec2{1,1},atlasCords};
+                    auto v1 = Vertex{unitFaces[unitFacesStart+vertexObjectGenerators::floatsInVertex],glm::vec2{atlasCords.x,atlasCords.w}};
                     int i1;
-                    bool v1AlreadyExists = false;
-                    for (int j = 0; j < vertices.size(); ++j) {
-                        auto vertex = vertices[j];
-                        if (v1 == vertex) {
-                            v1AlreadyExists = true;
-                            i1 = j;
-                        }
-                    }
-                    if (!v1AlreadyExists) {
-                        i1 = vertices.size();
-                        vertices.push_back(v1);
-                    }
+                    get_or_add_vertex(vertices,v1,i1);
 
+                    auto v2 = Vertex{unitFaces[unitFacesStart+vertexObjectGenerators::floatsInVertex*2],glm::vec2{atlasCords.z,atlasCords.y}};
+                    int i2;
+                    get_or_add_vertex(vertices,v2,i2);
+
+                    auto v3 = Vertex{unitFaces[unitFacesStart+vertexObjectGenerators::floatsInVertex*3],glm::vec2{atlasCords.z,atlasCords.w}};
+                    int i3;
+                    get_or_add_vertex(vertices,v3,i3);
+
+                    //t1
                     indices.push_back(i0);
                     indices.push_back(i1);
+                    indices.push_back(i2);
+                    //t2
+                    indices.push_back(i1);
+                    indices.push_back(i2);
+                    indices.push_back(i3);
                 }
             }
         }
