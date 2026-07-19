@@ -121,7 +121,7 @@ void UnitRenderer::getOrAddVertex(std::vector<UnitRenderer::Vertex> vertices, Un
 
 VertexObject* UnitRenderer::generateChunkMesh(Chunk &chunk) {
     std::vector<Vertex> vertices;
-    std::vector<int> indices;
+    std::vector<unsigned int> indices;
 
     for (int x = 0; x < Chunk::LENGTH; ++x){
         for (int y = 0; y < Chunk::LENGTH; ++y) {
@@ -147,13 +147,14 @@ VertexObject* UnitRenderer::generateChunkMesh(Chunk &chunk) {
                         break;
                 }
 
-                glm::vec3 pos = glm::vec3(x,y,z);
+                glm::ivec3 pos = glm::vec3(x,y,z);
                 for (int i = 0; i < Direction::ALL_SIZE; i++) {
-                    glm::vec3 direction = Direction::ALL_VEC[i];
+                    glm::ivec3 direction = Direction::ALL_VEC[i];
                     auto neighbor = pos+direction;
                     int unitFacesStart = i * 4;
-                    // TODO don't get units out of bounds
-                    if (chunk.getUnit(neighbor.x,neighbor.y,neighbor.z) != Unit::NONE) continue;
+                    if (Chunk::inBounds(neighbor.x,neighbor.y,neighbor.z)) {
+                        if (chunk.getUnit(neighbor.x,neighbor.y,neighbor.z) != Unit::NONE) continue;
+                    }
 
                     auto v0 = Vertex{unitFaces[unitFacesStart],glm::vec2{atlasCords.x,atlasCords.y}};
                     int i0;
@@ -183,6 +184,24 @@ VertexObject* UnitRenderer::generateChunkMesh(Chunk &chunk) {
             }
         }
     }
+
+    std::vector<float> verticesFloats[vertexObjectGenerators::floatsInVertex*vertices.size()];
+    for (Vertex & vertex : vertices) {
+        verticesFloats->push_back(vertex.pos.x);
+        verticesFloats->push_back(vertex.pos.y);
+        verticesFloats->push_back(vertex.pos.z);
+        verticesFloats->push_back(1.f);
+        verticesFloats->push_back(1.f);
+        verticesFloats->push_back(1.f);
+        verticesFloats->push_back(vertex.uv.x);
+        verticesFloats->push_back(vertex.uv.y);
+    }
+
+    return Renderer::createVertexObject(
+        verticesFloats->data(),
+        indices.data(),
+        vertices.size()*vertexObjectGenerators::SizeOfVertex,
+        indices.size()*sizeof(int));
 }
 
 void UnitRenderer::load() {

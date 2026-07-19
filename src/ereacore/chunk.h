@@ -20,6 +20,8 @@ class Chunk {
 
     Unit getUnit(int x,int y,int z);
 
+    static bool inBounds(int x, int y, int z);
+
     static Chunk* findChunkOrNone(std::vector<Chunk>& chunks, int x, int y, int z);
 
     static Unit getUnitAtGlobalPos(std::vector<Chunk>& chunks, int x, int y, int z);

@@ -39,6 +39,10 @@ Unit Chunk::getUnit(int x, int y, int z) {
     return units[posToIdx(x,y,z,LENGTH)];
 }
 
+bool Chunk::inBounds(int x, int y, int z) {
+    return x>=0&&x<LENGTH&&y>=0&&y<LENGTH&&z>=0&&z<LENGTH;
+}
+
 Chunk* Chunk::findChunkOrNone(std::vector<Chunk>& chunks, int x, int y, int z) {
     for (auto & chunk : chunks) {
         if (chunk.x == x && chunk.y == y && chunk.z == z) {
