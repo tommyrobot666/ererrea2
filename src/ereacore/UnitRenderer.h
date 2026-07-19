@@ -5,7 +5,7 @@
 #include <ereacore/chunk.h>
 
 class UnitRenderer {
-    glm::vec3 unitFaces[6] = {};
+    static glm::vec3 unitFaces[6*4];
 public:
     class Vertex {
     public:
@@ -28,8 +28,8 @@ public:
     UnitRenderer() : cubeModel(), grassTexture(), dirtTexture(), stoneTexture(), oreTexture() {};
     ~UnitRenderer();
     void render(std::vector<Chunk>& chunks, glm::mat4& proj);
-    void get_or_add_vertex(std::vector<UnitRenderer::Vertex> vertices, UnitRenderer::Vertex v, int &i);
+    void getOrAddVertex(std::vector<UnitRenderer::Vertex> vertices, UnitRenderer::Vertex v, int &i);
     VertexObject* generateChunkMesh(Chunk& chunk);
-    void generateQuadCache();
+
     void load();
 };

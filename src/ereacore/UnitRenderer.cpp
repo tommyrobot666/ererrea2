@@ -11,6 +11,44 @@
 #include <ereacore/chunk.h>
 #include <ereacore/Direction.h>
 
+glm::vec3 UnitRenderer::unitFaces[] = {
+    // 111 -> 001
+    glm::vec3(1,1,1),
+    glm::vec3(0,1,1),
+    glm::vec3(1,0,1),
+    glm::vec3(0,0,1),
+
+    // 111 -> 010
+    glm::vec3(1,1,1),
+    glm::vec3(0,1,1),
+    glm::vec3(1,1,0),
+    glm::vec3(0,1,0),
+
+    // 111 -> 100
+    glm::vec3(1,1,1),
+    glm::vec3(1,1,0),
+    glm::vec3(1,0,1),
+    glm::vec3(1,0,0),
+
+    // 110 -> 000
+    glm::vec3(1,1,0),
+    glm::vec3(0,1,0),
+    glm::vec3(1,0,0),
+    glm::vec3(0,0,0),
+
+    // 011 -> 000
+    glm::vec3(0,1,1),
+    glm::vec3(0,1,0),
+    glm::vec3(0,0,1),
+    glm::vec3(0,0,0),
+
+    // 101 -> 000
+    glm::vec3(1,0,1),
+    glm::vec3(1,0,0),
+    glm::vec3(0,0,1),
+    glm::vec3(0,0,0),
+};
+
 UnitRenderer::~UnitRenderer() {
     Renderer::freeTexture(grassTexture);
     Renderer::freeTexture(dirtTexture);
@@ -66,7 +104,7 @@ void UnitRenderer::render(std::vector<Chunk>& chunks, glm::mat4& proj) {
     }
 }
 
-void UnitRenderer::get_or_add_vertex(std::vector<UnitRenderer::Vertex> vertices, UnitRenderer::Vertex v, int &i) {
+void UnitRenderer::getOrAddVertex(std::vector<UnitRenderer::Vertex> vertices, UnitRenderer::Vertex v, int &i) {
     bool alreadyExists = false;
     for (int j = 0; j < vertices.size(); ++j) {
         auto vertex = vertices[j];
@@ -110,28 +148,28 @@ VertexObject* UnitRenderer::generateChunkMesh(Chunk &chunk) {
                 }
 
                 glm::vec3 pos = glm::vec3(x,y,z);
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < Direction::ALL_SIZE; i++) {
                     glm::vec3 direction = Direction::ALL_VEC[i];
                     auto neighbor = pos+direction;
-                    int unitFacesStart = i * vertexObjectGenerators::floatsInVertex * 4;
+                    int unitFacesStart = i * 4;
                     // TODO don't get units out of bounds
                     if (chunk.getUnit(neighbor.x,neighbor.y,neighbor.z) != Unit::NONE) continue;
 
                     auto v0 = Vertex{unitFaces[unitFacesStart],glm::vec2{atlasCords.x,atlasCords.y}};
                     int i0;
-                    get_or_add_vertex(vertices, v0, i0);
+                    getOrAddVertex(vertices, v0, i0);
 
-                    auto v1 = Vertex{unitFaces[unitFacesStart+vertexObjectGenerators::floatsInVertex],glm::vec2{atlasCords.x,atlasCords.w}};
+                    auto v1 = Vertex{unitFaces[unitFacesStart+1],glm::vec2{atlasCords.x,atlasCords.w}};
                     int i1;
-                    get_or_add_vertex(vertices,v1,i1);
+                    getOrAddVertex(vertices,v1,i1);
 
-                    auto v2 = Vertex{unitFaces[unitFacesStart+vertexObjectGenerators::floatsInVertex*2],glm::vec2{atlasCords.z,atlasCords.y}};
+                    auto v2 = Vertex{unitFaces[unitFacesStart+2],glm::vec2{atlasCords.z,atlasCords.y}};
                     int i2;
-                    get_or_add_vertex(vertices,v2,i2);
+                    getOrAddVertex(vertices,v2,i2);
 
-                    auto v3 = Vertex{unitFaces[unitFacesStart+vertexObjectGenerators::floatsInVertex*3],glm::vec2{atlasCords.z,atlasCords.w}};
+                    auto v3 = Vertex{unitFaces[unitFacesStart+3],glm::vec2{atlasCords.z,atlasCords.w}};
                     int i3;
-                    get_or_add_vertex(vertices,v3,i3);
+                    getOrAddVertex(vertices,v3,i3);
 
                     //t1
                     indices.push_back(i0);
