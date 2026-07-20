@@ -72,7 +72,6 @@ void UnitRenderer::render(std::vector<Chunk>& chunks, glm::mat4& proj) {
                 if (chunk.queueMeshRegen) {
                     mesh = generateChunkMesh(chunk);
                     aMeshCacheEntry.mesh = mesh;
-                    std::cout << "R\n";
                 }
                 else {
                     mesh = aMeshCacheEntry.mesh;
@@ -83,7 +82,6 @@ void UnitRenderer::render(std::vector<Chunk>& chunks, glm::mat4& proj) {
         if (mesh == nullptr) {
             mesh = generateChunkMesh(chunk);
             chunkMeshCache.push_back(meshCacheEntry{glm::ivec3(chunk.x,chunk.y,chunk.z),mesh});
-            std::cout << "n\n";
         }
         chunk.queueMeshRegen = false;
 

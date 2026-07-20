@@ -22,7 +22,10 @@ void Chunk::globalPosHandleNegatives(ListUtilVecInt &chunkPos, int &localPosX, i
 Chunk::Chunk(const int x, const int y, const int z) : x(x), y(y), z(z), queueMeshRegen() {}
 
 void Chunk::setUnit(int x, int y, int z,Unit unit) {
-    units[posToIdx(x,y,z,LENGTH)] = unit;
+    if (unit != getUnit(x,y,z)) {
+        units[posToIdx(x,y,z,LENGTH)] = unit;
+        queueMeshRegen = true;
+    }
 }
 
 void Chunk::fillUnits(int x1, int y1, int z1, int x2, int y2, int z2,Unit unit) {
