@@ -57,7 +57,8 @@ UnitRenderer::~UnitRenderer() {
 
 void UnitRenderer::render(std::vector<Chunk>& chunks, glm::mat4& proj) {
     gs.r().defaultShader();
-    gs.r().currentTexture(atlasTexture);
+    Renderer::currentTexture(atlasTexture);
+    Renderer::textureDrawingNearest();
 
     ListUtilVecInt cameraChunkPos = stepGridPos(gs.cameraPos.x,gs.cameraPos.y,gs.cameraPos.z,Chunk::LENGTH);
     for (auto& chunk : chunks) {
@@ -107,16 +108,16 @@ VertexObject* UnitRenderer::generateChunkMesh(Chunk &chunk) {
                     case NONE:
                         throw;
                     case GRASS:
-                        atlasCords = glm::vec4(1,1,0,0);//glm::vec4{0,0,1/2,1/2};
+                        atlasCords = glm::vec4(0,0,.5,.5);
                         break;
                     case DIRT:
-                        atlasCords = glm::vec4{1/2,0,1,1/2};
+                        atlasCords = glm::vec4{.5,0,1,.5};
                         break;
                     case STONE:
-                        atlasCords = glm::vec4{0,1/2,1/2,1};
+                        atlasCords = glm::vec4{0,.5,.5,1};
                         break;
                     case ORE:
-                        atlasCords = glm::vec4{1/2,1/2,1,1};
+                        atlasCords = glm::vec4{.5,.5,1,1};
                         break;
                 }
 
@@ -194,7 +195,6 @@ void UnitRenderer::load() {
     unsigned char* oreTexture = Renderer::loadPngData("ore.png");
     unsigned char** textures = new unsigned char*[]{grassTexture,dirtTexture,stoneTexture,oreTexture};
     atlasTexture = Renderer::createTextureAtlas(textures,4,16);
-    Renderer::textureDrawingNearest(); // texture settings only apply to bound texture
     free(grassTexture);
     free(dirtTexture);
     free(stoneTexture);
