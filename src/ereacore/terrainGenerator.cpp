@@ -19,8 +19,8 @@ terrainGenerator::terrainGenerator() {
     remap->SetToMin(0);
     remap->SetToMax(Chunk::LENGTH);
 
-    debugRemap = FastNoise::New<FastNoise::Remap>();
-    debugRemap->SetSource(fractal);
+    debugRemap = FastNoise::New<FastNoise::Remap>();//FastSIMD::FeatureSet::SSE2);
+    debugRemap->SetSource(simplex);
     debugRemap->SetFromMin(-1);
     debugRemap->SetFromMax(1);
     debugRemap->SetToMin(0);
