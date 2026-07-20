@@ -92,22 +92,6 @@ void UnitRenderer::render(std::vector<Chunk>& chunks, glm::mat4& proj) {
     }
 }
 
-// TODO move to helper class
-void UnitRenderer::getOrAddVertex(std::vector<UnitRenderer::Vertex> &vertices, UnitRenderer::Vertex &v, unsigned int &i) {
-    bool alreadyExists = false;
-    for (int j = 0; j < vertices.size(); ++j) {
-        auto vertex = vertices[j];
-        if (v == vertex) {
-            alreadyExists = true;
-            i = j;
-        }
-    }
-    if (!alreadyExists) {
-        i = vertices.size();
-        vertices.push_back(v);
-    }
-}
-
 VertexObject* UnitRenderer::generateChunkMesh(Chunk &chunk) {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
@@ -148,22 +132,22 @@ VertexObject* UnitRenderer::generateChunkMesh(Chunk &chunk) {
                     auto v0 = Vertex{unitFaces[unitFacesStart]+static_cast<glm::vec3>(pos),
                         glm::vec2{atlasCords.x,atlasCords.y}};
                     unsigned int i0;
-                    getOrAddVertex(vertices, v0, i0);
+                    Vertex::getOrAddVertex(vertices, v0, i0);
 
                     auto v1 = Vertex{unitFaces[unitFacesStart+1]+static_cast<glm::vec3>(pos),
                         glm::vec2{atlasCords.x,atlasCords.w}};
                     unsigned int i1;
-                    getOrAddVertex(vertices,v1,i1);
+                    Vertex::getOrAddVertex(vertices,v1,i1);
 
                     auto v2 = Vertex{unitFaces[unitFacesStart+2]+static_cast<glm::vec3>(pos),
                         glm::vec2{atlasCords.z,atlasCords.y}};
                     unsigned int i2;
-                    getOrAddVertex(vertices,v2,i2);
+                    Vertex::getOrAddVertex(vertices,v2,i2);
 
                     auto v3 = Vertex{unitFaces[unitFacesStart+3]+static_cast<glm::vec3>(pos),
                         glm::vec2{atlasCords.z,atlasCords.w}};
                     unsigned int i3;
-                    getOrAddVertex(vertices,v3,i3);
+                    Vertex::getOrAddVertex(vertices,v3,i3);
                     // std::cout << i3 <<"is"<< v3.pos.x<<v3.pos.y<<v3.pos.z<<"\n";
 
                     //t1
@@ -179,18 +163,8 @@ VertexObject* UnitRenderer::generateChunkMesh(Chunk &chunk) {
         }
     }
 
-    // TODO move to helper class
     std::vector<float> verticesFloats[vertexObjectGenerators::floatsInVertex*vertices.size()];
-    for (Vertex & vertex : vertices) {
-        verticesFloats->push_back(vertex.pos.x);
-        verticesFloats->push_back(vertex.pos.y);
-        verticesFloats->push_back(vertex.pos.z);
-        verticesFloats->push_back(1.f);
-        verticesFloats->push_back(1.f);
-        verticesFloats->push_back(1.f);
-        verticesFloats->push_back(vertex.uv.x);
-        verticesFloats->push_back(vertex.uv.y);
-    }
+    Vertex::convertToFloats(vertices, *verticesFloats);
 
     return Renderer::createVertexObject(
         verticesFloats->data(),

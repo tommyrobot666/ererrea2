@@ -38,6 +38,34 @@ void VertexObject::drawArray() {
     glDrawArrays(GL_TRIANGLES, 0, triangles);
 }
 
+void Vertex::getOrAddVertex(std::vector<Vertex> &vertices, Vertex &v, unsigned int &i) {
+    bool alreadyExists = false;
+    for (int j = 0; j < vertices.size(); ++j) {
+        auto vertex = vertices[j];
+        if (v == vertex) {
+            alreadyExists = true;
+            i = j;
+        }
+    }
+    if (!alreadyExists) {
+        i = vertices.size();
+        vertices.push_back(v);
+    }
+}
+
+void Vertex::convertToFloats(std::vector<Vertex> &vertices, std::vector<float> &verticesFloats) {
+    for (Vertex & vertex : vertices) {
+        verticesFloats.push_back(vertex.pos.x);
+        verticesFloats.push_back(vertex.pos.y);
+        verticesFloats.push_back(vertex.pos.z);
+        verticesFloats.push_back(1.f);
+        verticesFloats.push_back(1.f);
+        verticesFloats.push_back(1.f);
+        verticesFloats.push_back(vertex.uv.x);
+        verticesFloats.push_back(vertex.uv.y);
+    }
+}
+
 
 unsigned int Renderer::setUpShaders() {
     int success;

@@ -25,6 +25,20 @@ public:
     void drawArray();
 };
 
+class Vertex {
+public:
+    Vertex(glm::vec3 pos,glm::vec2 uv) : pos(pos),uv(uv) {};
+    glm::vec3 pos;
+    glm::vec2 uv;
+
+    bool operator==(const Vertex & value) const {
+        return pos == value.pos && uv == value.uv;
+    }
+
+    static void getOrAddVertex(std::vector<Vertex> &vertices, Vertex &v, unsigned int &i);
+    static void convertToFloats(std::vector<Vertex> &vertices, std::vector<float> &verticesFloats);;
+};
+
 
 class Renderer {
 public:
