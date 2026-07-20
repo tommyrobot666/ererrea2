@@ -1,5 +1,7 @@
 #include <ereacore/UnitRenderer.h>
 
+#include <iostream>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -58,7 +60,6 @@ UnitRenderer::~UnitRenderer() {
 
 void UnitRenderer::render(std::vector<Chunk>& chunks, glm::mat4& proj) {
     gs.r().defaultShader();
-    cubeModel->currentBind();
 
     ListUtilVecInt cameraChunkPos = stepGridPos(gs.cameraPos.x,gs.cameraPos.y,gs.cameraPos.z,Chunk::LENGTH);
     for (auto& chunk : chunks) {
@@ -79,6 +80,7 @@ void UnitRenderer::render(std::vector<Chunk>& chunks, glm::mat4& proj) {
             chunkMeshCache.push_back(meshCacheEntry{glm::ivec3(chunk.x,chunk.y,chunk.z),mesh});
         }
 
+        mesh->currentBind();
         glm::mat4 trans = proj*gs.view*chunkOffset;
         gs.r().setShaderTransform(&trans);
         mesh->draw();
@@ -138,21 +140,26 @@ VertexObject* UnitRenderer::generateChunkMesh(Chunk &chunk) {
                         if (chunk.getUnit(neighbor.x,neighbor.y,neighbor.z) != Unit::NONE) continue;
                     }
 
-                    auto v0 = Vertex{unitFaces[unitFacesStart],glm::vec2{atlasCords.x,atlasCords.y}};
+                    auto v0 = Vertex{unitFaces[unitFacesStart]+static_cast<glm::vec3>(pos),
+                        glm::vec2{atlasCords.x,atlasCords.y}};
                     unsigned int i0;
                     getOrAddVertex(vertices, v0, i0);
 
-                    auto v1 = Vertex{unitFaces[unitFacesStart+1],glm::vec2{atlasCords.x,atlasCords.w}};
+                    auto v1 = Vertex{unitFaces[unitFacesStart+1]+static_cast<glm::vec3>(pos),
+                        glm::vec2{atlasCords.x,atlasCords.w}};
                     unsigned int i1;
                     getOrAddVertex(vertices,v1,i1);
 
-                    auto v2 = Vertex{unitFaces[unitFacesStart+2],glm::vec2{atlasCords.z,atlasCords.y}};
+                    auto v2 = Vertex{unitFaces[unitFacesStart+2]+static_cast<glm::vec3>(pos),
+                        glm::vec2{atlasCords.z,atlasCords.y}};
                     unsigned int i2;
                     getOrAddVertex(vertices,v2,i2);
 
-                    auto v3 = Vertex{unitFaces[unitFacesStart+3],glm::vec2{atlasCords.z,atlasCords.w}};
+                    auto v3 = Vertex{unitFaces[unitFacesStart+3]+static_cast<glm::vec3>(pos),
+                        glm::vec2{atlasCords.z,atlasCords.w}};
                     unsigned int i3;
                     getOrAddVertex(vertices,v3,i3);
+                    // std::cout << i3 <<"is"<< v3.pos.x<<v3.pos.y<<v3.pos.z<<"\n";
 
                     //t1
                     indices.push_back(i0);
