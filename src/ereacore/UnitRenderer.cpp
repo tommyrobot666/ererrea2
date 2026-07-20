@@ -14,17 +14,17 @@
 #include <ereacore/Direction.h>
 
 glm::vec3 UnitRenderer::unitFaces[] = {
-    // 111 -> 001
-    glm::vec3(1,1,1),
-    glm::vec3(0,1,1),
-    glm::vec3(1,0,1),
-    glm::vec3(0,0,1),
-
     // 111 -> 010
     glm::vec3(1,1,1),
     glm::vec3(0,1,1),
     glm::vec3(1,1,0),
     glm::vec3(0,1,0),
+
+    // 101 -> 000
+    glm::vec3(1,0,1),
+    glm::vec3(1,0,0),
+    glm::vec3(0,0,1),
+    glm::vec3(0,0,0),
 
     // 111 -> 100
     glm::vec3(1,1,1),
@@ -32,22 +32,22 @@ glm::vec3 UnitRenderer::unitFaces[] = {
     glm::vec3(1,0,1),
     glm::vec3(1,0,0),
 
-    // 110 -> 000
-    glm::vec3(1,1,0),
-    glm::vec3(0,1,0),
-    glm::vec3(1,0,0),
-    glm::vec3(0,0,0),
-
     // 011 -> 000
     glm::vec3(0,1,1),
     glm::vec3(0,1,0),
     glm::vec3(0,0,1),
     glm::vec3(0,0,0),
 
-    // 101 -> 000
+    // 111 -> 001
+    glm::vec3(1,1,1),
+    glm::vec3(0,1,1),
     glm::vec3(1,0,1),
-    glm::vec3(1,0,0),
     glm::vec3(0,0,1),
+
+    // 110 -> 000
+    glm::vec3(1,1,0),
+    glm::vec3(0,1,0),
+    glm::vec3(1,0,0),
     glm::vec3(0,0,0),
 };
 
