@@ -11,6 +11,7 @@ class Chunk {
     static constexpr int LENGTH = 16;
     const int x,y,z;
     Unit units[LENGTH*LENGTH*LENGTH] = {};
+    bool queueMeshRegen;
 
     Chunk(int x,int y,int z);
 

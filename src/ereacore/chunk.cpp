@@ -19,7 +19,7 @@ void Chunk::globalPosHandleNegatives(ListUtilVecInt &chunkPos, int &localPosX, i
     // std::cout << chunkPos.x << "," << chunkPos.y << "," << chunkPos.z << ":" << localPosX << "," << localPosY << "," << localPosZ << "\n";
 }
 
-Chunk::Chunk(const int x, const int y, const int z) : x(x), y(y), z(z) {}
+Chunk::Chunk(const int x, const int y, const int z) : x(x), y(y), z(z), queueMeshRegen() {}
 
 void Chunk::setUnit(int x, int y, int z,Unit unit) {
     units[posToIdx(x,y,z,LENGTH)] = unit;

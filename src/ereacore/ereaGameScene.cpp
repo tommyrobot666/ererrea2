@@ -8,9 +8,6 @@ void ereaGameScene::load() {
 
     unitRenderer.load();
     // chunkGenerator.debugtex(unitRenderer.dirtTexture);
-    unitRenderer.queueMeshRegen = &queueMeshRegen;
-    playerWorldInteraction.queueMeshRegen = &queueMeshRegen;
-
     gs.cameraPos = glm::vec3(0,9,0);
 }
 

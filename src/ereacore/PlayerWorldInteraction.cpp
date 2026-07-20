@@ -67,7 +67,10 @@ void PlayerWorldInteraction::interactWithUnits(std::vector<Chunk>& chunks) {
         lastChangex = lookAtUnitPos.x;
         lastChangey = lookAtUnitPos.y;
         lastChangez = lookAtUnitPos.z;
-        queueMeshRegen->emplace_back(lookAtUnitPos.x/Chunk::LENGTH,lookAtUnitPos.y/Chunk::LENGTH,lookAtUnitPos.z/Chunk::LENGTH);
+        auto chunk = Chunk::findChunkOrNone(chunks,lookAtUnitPos.x/Chunk::LENGTH,lookAtUnitPos.y/Chunk::LENGTH,lookAtUnitPos.z/Chunk::LENGTH);
+        if (chunk) {
+            chunk->queueMeshRegen = true;
+        }
     }
 }
 
