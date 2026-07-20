@@ -11,6 +11,7 @@ class ereaGameScene : public Scene {
     UnitRenderer unitRenderer;
     terrainGenerator chunkGenerator;
     PlayerWorldInteraction playerWorldInteraction;
+    std::vector<glm::ivec3> queueMeshRegen;
     public:
     ~ereaGameScene() override = default;
     void load() override;

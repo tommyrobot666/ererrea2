@@ -67,9 +67,18 @@ void UnitRenderer::render(std::vector<Chunk>& chunks, glm::mat4& proj) {
         glm::mat4 chunkOffset = glm::translate(glm::mat4(1.0f),glm::vec3(chunk.x*Chunk::LENGTH,chunk.y*Chunk::LENGTH,chunk.z*Chunk::LENGTH));
 
         VertexObject* mesh = nullptr;
-        for (auto meshCacheEntry : chunkMeshCache) {
-            if (meshCacheEntry.pos == glm::ivec3(chunk.x,chunk.y,chunk.z)) {
-                mesh = meshCacheEntry.mesh;
+        for (auto aMeshCacheEntry : chunkMeshCache) {
+            if (aMeshCacheEntry.pos == glm::ivec3(chunk.x,chunk.y,chunk.z)) {
+                mesh = aMeshCacheEntry.mesh;
+
+                // check if regen queued then regen
+                for (auto queued : *queueMeshRegen) {
+                    if (aMeshCacheEntry.pos == queued) {
+                        mesh = generateChunkMesh(chunk);
+                        chunkMeshCache.push_back(meshCacheEntry{glm::ivec3(chunk.x,chunk.y,chunk.z),mesh});
+                        break;
+                    }
+                }
                 break;
             }
         }

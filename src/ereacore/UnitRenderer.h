@@ -26,10 +26,11 @@ public:
 
 
     std::vector<meshCacheEntry> chunkMeshCache;
+    std::vector<glm::ivec3>* queueMeshRegen;
     VertexObject* cubeModel;
     unsigned int atlasTexture;
     bool loaded = false;
-    UnitRenderer() : cubeModel(), atlasTexture() {};
+    UnitRenderer() : queueMeshRegen(), cubeModel(), atlasTexture() {};
     ~UnitRenderer();
     void render(std::vector<Chunk>& chunks, glm::mat4& proj);
     void getOrAddVertex(std::vector<UnitRenderer::Vertex> &vertices, UnitRenderer::Vertex &v, unsigned int &i);
