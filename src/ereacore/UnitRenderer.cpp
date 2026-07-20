@@ -65,42 +65,23 @@ void UnitRenderer::render(std::vector<Chunk>& chunks, glm::mat4& proj) {
         if (dist(ListUtilVec{static_cast<double>(cameraChunkPos.x-chunk.x),
             static_cast<double>(cameraChunkPos.y-chunk.y),
             static_cast<double>(cameraChunkPos.z-chunk.z)}) > 2) continue;
-
         glm::mat4 chunkOffset = glm::translate(glm::mat4(1.0f),glm::vec3(chunk.x*Chunk::LENGTH,chunk.y*Chunk::LENGTH,chunk.z*Chunk::LENGTH));
 
-        for (int x = 0; x < Chunk::LENGTH; ++x){
-            for (int y = 0; y < Chunk::LENGTH; ++y) {
-                for (int z = 0; z < Chunk::LENGTH; ++z) {
-                    if (chunk.units[posToIdx(x,y,z,Chunk::LENGTH)] == Unit::NONE) continue;
-
-
-                    unsigned int texture;
-                    switch (chunk.units[posToIdx(x,y,z,Chunk::LENGTH)])
-                    {
-                        case NONE:
-                            throw;
-                        case GRASS:
-                            texture = grassTexture;
-                            break;
-                        case DIRT:
-                            texture = dirtTexture;
-                            break;
-                        case STONE:
-                            texture = stoneTexture;
-                            break;
-                        case ORE:
-                            texture = oreTexture;
-                            break;
-                    }
-                    Renderer::currentTexture(texture);
-
-                    glm::mat4 trans = glm::translate(glm::mat4(1.0f),glm::vec3(x,y,z));
-                    trans = proj*gs.view*trans*chunkOffset;
-                    gs.r().setShaderTransform(&trans);
-                    cubeModel->draw();
-                }
+        VertexObject* mesh = nullptr;
+        for (auto meshCacheEntry : chunkMeshCache) {
+            if (meshCacheEntry.pos == glm::ivec3(chunk.x,chunk.y,chunk.z)) {
+                mesh = meshCacheEntry.mesh;
+                break;
             }
         }
+        if (mesh == nullptr) {
+            mesh = generateChunkMesh(chunk);
+            chunkMeshCache.push_back(meshCacheEntry{glm::ivec3(chunk.x,chunk.y,chunk.z),mesh});
+        }
+
+        glm::mat4 trans = proj*gs.view*chunkOffset;
+        gs.r().setShaderTransform(&trans);
+        mesh->draw();
     }
 }
 

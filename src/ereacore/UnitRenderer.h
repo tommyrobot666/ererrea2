@@ -18,7 +18,13 @@ public:
         };
     };
 
+    struct meshCacheEntry {
+        glm::ivec3 pos;
+        VertexObject* mesh;
+    };
 
+
+    std::vector<meshCacheEntry> chunkMeshCache;
     VertexObject* cubeModel;
     unsigned int grassTexture;
     unsigned int dirtTexture;
@@ -30,6 +36,5 @@ public:
     void render(std::vector<Chunk>& chunks, glm::mat4& proj);
     void getOrAddVertex(std::vector<UnitRenderer::Vertex> vertices, UnitRenderer::Vertex v, int &i);
     VertexObject* generateChunkMesh(Chunk& chunk);
-
     void load();
 };
