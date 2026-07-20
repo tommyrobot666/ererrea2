@@ -228,7 +228,8 @@ unsigned int Renderer::createTextureAtlas(unsigned char **allData, int textures,
     int atlasLengthTextures = std::ceil(std::sqrt(textures));
     int atlasLengthPixels = atlasLengthTextures * length;
     int atlasDataSize = atlasLengthPixels*atlasLengthPixels*4;
-    unsigned char atlasData[atlasDataSize];
+    std::vector<unsigned char> atlasData;
+    atlasData.reserve(atlasDataSize);
     int dataSize = length*length*4;
     for (int i = 0; i < textures; ++i) {
         unsigned char *data = allData[i];
@@ -253,7 +254,7 @@ unsigned int Renderer::createTextureAtlas(unsigned char **allData, int textures,
     glBindTexture(GL_TEXTURE_2D, atlasTexture);
     glActiveTexture(GL_TEXTURE0);
     // texture target, mipmap levels, load in format, size, idk, stored in format, data
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, atlasLengthPixels, atlasLengthPixels, 0, GL_RGBA, GL_UNSIGNED_BYTE, atlasData);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, atlasLengthPixels, atlasLengthPixels, 0, GL_RGBA, GL_UNSIGNED_BYTE, atlasData.data());
     glGenerateMipmap(GL_TEXTURE_2D);
 
     return atlasTexture;

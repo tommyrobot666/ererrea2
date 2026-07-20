@@ -163,11 +163,12 @@ VertexObject* UnitRenderer::generateChunkMesh(Chunk &chunk) {
         }
     }
 
-    std::vector<float> verticesFloats[vertexObjectGenerators::floatsInVertex*vertices.size()];
-    Vertex::convertToFloats(vertices, *verticesFloats);
+    std::vector<float> verticesFloats;
+    verticesFloats.reserve(vertexObjectGenerators::floatsInVertex*vertices.size());
+    Vertex::convertToFloats(vertices, verticesFloats);
 
     return Renderer::createVertexObject(
-        verticesFloats->data(),
+        verticesFloats.data(),
         indices.data(),
         vertices.size()*vertexObjectGenerators::SizeOfVertex,
         indices.size()*sizeof(int));
