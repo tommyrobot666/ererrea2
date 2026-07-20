@@ -1,5 +1,6 @@
 #include <glad/glad.h>
 #include <FastNoise/FastNoise.h>
+#include <FastNoiseLite.h>
 #include <random>
 #include <3dListUtil.h>
 #include <ereacore/terrainGenerator.h>

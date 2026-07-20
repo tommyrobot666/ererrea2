@@ -33,6 +33,7 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC
 
 target_include_directories(ererrea2 PUBLIC include)
 target_include_directories(ererrea2 PUBLIC src)
+target_include_directories(ererrea2 PUBLIC libs/FastNoiseLite)
 #FORCE STATIC LINKS, allowing exe in builddir to run
 #https://stackoverflow.com/questions/38694058/cmake-linking-statically-against-libgcc-and-libstdc-into-a-shared-library
 #add_library(myLib SHARED main.cpp ${MY_SOURCES})
