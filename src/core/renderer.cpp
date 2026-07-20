@@ -230,11 +230,10 @@ unsigned int Renderer::createTextureAtlas(unsigned char **allData, int textures,
     int atlasDataSize = atlasLengthPixels*atlasLengthPixels*4;
     std::vector<unsigned char> atlasData;
     atlasData.reserve(atlasDataSize);
-    int textureSizePixels = length*length;
     for (int x = 0; x < atlasLengthPixels; x++) {
         for (int y = 0; y < atlasLengthPixels; y++) {
             int idx = x + y*atlasLengthPixels;
-            int texturesIdx = idx / textureSizePixels;
+            int texturesIdx = x/length + y/length*atlasLengthTextures;
             int textureX = x%length;
             int textureY = y%length;
             int textureIdx = textureX + textureY*length;

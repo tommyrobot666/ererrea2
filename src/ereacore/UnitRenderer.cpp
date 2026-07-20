@@ -107,7 +107,7 @@ VertexObject* UnitRenderer::generateChunkMesh(Chunk &chunk) {
                     case NONE:
                         throw;
                     case GRASS:
-                        atlasCords = glm::vec4{0,0,1/2,1/2};
+                        atlasCords = glm::vec4(1,1,0,0);//glm::vec4{0,0,1/2,1/2};
                         break;
                     case DIRT:
                         atlasCords = glm::vec4{1/2,0,1,1/2};
