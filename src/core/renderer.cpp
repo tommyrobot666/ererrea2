@@ -230,22 +230,19 @@ unsigned int Renderer::createTextureAtlas(unsigned char **allData, int textures,
     int atlasDataSize = atlasLengthPixels*atlasLengthPixels*4;
     std::vector<unsigned char> atlasData;
     atlasData.reserve(atlasDataSize);
-    int dataSize = length*length*4;
-    for (int i = 0; i < textures; ++i) {
-        unsigned char *data = allData[i];
-        int xOffset = (i%atlasLengthTextures);
-        int yOffset = std::floor(i/atlasLengthTextures);
-        int offset = (xOffset+yOffset*length)*4;
-        assert(offset<atlasDataSize-dataSize); // offset of the final corner
-        for (int x = 0; x < length; x++) {
-            for (int y = 0; y < length; y++) {
-                int idx = (x+y*length)*4;
-                int offsetIdx = idx+offset;
-                atlasData[offsetIdx] = data[idx];
-                atlasData[offsetIdx+1] = data[idx+1];
-                atlasData[offsetIdx+2] = data[idx+2];
-                atlasData[offsetIdx+3] = data[idx+3];
-            }
+    int textureSizePixels = length*length;
+    for (int x = 0; x < atlasLengthPixels; x++) {
+        for (int y = 0; y < atlasLengthPixels; y++) {
+            int idx = x + y*atlasLengthPixels;
+            int texturesIdx = idx / textureSizePixels;
+            int textureX = x%length;
+            int textureY = y%length;
+            int textureIdx = textureX + textureY*length;
+
+            atlasData[idx*4] = allData[texturesIdx][textureIdx*4];
+            atlasData[idx*4+1] = allData[texturesIdx][textureIdx*4+1];
+            atlasData[idx*4+2] = allData[texturesIdx][textureIdx*4+2];
+            atlasData[idx*4+3] = allData[texturesIdx][textureIdx*4+3];
         }
     }
 
