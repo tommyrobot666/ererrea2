@@ -7,6 +7,7 @@
 class UnitRenderer {
     static glm::vec3 unitFaces[6*4];
 public:
+    // TODO move to helper class
     class Vertex {
     public:
         Vertex(glm::vec3 pos,glm::vec2 uv) : pos(pos),uv(uv) {};
@@ -34,7 +35,7 @@ public:
     UnitRenderer() : cubeModel(), grassTexture(), dirtTexture(), stoneTexture(), oreTexture() {};
     ~UnitRenderer();
     void render(std::vector<Chunk>& chunks, glm::mat4& proj);
-    void getOrAddVertex(std::vector<UnitRenderer::Vertex> vertices, UnitRenderer::Vertex v, int &i);
+    void getOrAddVertex(std::vector<UnitRenderer::Vertex> &vertices, UnitRenderer::Vertex &v, unsigned int &i);
     VertexObject* generateChunkMesh(Chunk& chunk);
     void load();
 };
