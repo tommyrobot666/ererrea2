@@ -30,12 +30,7 @@ terrainGenerator::terrainGenerator() {
 void terrainGenerator::debugtex(int debugTex) {
     constexpr int debugSize = 256;
     float debugValues[debugSize*debugSize];
-    // debugRemap->GenUniformGrid2D(debugValues,0,0,debugSize,debugSize,1,1,seed);
-    for (int x = 0; x < debugSize; ++x) {
-        for (int z = 0; z < debugSize; ++z) {
-            debugValues[posToIdx(x,z,0,debugSize)] = remap->GenSingle2D(x,z,seed);
-        }
-    }
+    debugRemap->GenUniformGrid2D(debugValues,0,0,debugSize,debugSize,1,1,seed);
     glBindTexture(GL_TEXTURE_2D, debugTex);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, debugSize,debugSize, 0, GL_RED, GL_UNSIGNED_BYTE, debugValues);
     glGenerateMipmap(GL_TEXTURE_2D);

@@ -7,7 +7,8 @@ void ereaGameScene::load() {
     chunkGenerator.seed = 123;
 
     unitRenderer.load();
-    // chunkGenerator.debugtex(unitRenderer.dirtTexture);
+    // Renderer::freeTexture(unitRenderer.atlasTexture);
+    chunkGenerator.debugtex(unitRenderer.atlasTexture);
     gs.cameraPos = glm::vec3(0,9,0);
 }
 
