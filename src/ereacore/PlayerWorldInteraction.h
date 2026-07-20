@@ -8,6 +8,7 @@
 
 class PlayerWorldInteraction {
     Keybinds keybinds;
+    int lastChangex,lastChangey,lastChangez;
     public:
     std::vector<glm::ivec3>* queueMeshRegen;
     PlayerWorldInteraction() : queueMeshRegen() {};

@@ -63,7 +63,12 @@ void PlayerWorldInteraction::interactWithUnits(std::vector<Chunk>& chunks) {
         Chunk::setUnitAtGlobalPos(Unit::ORE,chunks,lookAtUnitFrontPos.x,lookAtUnitFrontPos.y,lookAtUnitFrontPos.z);
     }
 
-    queueMeshRegen->emplace_back(lookAtUnitPos.x/Chunk::LENGTH,lookAtUnitPos.y/Chunk::LENGTH,lookAtUnitPos.z/Chunk::LENGTH);
+    if (lookAtUnitPos.x!=lastChangex&&lastChangey!=lookAtUnitPos.y&&lookAtUnitPos.z!=lastChangez) {
+        lastChangex = lookAtUnitPos.x;
+        lastChangey = lookAtUnitPos.y;
+        lastChangez = lookAtUnitPos.z;
+        queueMeshRegen->emplace_back(lookAtUnitPos.x/Chunk::LENGTH,lookAtUnitPos.y/Chunk::LENGTH,lookAtUnitPos.z/Chunk::LENGTH);
+    }
 }
 
 ListUtilVecInt PlayerWorldInteraction::rayCast(std::vector<Chunk> &chunks, glm::vec3 &rayDir, glm::vec3 &rayStartPos, int maxChunkDistance) {
