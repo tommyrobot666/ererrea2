@@ -52,14 +52,12 @@ glm::vec3 UnitRenderer::unitFaces[] = {
 };
 
 UnitRenderer::~UnitRenderer() {
-    Renderer::freeTexture(grassTexture);
-    Renderer::freeTexture(dirtTexture);
-    Renderer::freeTexture(stoneTexture);
-    Renderer::freeTexture(oreTexture);
+    Renderer::freeTexture(atlasTexture);
 }
 
 void UnitRenderer::render(std::vector<Chunk>& chunks, glm::mat4& proj) {
     gs.r().defaultShader();
+    gs.r().currentTexture(atlasTexture);
 
     ListUtilVecInt cameraChunkPos = stepGridPos(gs.cameraPos.x,gs.cameraPos.y,gs.cameraPos.z,Chunk::LENGTH);
     for (auto& chunk : chunks) {
@@ -208,11 +206,18 @@ void UnitRenderer::load() {
     free(vertices);
     free(indices);
 
-    grassTexture = Renderer::loadPngTexture("grass.png");
+    unsigned char* grassTexture = Renderer::loadPngData("grass.png");
+    unsigned char* dirtTexture = Renderer::loadPngData("dort.png");
+    unsigned char* stoneTexture = Renderer::loadPngData("stone.png");
+    unsigned char* oreTexture = Renderer::loadPngData("ore.png");
+    unsigned char** textures = new unsigned char*[]{grassTexture,dirtTexture,stoneTexture,oreTexture};
+    atlasTexture = Renderer::createTextureAtlas(textures,4,16);
     Renderer::textureDrawingNearest(); // texture settings only apply to bound texture
-    dirtTexture = Renderer::loadPngTextureNearest("dort.png");
-    stoneTexture = Renderer::loadPngTextureNearest("stone.png");
-    oreTexture = Renderer::loadPngTextureNearest("ore.png");
+    free(grassTexture);
+    free(dirtTexture);
+    free(stoneTexture);
+    free(oreTexture);
+    free(textures);
 
     loaded = true;
 }

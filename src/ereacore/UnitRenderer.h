@@ -27,12 +27,9 @@ public:
 
     std::vector<meshCacheEntry> chunkMeshCache;
     VertexObject* cubeModel;
-    unsigned int grassTexture;
-    unsigned int dirtTexture;
-    unsigned int stoneTexture;
-    unsigned int oreTexture;
+    unsigned int atlasTexture;
     bool loaded = false;
-    UnitRenderer() : cubeModel(), grassTexture(), dirtTexture(), stoneTexture(), oreTexture() {};
+    UnitRenderer() : cubeModel(), atlasTexture() {};
     ~UnitRenderer();
     void render(std::vector<Chunk>& chunks, glm::mat4& proj);
     void getOrAddVertex(std::vector<UnitRenderer::Vertex> &vertices, UnitRenderer::Vertex &v, unsigned int &i);

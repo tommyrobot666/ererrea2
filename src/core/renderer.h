@@ -44,6 +44,8 @@ public:
 
     static unsigned int loadPngTexture(std::string path);
 
+    static unsigned char *loadPngData(std::string path);
+
     static unsigned int loadPngTextureNearest(std::string path);
 
     static void currentTexture(unsigned int texture);

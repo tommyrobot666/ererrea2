@@ -182,6 +182,13 @@ unsigned int Renderer::loadPngTexture(std::string path) {
     return texture;
 }
 
+unsigned char *Renderer::loadPngData(std::string path) {
+    int width, height, nrChannels;
+    unsigned char *data = stbi_load((RESOURCES_PATH "textures/" + path).c_str(), &width, &height, &nrChannels,
+                                    STBI_rgb_alpha);
+    return data;
+}
+
 unsigned int Renderer::loadPngTextureNearest(std::string path) {
     unsigned int ret = loadPngTexture(path);
     textureDrawingNearest();
