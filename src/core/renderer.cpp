@@ -189,14 +189,22 @@ unsigned int Renderer::loadPngTextureNearest(std::string path) {
 }
 
 unsigned int Renderer::createTextureAtlas(unsigned char **allData, int textures, int length) {
-    std::vector<unsigned char> atlasData;
+    // 4 == numChannels
     int atlasLengthTextures = std::ceil(std::sqrt(textures));
     int atlasLengthPixels = atlasLengthTextures * length;
-    // 4 == numChannels
+    unsigned char atlasData[atlasLengthPixels*atlasLengthPixels*4];
     int dataSize = length*length*4;
-    for (int i = 0; i < textures; i++) {
+    for (int i = 0; i < textures; ++i) {
         unsigned char *data = allData[i];
-        atlasData.insert(atlasData.end(), data, data + dataSize);
+        int xOffset = (i%atlasLengthTextures)*length*4;
+        int yOffset = std::floor(i/atlasLengthTextures)*length*4;
+        for (int x = 0; x < length; x++) {
+            for (int y = 0; y < length; y++) {
+                int idx = (x+y*length*4)*4;
+                int offsetIdx = (x+xOffset+((y+yOffset)*length*4))*4;
+                atlasData[offsetIdx] = data[idx];
+            }
+        }
     }
 
     unsigned int atlasTexture;
@@ -204,7 +212,7 @@ unsigned int Renderer::createTextureAtlas(unsigned char **allData, int textures,
     glBindTexture(GL_TEXTURE_2D, atlasTexture);
     glActiveTexture(GL_TEXTURE0);
     // texture target, mipmap levels, load in format, size, idk, stored in format, data
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, atlasLengthPixels, atlasLengthPixels, 0, GL_RGBA, GL_UNSIGNED_BYTE, atlasData.data());
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, atlasLengthPixels, atlasLengthPixels, 0, GL_RGBA, GL_UNSIGNED_BYTE, atlasData);
     glGenerateMipmap(GL_TEXTURE_2D);
 
     return atlasTexture;
