@@ -29,9 +29,16 @@ terrainGenerator::terrainGenerator() {
 }
 
 void terrainGenerator::debugtex(int debugTex) {
+    FastNoiseLite noise;
+    noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
     constexpr int debugSize = 256;
     float debugValues[debugSize*debugSize];
-    debugRemap->GenUniformGrid2D(debugValues,0,0,debugSize,debugSize,1,1,seed);
+    // debugRemap->GenUniformGrid2D(debugValues,0,0,debugSize,debugSize,1,1,seed);
+    for (int x = 0; x < debugSize; ++x) {
+        for (int y = 0; y < debugSize; ++y) {
+            debugValues[x+y*debugSize] = noise.GetNoise((float)x, (float)y);
+        }
+    }
     glBindTexture(GL_TEXTURE_2D, debugTex);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, debugSize,debugSize, 0, GL_RED, GL_UNSIGNED_BYTE, debugValues);
     glGenerateMipmap(GL_TEXTURE_2D);
