@@ -1,6 +1,6 @@
 #include <ereacore/PlayerWorldInteraction.h>
 
-// #include <iostream>
+#include <iostream>
 #include <GLFW/glfw3.h>
 #include <3dListUtil.h>
 #include <core/gameState.h>
@@ -63,14 +63,16 @@ void PlayerWorldInteraction::interactWithUnits(std::vector<Chunk>& chunks) {
         Chunk::setUnitAtGlobalPos(Unit::ORE,chunks,lookAtUnitFrontPos.x,lookAtUnitFrontPos.y,lookAtUnitFrontPos.z);
     }
 
-    if (lookAtUnitPos.x!=lastChangex&&lastChangey!=lookAtUnitPos.y&&lookAtUnitPos.z!=lastChangez) {
+    if ((lookAtUnitPos.x!=lastChangex&&lastChangey!=lookAtUnitPos.y&&lookAtUnitPos.z!=lastChangez)||true) {
         lastChangex = lookAtUnitPos.x;
         lastChangey = lookAtUnitPos.y;
         lastChangez = lookAtUnitPos.z;
         auto chunk = Chunk::findChunkOrNone(chunks,lookAtUnitPos.x/Chunk::LENGTH,lookAtUnitPos.y/Chunk::LENGTH,lookAtUnitPos.z/Chunk::LENGTH);
         if (chunk) {
             chunk->queueMeshRegen = true;
+            std::cout << "qr\n";
         }
+        std::cout << "c\n";
     }
 }
 
