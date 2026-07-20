@@ -53,4 +53,6 @@ public:
     static void freeTexture(unsigned int texture);
 
     static void textureDrawingNearest();
+
+    static unsigned int createTextureAtlas(unsigned char **data, int textures, int length);
 };

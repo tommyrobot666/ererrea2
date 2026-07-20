@@ -188,6 +188,28 @@ unsigned int Renderer::loadPngTextureNearest(std::string path) {
     return ret;
 }
 
+unsigned int Renderer::createTextureAtlas(unsigned char **allData, int textures, int length) {
+    std::vector<unsigned char> atlasData;
+    int atlasLengthTextures = std::ceil(std::sqrt(textures));
+    int atlasLengthPixels = atlasLengthTextures * length;
+    // 4 == numChannels
+    int dataSize = length*length*4;
+    for (int i = 0; i < textures; i++) {
+        unsigned char *data = allData[i];
+        atlasData.insert(atlasData.end(), data, data + dataSize);
+    }
+
+    unsigned int atlasTexture;
+    glGenTextures(1, &atlasTexture);
+    glBindTexture(GL_TEXTURE_2D, atlasTexture);
+    glActiveTexture(GL_TEXTURE0);
+    // texture target, mipmap levels, load in format, size, idk, stored in format, data
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, atlasLengthPixels, atlasLengthPixels, 0, GL_RGBA, GL_UNSIGNED_BYTE, atlasData.data());
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    return atlasTexture;
+}
+
 void Renderer::currentTexture(unsigned int texture) {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
