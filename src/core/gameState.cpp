@@ -13,6 +13,19 @@ void GameState::initGameState(GLFWwindow *window,Renderer *pointerToRenderer) {
     this->input = new InputManager(window);
 }
 
+void GameState::closingGame() {
+    if (currentScene) {
+        currentScene->tryClose();
+        delete(currentScene);
+    }
+    if (nextScene) {
+        nextScene->tryClose();
+        delete(nextScene);
+    }
+    delete(pointerToRenderer);
+    delete(input);
+}
+
 void GameState::sizeCallback(GLFWwindow *window, int width, int height) {
     glViewport(0,0,width,height);
     gs.gameWindowWidth = width;

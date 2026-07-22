@@ -11,6 +11,7 @@
 #include <core/gameState.h>
 #include <core/renderer.h>
 #include <core/glDebugLogger.h>
+#include <uicore/uiObject.h>
 #include <test/otherTestScene.h>
 #include <ereacore/ereaGameScene.h>
 
@@ -68,6 +69,7 @@ int main() {
 
     auto* coreRenderer = new Renderer();
     gs.initGameState(window,coreRenderer);
+    uiObject::initUiSystem();
 
     glfwSetWindowSizeCallback(window, GameState::sizeCallback);
     glfwSetCursorPosCallback(window, GameState::mouseCallback);
@@ -87,6 +89,8 @@ int main() {
         glfwPollEvents();
     }
 
+    uiObject::closeUiSystem();
+    gs.closingGame();
     glfwTerminate();
     return 0;
 }
