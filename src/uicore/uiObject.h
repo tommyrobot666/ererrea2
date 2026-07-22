@@ -30,10 +30,14 @@ public:
     glm::vec2 minCorner;
     glm::vec2 maxCorner;
 
+    std::vector<uiObject> children;
+
     static void initUiSystem();
     static void closeUiSystem();
     void recalculatePosAndSize();
     void startUiUpdate();
+    void renderThenChildren();
     virtual void render();
+    // also use this to recalculate children min/maxCorner
     virtual void uiUpdate() {};
 };

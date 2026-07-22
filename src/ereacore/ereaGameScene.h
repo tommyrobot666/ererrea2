@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <core/scene.h>
+#include <uicore/uiObject.h>
 #include <ereacore/chunk.h>
 #include <ereacore/terrainGenerator.h>
 #include <ereacore/UnitRenderer.h>
@@ -11,6 +12,7 @@ class ereaGameScene : public Scene {
     UnitRenderer unitRenderer;
     terrainGenerator chunkGenerator;
     PlayerWorldInteraction playerWorldInteraction;
+    uiObject testUi = uiObject();
     public:
     ~ereaGameScene() override = default;
     void load() override;

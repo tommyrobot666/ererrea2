@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
-#include <glm/gtx/transform.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <core/renderer.h>
 #include <core/vertexObjectGenerators.h>
 #include <core/gameState.h>
@@ -64,6 +64,20 @@ void uiObject::startUiUpdate() {
         }
     } else {
         mouseDown = false;
+    }
+
+    for (auto &child : children) {
+        child.startUiUpdate();
+    }
+    for (auto &child : children) {
+        child.uiUpdate();
+    }
+}
+
+void uiObject::renderThenChildren() {
+    render();
+    for (auto &child : children) {
+        child.renderThenChildren();
     }
 }
 
