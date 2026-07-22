@@ -3,6 +3,18 @@
 #include <glm/glm.hpp>
 #include <core/renderer.h>
 
+namespace uiObjectConstants {
+    enum Anchor {
+        TOP_LEFT
+    };
+
+    // FUCK YOU c++
+    // THIS IS JUST WHAT I WANTED TO FUCKING DO WITH "static"
+    // DO YOU EVEN FUCKING KNOW WHAT "static" MEANS!?!?!??!?!?!?!?!??
+    extern VertexObject* basicQuad;
+    extern unsigned int defaultTexture;
+}
+
 class uiObject {
     glm::vec2 pos;
     glm::vec2 size;
@@ -11,17 +23,10 @@ class uiObject {
     bool mouseDown = false;
     bool justClicked = false;
 public:
-    enum Anchor {
-        TOP_LEFT
-    };
-
     virtual ~uiObject() = default;
 
-    static VertexObject* basicQuad;
-    static unsigned int defaultTexture;
-
     // use anchor,minCorner,maxCorner to calculate pos,size
-    Anchor anchor;
+    uiObjectConstants::Anchor anchor;
     glm::vec2 minCorner;
     glm::vec2 maxCorner;
 

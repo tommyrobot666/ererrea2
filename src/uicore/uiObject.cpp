@@ -3,11 +3,14 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
 #include <core/renderer.h>
 #include <core/vertexObjectGenerators.h>
 #include <core/gameState.h>
 
-#include "glm/ext/matrix_transform.hpp"
+// auto uiObject::basicQuad = static_cast<VertexObject*>(nullptr);
+unsigned int uiObjectConstants::defaultTexture = 0;
+VertexObject* uiObjectConstants::basicQuad = 0;
 
 void uiObject::initUiSystem() {
     std::vector<Vertex> vertexes;
@@ -18,21 +21,21 @@ void uiObject::initUiSystem() {
     std::vector<float> vertexesFloats;
     Vertex::convertToFloats(vertexes,vertexesFloats);
     unsigned int* indices = new unsigned int[]{0,2,3,1,2,3};
-    uiObject::basicQuad = Renderer::createVertexObject(vertexesFloats.data(),indices,
+    uiObjectConstants::basicQuad = Renderer::createVertexObject(vertexesFloats.data(),indices,
         4*vertexObjectGenerators::floatsInVertex,6*sizeof(int));
     free(indices);
 
-    uiObject::defaultTexture = Renderer::loadPngTexture("smile.png");
+    uiObjectConstants::defaultTexture = Renderer::loadPngTexture("smile.png");
 }
 
 void uiObject::closeUiSystem() {
-    Renderer::freeTexture(defaultTexture);
+    Renderer::freeTexture(uiObjectConstants::defaultTexture);
     // free quad?
 }
 
 void uiObject::recalculatePosAndSize() {
     switch (anchor) {
-        case Anchor::TOP_LEFT: {
+        case uiObjectConstants::Anchor::TOP_LEFT: {
             pos = minCorner;
             size = maxCorner-minCorner;
         }
@@ -68,7 +71,7 @@ void uiObject::render() {
     glm::mat4 trans = glm::translate(glm::mat4(1.0f),glm::vec3(pos.x,pos.y,0));
     trans = glm::scale(trans, glm::vec3(size.x,size.y,1));
     gs.r().setShaderTransform(&trans);
-    Renderer::currentTexture(defaultTexture);
-    basicQuad->currentBind();
-    basicQuad->draw();
+    Renderer::currentTexture(uiObjectConstants::defaultTexture);
+    uiObjectConstants::basicQuad->currentBind();
+    uiObjectConstants::basicQuad->draw();
 }
