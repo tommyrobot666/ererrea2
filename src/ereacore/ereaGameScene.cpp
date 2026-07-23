@@ -2,6 +2,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <core/gameState.h>
+#include <core/vertexObjectGenerators.h>
 #include <uicore/uiObject.h>
 
 void ereaGameScene::load() {
@@ -12,9 +13,13 @@ void ereaGameScene::load() {
     // chunkGenerator.debugtex(unitRenderer.atlasTexture);
     gs.cameraPos = glm::vec3(0,9,0);
 
-    // auto q = uiObjectConstants::basicQuad;
-    // delete(q);
+    auto q = uiObjectConstants::basicQuad;
+    delete(q);
     // uiObjectConstants::basicQuad = unitRenderer.cubeModel;
+
+    float* vertices = vertexObjectGenerators::quad::vertices();
+    unsigned int* indices = reinterpret_cast<unsigned int*>(vertexObjectGenerators::quad::indices());
+    uiObjectConstants::basicQuad = Renderer::createVertexObject(vertices,indices,32*sizeof(float),6*sizeof(int));
 
     testUi.minCorner = glm::vec2(-1,-1);
     testUi.maxCorner = glm::vec2(800,800);
