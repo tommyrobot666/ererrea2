@@ -74,16 +74,17 @@ void uiObject::startUiUpdate() {
     }
 }
 
-void uiObject::renderThenChildren() {
-    render();
+void uiObject::renderThenChildren(glm::mat4 orthProj) {
+    render(orthProj);
     for (auto &child : children) {
-        child.renderThenChildren();
+        child.renderThenChildren(orthProj);
     }
 }
 
-void uiObject::render() {
+void uiObject::render(glm::mat4 orthProj) {
     glm::mat4 trans = glm::translate(glm::mat4(1.0f),glm::vec3(pos.x,pos.y,0));
     trans = glm::scale(trans, glm::vec3(size.x,size.y,1));
+    // trans = trans * orthProj;
     gs.r().setShaderTransform(&trans);
     Renderer::currentTexture(uiObjectConstants::defaultTexture);
     uiObjectConstants::basicQuad->currentBind();

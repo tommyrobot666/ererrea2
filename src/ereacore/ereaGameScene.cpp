@@ -33,11 +33,11 @@ void ereaGameScene::render() {
     Renderer::clear(1.0f,1.0f,1.0f,1.0f);
 
     glm::mat4 proj = glm::perspective(glm::radians(70.0f), (float)gs.gameWindowWidth/(float)gs.gameWindowHeight, 0.1f, 100.0f);
+    glm::mat4 orthProj = glm::ortho(0.f,(float)gs.gameWindowWidth,0.f,(float)gs.gameWindowHeight);//,-.1f,.1f);
 
     unitRenderer.render(chunks, proj);
 
-    // gs.r().defaultShader();
-    testUi.renderThenChildren();
+    testUi.renderThenChildren(orthProj);
 }
 
 void ereaGameScene::close() {}
