@@ -11,6 +11,7 @@ namespace uiObjectConstants {
     // FUCK YOU c++
     // THIS IS JUST WHAT I WANTED TO FUCKING DO WITH "static"
     // DO YOU EVEN FUCKING KNOW WHAT "static" MEANS!?!?!??!?!?!?!?!??
+
     extern VertexObject* basicQuad;
     extern unsigned int defaultTexture;
 }

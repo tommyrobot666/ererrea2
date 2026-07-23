@@ -2,6 +2,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <core/gameState.h>
+#include <uicore/uiObject.h>
 
 void ereaGameScene::load() {
     chunkGenerator.seed = 123;
@@ -10,6 +11,10 @@ void ereaGameScene::load() {
     // Renderer::freeTexture(unitRenderer.atlasTexture);
     // chunkGenerator.debugtex(unitRenderer.atlasTexture);
     gs.cameraPos = glm::vec3(0,9,0);
+
+    auto q = uiObjectConstants::basicQuad;
+    delete(q);
+    uiObjectConstants::basicQuad = unitRenderer.cubeModel;
 
     testUi.minCorner = glm::vec2(0,0);
     testUi.maxCorner = glm::vec2(8,20);
