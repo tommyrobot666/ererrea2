@@ -22,4 +22,9 @@ namespace vertexObjectGenerators {
         float *verticesPositions();
         int size();
     }
+
+    namespace cornerQuad {
+        unsigned int *indices();
+        float *vertices();
+    }
 }

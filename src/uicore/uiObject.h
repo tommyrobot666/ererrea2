@@ -33,6 +33,7 @@ public:
 
     std::vector<uiObject> children;
 
+    // TODO don't forget that basicQuad must be init in first scene because "random bs is funny" (if using)
     static void initUiSystem();
     static void closeUiSystem();
     void recalculatePosAndSize();

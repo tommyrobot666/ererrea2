@@ -136,4 +136,18 @@ namespace vertexObjectGenerators {
             return 4;
         }
     }
+
+    unsigned int* cornerQuad::indices() {
+        return reinterpret_cast<unsigned int*>(quad::indices());
+    }
+
+    float* cornerQuad::vertices() {
+        return new float[32]{
+            // positions           // colors       // uvs
+            f1, f1, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // top right
+            f1, f0, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, // bottom right
+            f0, f0, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, // bottom left
+            f0, f1, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,// top left
+        };
+    }
 }
