@@ -41,6 +41,7 @@ public:
 
 
 class Renderer {
+    void setUpTextureDrawing();
 public:
     unsigned int shaderProgram;
     unsigned int transformLoc;
@@ -50,7 +51,7 @@ public:
     static unsigned int setUpShaders();
 
     static VertexObject* createVertexObject(float vertices[], unsigned int indices[], unsigned int sizeOfVertices,
-                                          unsigned int sizeOfIndices);
+                                            unsigned int sizeOfIndices);
 
     void setShaderTransform(glm::mat4 *trans) const;
 
@@ -71,4 +72,7 @@ public:
     static void textureDrawingNearest();
 
     static unsigned int createTextureAtlas(unsigned char **data, int textures, int length);
+
+    static void disableDepthTest();
+    static void enableDepthTest();
 };

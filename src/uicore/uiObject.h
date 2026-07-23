@@ -37,8 +37,8 @@ public:
     static void closeUiSystem();
     void recalculatePosAndSize();
     void startUiUpdate();
-    void renderThenChildren(glm::mat4 orthProj);
-    virtual void render(glm::mat4 orthProj);
+    void renderThenChildren(glm::mat4& orthProj);
+    virtual void render(glm::mat4& orthProj);
     // also use this to recalculate children min/maxCorner
     virtual void uiUpdate() {};
 };

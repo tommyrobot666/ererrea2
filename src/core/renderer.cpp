@@ -115,7 +115,7 @@ unsigned int Renderer::setUpShaders() {
     return shaderProgram;
 }
 
-void setUpTextureDrawing() {
+void Renderer::setUpTextureDrawing() {
     //GL_REPEAT,GL_MIRRORED_REPEAT,GL_CLAMP_TO_EDGE,GL_CLAMP_TO_BORDER (like MonoGame)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -254,6 +254,14 @@ unsigned int Renderer::createTextureAtlas(unsigned char **allData, int textures,
     glGenerateMipmap(GL_TEXTURE_2D);
 
     return atlasTexture;
+}
+
+void Renderer::disableDepthTest() {
+    glDisable(GL_DEPTH_TEST);
+}
+
+void Renderer::enableDepthTest() {
+    glEnable(GL_DEPTH_TEST);
 }
 
 void Renderer::currentTexture(unsigned int texture) {

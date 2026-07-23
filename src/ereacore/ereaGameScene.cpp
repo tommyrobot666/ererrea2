@@ -12,12 +12,12 @@ void ereaGameScene::load() {
     // chunkGenerator.debugtex(unitRenderer.atlasTexture);
     gs.cameraPos = glm::vec3(0,9,0);
 
-    auto q = uiObjectConstants::basicQuad;
-    delete(q);
-    uiObjectConstants::basicQuad = unitRenderer.cubeModel;
+    // auto q = uiObjectConstants::basicQuad;
+    // delete(q);
+    // uiObjectConstants::basicQuad = unitRenderer.cubeModel;
 
-    testUi.minCorner = glm::vec2(0,0);
-    testUi.maxCorner = glm::vec2(8,20);
+    testUi.minCorner = glm::vec2(-1,-1);
+    testUi.maxCorner = glm::vec2(800,800);
     testUi.recalculatePosAndSize();
 }
 
@@ -35,8 +35,10 @@ void ereaGameScene::render() {
     glm::mat4 proj = glm::perspective(glm::radians(70.0f), (float)gs.gameWindowWidth/(float)gs.gameWindowHeight, 0.1f, 100.0f);
     glm::mat4 orthProj = glm::ortho(0.f,(float)gs.gameWindowWidth,0.f,(float)gs.gameWindowHeight);//,-.1f,.1f);
 
+    Renderer::enableDepthTest();
     unitRenderer.render(chunks, proj);
 
+    Renderer::disableDepthTest();
     testUi.renderThenChildren(orthProj);
 }
 

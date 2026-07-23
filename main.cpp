@@ -71,6 +71,9 @@ int main() {
     gs.initGameState(window,coreRenderer);
     uiObject::initUiSystem();
 
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
     glfwSetWindowSizeCallback(window, GameState::sizeCallback);
     glfwSetCursorPosCallback(window, GameState::mouseCallback);
     glfwSetKeyCallback(window, InputManager::keyCallback);
