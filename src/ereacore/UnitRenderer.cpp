@@ -71,7 +71,7 @@ void UnitRenderer::render(std::vector<Chunk>& chunks, glm::mat4& proj) {
         for (auto& aMeshCacheEntry : chunkMeshCache) {
             if (aMeshCacheEntry.pos == glm::ivec3(chunk.x,chunk.y,chunk.z)) {
                 if (chunk.queueMeshRegen) {
-                    mesh = generateChunkMesh(chunk);
+                    mesh = generateChunkMeshWithAllChunks(chunk,chunks);
                     aMeshCacheEntry.mesh = mesh;
                 }
                 else {
@@ -81,7 +81,7 @@ void UnitRenderer::render(std::vector<Chunk>& chunks, glm::mat4& proj) {
             }
         }
         if (mesh == nullptr) {
-            mesh = generateChunkMesh(chunk);
+            mesh = generateChunkMeshWithAllChunks(chunk,chunks);
             chunkMeshCache.push_back(meshCacheEntry{glm::ivec3(chunk.x,chunk.y,chunk.z),mesh});
         }
         chunk.queueMeshRegen = false;
@@ -128,6 +128,94 @@ VertexObject* UnitRenderer::generateChunkMesh(Chunk &chunk) {
                     int unitFacesStart = i * 4;
                     if (Chunk::inBounds(neighbor.x,neighbor.y,neighbor.z)) {
                         if (chunk.getUnit(neighbor.x,neighbor.y,neighbor.z) != Unit::NONE) continue;
+                    }
+
+                    auto v0 = Vertex{unitFaces[unitFacesStart]+static_cast<glm::vec3>(pos),
+                        glm::vec2{atlasCords.x,atlasCords.y}};
+                    unsigned int i0;
+                    Vertex::getOrAddVertex(vertices, v0, i0);
+
+                    auto v1 = Vertex{unitFaces[unitFacesStart+1]+static_cast<glm::vec3>(pos),
+                        glm::vec2{atlasCords.x,atlasCords.w}};
+                    unsigned int i1;
+                    Vertex::getOrAddVertex(vertices,v1,i1);
+
+                    auto v2 = Vertex{unitFaces[unitFacesStart+2]+static_cast<glm::vec3>(pos),
+                        glm::vec2{atlasCords.z,atlasCords.y}};
+                    unsigned int i2;
+                    Vertex::getOrAddVertex(vertices,v2,i2);
+
+                    auto v3 = Vertex{unitFaces[unitFacesStart+3]+static_cast<glm::vec3>(pos),
+                        glm::vec2{atlasCords.z,atlasCords.w}};
+                    unsigned int i3;
+                    Vertex::getOrAddVertex(vertices,v3,i3);
+                    // std::cout << i3 <<"is"<< v3.pos.x<<v3.pos.y<<v3.pos.z<<"\n";
+
+                    //t1
+                    indices.push_back(i0);
+                    indices.push_back(i1);
+                    indices.push_back(i2);
+                    //t2
+                    indices.push_back(i1);
+                    indices.push_back(i2);
+                    indices.push_back(i3);
+                }
+            }
+        }
+    }
+
+    std::vector<float> verticesFloats;
+    verticesFloats.reserve(vertexObjectGenerators::floatsInVertex*vertices.size());
+    Vertex::convertToFloats(vertices, verticesFloats);
+
+    return Renderer::createVertexObject(
+        verticesFloats.data(),
+        indices.data(),
+        vertices.size()*vertexObjectGenerators::SizeOfVertex,
+        indices.size()*sizeof(int));
+}
+
+VertexObject* UnitRenderer::generateChunkMeshWithAllChunks(Chunk &chunk, std::vector<Chunk>& chunks) {
+    int gx = chunk.x*Chunk::LENGTH;
+    int gy = chunk.y*Chunk::LENGTH;
+    int gz = chunk.z*Chunk::LENGTH;
+
+    std::vector<Vertex> vertices;
+    std::vector<unsigned int> indices;
+
+    for (int x = 0; x < Chunk::LENGTH; ++x){
+        for (int y = 0; y < Chunk::LENGTH; ++y) {
+            for (int z = 0; z < Chunk::LENGTH; ++z) {
+                if (chunk.units[posToIdx(x,y,z,Chunk::LENGTH)] == Unit::NONE) continue;
+
+                glm::vec4 atlasCords;
+                switch (chunk.units[posToIdx(x,y,z,Chunk::LENGTH)])
+                {
+                    case NONE:
+                        throw;
+                    case GRASS:
+                        atlasCords = glm::vec4(0,0,.5,.5);
+                        break;
+                    case DIRT:
+                        atlasCords = glm::vec4{.5,0,1,.5};
+                        break;
+                    case STONE:
+                        atlasCords = glm::vec4{0,.5,.5,1};
+                        break;
+                    case ORE:
+                        atlasCords = glm::vec4{.5,.5,1,1};
+                        break;
+                }
+
+                glm::ivec3 pos = glm::vec3(x,y,z);
+                for (int i = 0; i < Direction::ALL_SIZE; i++) {
+                    glm::ivec3 direction = Direction::ALL_VEC[i];
+                    auto neighbor = pos+direction;
+                    int unitFacesStart = i * 4;
+                    if (Chunk::inBounds(neighbor.x,neighbor.y,neighbor.z)) {
+                        if (chunk.getUnit(neighbor.x,neighbor.y,neighbor.z) != Unit::NONE) continue;
+                    } else {
+                        if (Chunk::getUnitAtGlobalPos(chunks,neighbor.x+gx,neighbor.y+gy,neighbor.z+gz) != Unit::NONE) continue;
                     }
 
                     auto v0 = Vertex{unitFaces[unitFacesStart]+static_cast<glm::vec3>(pos),
