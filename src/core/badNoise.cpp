@@ -1,4 +1,4 @@
-#include <ereacore/badNoise.h>
+#include <core//badNoise.h>
 #include <random>
 #include <3dListUtil.h>
 #include <iostream>
