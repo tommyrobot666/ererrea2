@@ -8,7 +8,7 @@
 
 terrainGenerator::terrainGenerator() {
     auto simplex = FastNoise::New<FastNoise::Simplex>();;
-    simplex->SetScale(500);
+    simplex->SetScale(150);
     auto fractal = FastNoise::New<FastNoise::FractalFBm>();
     fractal->SetSource(simplex);
     fractal->SetOctaveCount(7);
@@ -42,7 +42,7 @@ void terrainGenerator::debugtex(int debugTex) {
 
 void terrainGenerator::generateNearbyChunks(std::vector<Chunk>& chunks) {
     ListUtilVecInt cameraChunkPos = stepGridPos(gs.cameraPos.x,gs.cameraPos.y,gs.cameraPos.z,Chunk::LENGTH);
-    int maxChunkDistance = 2;
+    int maxChunkDistance = 3;
     for (int x = cameraChunkPos.x-maxChunkDistance; x < cameraChunkPos.x+maxChunkDistance; ++x) {
         for (int y = cameraChunkPos.y-maxChunkDistance; y < cameraChunkPos.y+maxChunkDistance; ++y) {
             for (int z = cameraChunkPos.z-maxChunkDistance; z < cameraChunkPos.z+maxChunkDistance; ++z) {
@@ -57,7 +57,7 @@ void terrainGenerator::generateNearbyChunks(std::vector<Chunk>& chunks) {
 }
 
 void terrainGenerator::generateChunk(Chunk &chunk) {
-    if (chunk.y > 1) return;
+    if (chunk.y >= 1) return;
     if (chunk.y == -1) {
         chunk.fillUnits(0,Chunk::LENGTH-3,0,Chunk::LENGTH,Chunk::LENGTH,Chunk::LENGTH,Unit::DIRT);
         chunk.fillUnits(0,0,0,Chunk::LENGTH,Chunk::LENGTH-3,Chunk::LENGTH,Unit::STONE);
@@ -77,8 +77,15 @@ void terrainGenerator::generateChunk(Chunk &chunk) {
             int val = perlinValues[posToIdx(x,z,0,Chunk::LENGTH)];
             int localV = val-chunk.y*Chunk::LENGTH;
             localV = (localV<0?0:(localV>Chunk::LENGTH?Chunk::LENGTH:localV));
-            Unit unit = val<3?Unit::DIRT:(val<7?Unit::GRASS:Unit::STONE);
-            chunk.fillUnits(x,0,z,x+1,localV,z+1,unit);
+            for (int y = 0; y < Chunk::LENGTH; ++y) {
+                if (y > localV) continue;
+
+                Unit unit = Unit::DIRT;
+                if (localV-y < 3) unit = Unit::GRASS;
+                if (y > 10) unit = Unit::STONE;
+
+                chunk.setUnit(x,y,z,unit);
+            }
         }
     }
 }
