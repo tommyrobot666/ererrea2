@@ -33,10 +33,10 @@ void terrainGenerator::debugtex(int debugTex) {
     noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
     constexpr int debugSize = 256;
     float debugValues[debugSize*debugSize];
-    // debugRemap->GenUniformGrid2D(debugValues,0,0,debugSize,debugSize,1,1,seed);
+    // debugRemap->GenUniformGrid2D(debugValues,0,0,debugSize,debugSize,0.00001,0.00001,seed);
     for (int x = 0; x < debugSize; ++x) {
         for (int y = 0; y < debugSize; ++y) {
-            debugValues[x+y*debugSize] = noise.GetNoise((float)x, (float)y);
+            debugValues[x+y*debugSize] = noise.GetNoise((float)x/1000, (float)y/1000);
         }
     }
     glBindTexture(GL_TEXTURE_2D, debugTex);
