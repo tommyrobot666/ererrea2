@@ -28,18 +28,14 @@ void ereaGameScene::simulate() {
     testUi.startUiUpdate();
     testUi.uiUpdate();
     playerWorldInteraction.moveCamera();
-    if (/*chunkGenerationThread.joinable() && */chunkGenerationThreadDone) {
-        chunkGenerationThread.join();
-        makeNewChunkGenerationThread();
-    }
     playerWorldInteraction.interactWithUnits(chunks);
 }
 
 void ereaGameScene::makeNewChunkGenerationThread() {
-    chunkGenerationThreadDone = false;
     chunkGenerationThread = std::thread([this]() {
-        chunkGenerator.generateNearbyChunks(chunks);
-        chunkGenerationThreadDone = true;
+        while (true) {
+            chunkGenerator.generateNearbyChunks(chunks);
+        }
     });
     chunkGenerationThread.detach();
 }
