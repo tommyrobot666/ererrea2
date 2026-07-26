@@ -6,7 +6,7 @@
 #include <uicore/uiObject.h>
 
 void ereaGameScene::load() {
-    chunkGenerator->seed = 123;
+    chunkGenerator.seed = 123;
 
     unitRenderer.load();
     // Renderer::freeTexture(unitRenderer.atlasTexture);
@@ -20,25 +20,14 @@ void ereaGameScene::load() {
     testUi.minCorner = glm::vec2(0,0);
     testUi.maxCorner = glm::vec2(40,160);
     testUi.recalculatePosAndSize();
-
-    makeNewChunkGenerationThread();
 }
 
 void ereaGameScene::simulate() {
     testUi.startUiUpdate();
     testUi.uiUpdate();
     playerWorldInteraction.moveCamera();
+    chunkGenerator.generateNearbyChunks(chunks);
     playerWorldInteraction.interactWithUnits(chunks);
-}
-
-void ereaGameScene::makeNewChunkGenerationThread() {
-    chunkGenerationThread = std::thread([](void* vp,std::vector<Chunk> chunks) {
-        terrainGenerator* chunkGenerator = (terrainGenerator*)vp;
-        while (true) {
-            chunkGenerator->generateNearbyChunks(chunks);
-        }
-    },(void*)chunkGenerator,chunks);
-    chunkGenerationThread.detach();
 }
 
 void ereaGameScene::render() {
@@ -69,7 +58,5 @@ void ereaGameScene::drawCubeAtLookedAtUnit(glm::mat4& proj) {
     cubeModel->draw();
 }
 
-void ereaGameScene::close() {
-    chunkGenerationThread.join();
-}
+void ereaGameScene::close() {}
 

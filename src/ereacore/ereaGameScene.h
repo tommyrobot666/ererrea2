@@ -11,16 +11,13 @@
 class ereaGameScene : public Scene {
     std::vector<Chunk> chunks;
     UnitRenderer unitRenderer;
-    terrainGenerator* chunkGenerator = new terrainGenerator();
+    terrainGenerator chunkGenerator;
     PlayerWorldInteraction playerWorldInteraction;
     uiObject testUi = uiObject();
-    std::thread chunkGenerationThread;
-    bool chunkGenerationThreadDone = false;
     public:
     ~ereaGameScene() override = default;
     void load() override;
     void simulate() override;
-    void makeNewChunkGenerationThread();
     void render() override;
     void drawCubeAtLookedAtUnit(glm::mat4& proj);
     void close() override;
