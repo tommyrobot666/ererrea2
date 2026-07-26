@@ -11,7 +11,7 @@
 class ereaGameScene : public Scene {
     std::vector<Chunk> chunks;
     UnitRenderer unitRenderer;
-    terrainGenerator chunkGenerator;
+    terrainGenerator* chunkGenerator = new terrainGenerator();
     PlayerWorldInteraction playerWorldInteraction;
     uiObject testUi = uiObject();
     std::thread chunkGenerationThread;

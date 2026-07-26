@@ -6,7 +6,7 @@
 #include <uicore/uiObject.h>
 
 void ereaGameScene::load() {
-    chunkGenerator.seed = 123;
+    chunkGenerator->seed = 123;
 
     unitRenderer.load();
     // Renderer::freeTexture(unitRenderer.atlasTexture);
@@ -32,11 +32,12 @@ void ereaGameScene::simulate() {
 }
 
 void ereaGameScene::makeNewChunkGenerationThread() {
-    chunkGenerationThread = std::thread([this]() {
+    chunkGenerationThread = std::thread([](void* vp,std::vector<Chunk> chunks) {
+        terrainGenerator* chunkGenerator = (terrainGenerator*)vp;
         while (true) {
-            chunkGenerator.generateNearbyChunks(chunks);
+            chunkGenerator->generateNearbyChunks(chunks);
         }
-    });
+    },(void*)chunkGenerator,chunks);
     chunkGenerationThread.detach();
 }
 
