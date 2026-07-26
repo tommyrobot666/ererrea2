@@ -42,9 +42,10 @@ void terrainGenerator::debugtex(int debugTex) {
 
 void terrainGenerator::generateNearbyChunks(std::vector<Chunk>& chunks) {
     ListUtilVecInt cameraChunkPos = stepGridPos(gs.cameraPos.x,gs.cameraPos.y,gs.cameraPos.z,Chunk::LENGTH);
-    int maxChunkDistance = 1;
+    int maxChunkDistance = 5;
+    int maxChunkDistanceY = 2;
     for (int x = cameraChunkPos.x-maxChunkDistance; x < cameraChunkPos.x+maxChunkDistance; ++x) {
-        for (int y = cameraChunkPos.y-maxChunkDistance; y < cameraChunkPos.y+maxChunkDistance; ++y) {
+        for (int y = cameraChunkPos.y-maxChunkDistanceY; y < cameraChunkPos.y+maxChunkDistanceY; ++y) {
             for (int z = cameraChunkPos.z-maxChunkDistance; z < cameraChunkPos.z+maxChunkDistance; ++z) {
                 Chunk* isChunk = Chunk::findChunkOrNone(chunks,x,y,z);
                 if (isChunk != nullptr) continue;

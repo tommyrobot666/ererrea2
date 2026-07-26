@@ -64,7 +64,7 @@ void UnitRenderer::render(std::vector<Chunk>& chunks, glm::mat4& proj) {
     for (auto& chunk : chunks) {
         if (dist(ListUtilVec{static_cast<double>(cameraChunkPos.x-chunk.x),
             static_cast<double>(cameraChunkPos.y-chunk.y),
-            static_cast<double>(cameraChunkPos.z-chunk.z)}) > 5) continue;
+            static_cast<double>(cameraChunkPos.z-chunk.z)}) > 6) continue;
         glm::mat4 chunkOffset = glm::translate(glm::mat4(1.0f),glm::vec3(chunk.x*Chunk::LENGTH,chunk.y*Chunk::LENGTH,chunk.z*Chunk::LENGTH));
 
         VertexObject* mesh = nullptr;
