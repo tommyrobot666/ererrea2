@@ -11,6 +11,7 @@ public:
     double bilinearInterpolation(double lerpX, double lerpY, double topLeft, double topRight, double bottomLeft,
                                  double bottomRight);
     double bilinearNoise(double x, double y);
+    void printStuff();
 
     double linear2dNoise9(double x, double y);
 };

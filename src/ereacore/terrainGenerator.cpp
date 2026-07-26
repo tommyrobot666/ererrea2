@@ -43,6 +43,7 @@ void terrainGenerator::debugtex(int debugTex) {
                 //noise.GetNoise((float)x/1000, (float)y/1000);
         }
     }
+    badNoise.printStuff();
     glBindTexture(GL_TEXTURE_2D, debugTex);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, debugSize,debugSize, 0, GL_RED, GL_UNSIGNED_BYTE, debugValues);
     glGenerateMipmap(GL_TEXTURE_2D);

@@ -1,6 +1,7 @@
 #include <ereacore/badNoise.h>
 #include <random>
 #include <3dListUtil.h>
+#include <iostream>
 
 double badNoise::sample2dNoise(int x, int y) {
     //https://math.stackexchange.com/a/23505
@@ -44,6 +45,14 @@ double badNoise::bilinearNoise(double x, double y) {
     return bilinearInterpolation(lerpX,lerpY,topLeft,topRight,bottomLeft,bottomRight);
 }
 
+void badNoise::printStuff() {
+    double x = std::floor(uni(rnd));
+    double y = std::floor(uni(rnd));
+    for (double offset : {0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0}) {
+        std::cout << "l:" << bilinearInterpolation(offset,offset,0.0,0.0,1.0,1.0);
+        std::cout << "n:" << bilinearNoise(x+offset,y) << "\n";
+    }
+}
 
 
 
