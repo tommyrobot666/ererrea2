@@ -47,15 +47,11 @@ void PlayerWorldInteraction::interactWithUnits(std::vector<Chunk>& chunks) {
     if (raycastHit == nullptr) return;
     auto lookAtUnitPos = ListUtilVecInt(*raycastHit);
     delete raycastHit;
+    lastLookedBlock = lookAtUnitPos;
 
     if (gs.input->isJustPressed(keybinds.mine)) {
         Chunk::setUnitAtGlobalPos(Unit::NONE,chunks,lookAtUnitPos.x,lookAtUnitPos.y,lookAtUnitPos.z);
-    } else {
-        if (Chunk::getUnitAtGlobalPos(chunks,lookAtUnitPos.x,lookAtUnitPos.y,lookAtUnitPos.z) != Unit::ORE)
-        Chunk::setUnitAtGlobalPos(Unit::STONE,chunks,lookAtUnitPos.x,lookAtUnitPos.y,lookAtUnitPos.z);
-    }
-
-    if (gs.input->isJustPressed(keybinds.place)) {
+    } else if (gs.input->isJustPressed(keybinds.place)) {
         auto lookAtUnitFrontPos = ListUtilVecInt{
                 lookAtUnitPos.x-static_cast<int>(gs.cameraDir.x),
                 lookAtUnitPos.y-static_cast<int>(gs.cameraDir.y),

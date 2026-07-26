@@ -18,5 +18,6 @@ class ereaGameScene : public Scene {
     void load() override;
     void simulate() override;
     void render() override;
+    void drawCubeAtLookedAtUnit(glm::mat4& proj);
     void close() override;
 };

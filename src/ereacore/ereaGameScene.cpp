@@ -39,8 +39,23 @@ void ereaGameScene::render() {
     Renderer::enableDepthTest();
     unitRenderer.render(chunks, proj);
 
+    drawCubeAtLookedAtUnit(proj);
+
     Renderer::disableDepthTest();
     testUi.renderThenChildren(orthProj);
+}
+
+void ereaGameScene::drawCubeAtLookedAtUnit(glm::mat4& proj) {
+    auto cubeModel = unitRenderer.cubeModel;
+    cubeModel->currentBind();
+    glm::vec3 lastLookedBlock = glm::vec3(playerWorldInteraction.lastLookedBlock.x,
+                                          playerWorldInteraction.lastLookedBlock.y,playerWorldInteraction.lastLookedBlock.z);
+    glm::mat4 trans = glm::translate(glm::mat4(1.0), lastLookedBlock);
+    trans = glm::scale(trans, glm::vec3(1.1));
+    trans = glm::translate(trans, glm::vec3(-0.05));
+    trans = proj*gs.view*trans;
+    gs.r().setShaderTransform(&trans);
+    cubeModel->draw();
 }
 
 void ereaGameScene::close() {}

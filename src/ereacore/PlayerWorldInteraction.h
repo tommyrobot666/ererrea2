@@ -10,7 +10,8 @@ class PlayerWorldInteraction {
     Keybinds keybinds;
     int lastChangex,lastChangey,lastChangez;
     public:
-    PlayerWorldInteraction() {};
+    ListUtilVecInt lastLookedBlock;
+    PlayerWorldInteraction() : lastChangex(), lastChangey(), lastChangez(), lastLookedBlock() {};
     void moveCamera();
     void interactWithUnits(std::vector<Chunk>& chunks);
     static ListUtilVecInt rayCast(std::vector<Chunk>& chunks, glm::vec3& rayDir, glm::vec3& rayStartPos, int maxChunkDistance);
