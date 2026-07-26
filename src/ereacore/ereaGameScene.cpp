@@ -20,14 +20,28 @@ void ereaGameScene::load() {
     testUi.minCorner = glm::vec2(0,0);
     testUi.maxCorner = glm::vec2(40,160);
     testUi.recalculatePosAndSize();
+
+    makeNewChunkGenerationThread();
 }
 
 void ereaGameScene::simulate() {
     testUi.startUiUpdate();
     testUi.uiUpdate();
     playerWorldInteraction.moveCamera();
-    chunkGenerator.generateNearbyChunks(chunks);
+    if (/*chunkGenerationThread.joinable() && */chunkGenerationThreadDone) {
+        chunkGenerationThread.join();
+        makeNewChunkGenerationThread();
+    }
     playerWorldInteraction.interactWithUnits(chunks);
+}
+
+void ereaGameScene::makeNewChunkGenerationThread() {
+    chunkGenerationThreadDone = false;
+    chunkGenerationThread = std::thread([this]() {
+        chunkGenerator.generateNearbyChunks(chunks);
+        chunkGenerationThreadDone = true;
+    });
+    chunkGenerationThread.detach();
 }
 
 void ereaGameScene::render() {
@@ -58,5 +72,7 @@ void ereaGameScene::drawCubeAtLookedAtUnit(glm::mat4& proj) {
     cubeModel->draw();
 }
 
-void ereaGameScene::close() {}
+void ereaGameScene::close() {
+    chunkGenerationThread.join();
+}
 
