@@ -9,6 +9,53 @@ double badNoise::sample2dNoise(int x, int y) {
     return uni(rnd);
 }
 
+double badNoise::sample2dNoiseD(double x, double y) {
+    double seed = std::pow(7.0,x)*std::pow(3.0,y);
+    unsigned long long int seedInt = static_cast<unsigned long long int>(seed);
+    rnd.seed(seedInt);
+    return uni(rnd);
+}
+
+//https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1/creating-simple-2D-noise.html
+double badNoise::bilinearInterpolation(double lerpX, double lerpY, double topLeft, double topRight, double bottomLeft, double bottomRight) {
+    double topLerp = lerpX*topRight + (1-lerpX)*topLeft;
+    double bottomLerp = lerpX*bottomRight + (1-lerpX)*bottomLeft;
+    return topLerp*lerpY + (1-lerpY)*bottomLerp;
+}
+
+//https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1/creating-simple-2D-noise.html
+double badNoise::bilinearNoise(double x, double y) {
+    double fx, cx, fy, cy;
+    fx = std::floor(x);
+    cx = std::ceil(x);
+    fy = std::floor(y);
+    cy = std::ceil(y);
+
+    double topLeft, topRight, bottomLeft, bottomRight;
+    topLeft = sample2dNoiseD(fx,fy);
+    topRight = sample2dNoiseD(cx,fy);
+    bottomLeft = sample2dNoiseD(fx,cy);
+    bottomRight = sample2dNoiseD(cx,cy);
+
+    double lerpX, lerpY;
+    lerpX = x - fx;
+    lerpY = y - fy;
+
+    return bilinearInterpolation(lerpX,lerpY,topLeft,topRight,bottomLeft,bottomRight);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 double badNoise::linear2dNoise9(double x, double y) {
     int xStart = static_cast<int>(x);
     int yStart = static_cast<int>(y);

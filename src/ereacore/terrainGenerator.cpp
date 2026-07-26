@@ -4,6 +4,7 @@
 #include <random>
 #include <3dListUtil.h>
 #include <ereacore/terrainGenerator.h>
+#include <ereacore/badNoise.h>
 #include <core/gameState.h>
 
 terrainGenerator::terrainGenerator() {
@@ -29,14 +30,17 @@ terrainGenerator::terrainGenerator() {
 }
 
 void terrainGenerator::debugtex(int debugTex) {
-    FastNoiseLite noise;
-    noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
+    // FastNoiseLite noise;
+    // noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
+    badNoise badNoise;
     constexpr int debugSize = 256;
     float debugValues[debugSize*debugSize];
     // debugRemap->GenUniformGrid2D(debugValues,0,0,debugSize,debugSize,0.00001,0.00001,seed);
     for (int x = 0; x < debugSize; ++x) {
         for (int y = 0; y < debugSize; ++y) {
-            debugValues[x+y*debugSize] = noise.GetNoise((float)x/1000, (float)y/1000);
+            // debugValues[x+y*debugSize] = badNoise.bilinearNoise(x,y);
+            debugValues[x+y*debugSize] = badNoise.bilinearNoise((double)x/100,(double)y/100);
+                //noise.GetNoise((float)x/1000, (float)y/1000);
         }
     }
     glBindTexture(GL_TEXTURE_2D, debugTex);

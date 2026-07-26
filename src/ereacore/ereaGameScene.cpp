@@ -10,7 +10,7 @@ void ereaGameScene::load() {
 
     unitRenderer.load();
     // Renderer::freeTexture(unitRenderer.atlasTexture);
-    // chunkGenerator.debugtex(unitRenderer.atlasTexture);
+    chunkGenerator.debugtex(unitRenderer.atlasTexture);
     gs.cameraPos = glm::vec3(0,9,0);
 
     float* vertices = vertexObjectGenerators::quad::vertices();
