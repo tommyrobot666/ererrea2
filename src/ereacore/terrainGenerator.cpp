@@ -78,14 +78,16 @@ void terrainGenerator::generateChunk(Chunk &chunk) {
             int val = perlinValues[posToIdx(x,z,0,Chunk::LENGTH)];
             int localV = val-chunk.y*Chunk::LENGTH;
             localV = (localV<0?0:(localV>Chunk::LENGTH?Chunk::LENGTH:localV));
-            for (int y = 0; y < Chunk::LENGTH; ++y) {
-                if (y > localV) continue;
+            int grassEnd = localV-3;
+            grassEnd = grassEnd<0?0:grassEnd;
+            bool stone = val>10;
 
-                Unit unit = Unit::DIRT;
-                if (localV-y < 3) unit = Unit::GRASS;
-                if (y > 10) unit = Unit::STONE;
-
-                chunk.setUnit(x,y,z,unit);
+            if (stone) {
+                chunk.fillUnits(x,0,z,x+1,10,z+1,Unit::DIRT);
+                chunk.fillUnits(x,10,z,x+1,localV,z+1,Unit::STONE);
+            } else {
+                chunk.fillUnits(x,0,z,x+1,grassEnd,z+1,Unit::DIRT);
+                chunk.fillUnits(x,grassEnd,z,x+1,localV,z+1,Unit::GRASS);
             }
         }
     }
