@@ -115,6 +115,12 @@ unsigned int Renderer::setUpShaders() {
     return shaderProgram;
 }
 
+void VertexList::addTriangle(Vertex &v0, Vertex &v1, Vertex &v2) {
+}
+
+void VertexList::scaleAndTransformUV(float deltaU, float deltaV, float scaleU, float scaleV) {
+}
+
 void Renderer::setUpTextureDrawing() {
     //GL_REPEAT,GL_MIRRORED_REPEAT,GL_CLAMP_TO_EDGE,GL_CLAMP_TO_BORDER (like MonoGame)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
