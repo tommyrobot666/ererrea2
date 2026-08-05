@@ -70,8 +70,7 @@ void uiObject::renderThenChildren(glm::mat4& orthProj) {
 void uiObject::render(glm::mat4& orthProj) {
     glm::mat4 trans = glm::mat4(1.0f);
     trans = glm::translate(trans,glm::vec3(pos.x/gs.gameWindowWidth-1,pos.y/gs.gameWindowHeight+1,0));
-    trans = glm::translate(trans, glm::vec3(size.x/2/gs.gameWindowWidth,-size.y/2/gs.gameWindowHeight,0));
-    trans = glm::scale(trans, glm::vec3(size.x/gs.gameWindowWidth,size.y/gs.gameWindowHeight,1));
+    trans = glm::scale(trans, glm::vec3(-size.x/gs.gameWindowWidth*2,size.y/gs.gameWindowHeight*2,1));
     gs.r().setShaderTransform(&trans);
     Renderer::currentTexture(uiObjectConstants::defaultTexture);
     uiObjectConstants::basicQuad->currentBind();

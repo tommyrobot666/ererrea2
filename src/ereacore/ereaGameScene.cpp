@@ -13,12 +13,12 @@ void ereaGameScene::load() {
     // chunkGenerator.debugtex(unitRenderer.atlasTexture);
     gs.cameraPos = glm::vec3(0,9,0);
 
-    float* vertices = vertexObjectGenerators::quad::vertices();
-    unsigned int* indices = reinterpret_cast<unsigned int*>(vertexObjectGenerators::quad::indices());
+    float* vertices = vertexObjectGenerators::cornerQuad::vertices();
+    unsigned int* indices = vertexObjectGenerators::cornerQuad::indices();
     uiObjectConstants::basicQuad = Renderer::createVertexObject(vertices,indices,32*sizeof(float),6*sizeof(int));
 
     testUi.minCorner = glm::vec2(0,0);
-    testUi.maxCorner = glm::vec2(40,160);
+    testUi.maxCorner = glm::vec2(gs.gameWindowWidth,160);
     testUi.recalculatePosAndSize();
 }
 
