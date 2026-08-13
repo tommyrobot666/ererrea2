@@ -70,17 +70,17 @@ glm::ivec3 PlayerWorldInteraction::rayCast(std::vector<Chunk> &chunks, glm::vec3
     return {static_cast<int>(rayPos.x),static_cast<int>(rayPos.y),static_cast<int>(rayPos.z)};
 }
 
-// to interpret going till max distance as a "fail"
 glm::ivec3* PlayerWorldInteraction::rayCastNullable(std::vector<Chunk> &chunks, glm::vec3 &rayDir,
     glm::vec3 &rayStartPos, int maxChunkDistance) {
-    auto hit = rayCast(chunks,rayDir,rayStartPos,maxChunkDistance);
-    // std::cout << hit.x << "," << hit.y << "," << hit.z << "\n";
-    // the -1.8 at the end is a margin to prevent what should be a fail being interpreted as a success
-    // 1.8 is a bit more than the distance between the corners of a unit square
-    if (length(glm::vec3(hit.x,hit.y,hit.z)-rayStartPos) >= static_cast<float>(maxChunkDistance)*Chunk::LENGTH-1.8) {
-        // std::cout << "out\n";
-        return nullptr;
-    } else {
-        return new glm::ivec3(hit);
+    bool isAir = true;
+    glm::vec3 rayPos = glm::vec{rayStartPos};
+    while (isAir) {
+        rayPos += rayDir;
+        if (Chunk::getUnitAtGlobalPos(chunks,rayPos.x,rayPos.y,rayPos.z) != Unit::NONE) isAir = false;
+
+        if (length(rayPos-rayStartPos) >= static_cast<float>(maxChunkDistance)*Chunk::LENGTH) {
+            return nullptr;
+        }
     }
+    return new glm::ivec3{static_cast<int>(rayPos.x),static_cast<int>(rayPos.y),static_cast<int>(rayPos.z)};
 }
