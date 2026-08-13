@@ -5,7 +5,6 @@ namespace vertexObjectGenerators {
 
     namespace basicCube {
         float *vertices();
-
         int verticesSize();
     }
 

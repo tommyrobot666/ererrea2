@@ -76,7 +76,7 @@ void renderFrame(VertexObject& VO, unsigned int texture, glm::vec3 cubePositions
     // fov, aspect ratio, near plane distance, far plane distance
     glm::mat4 proj = glm::perspective(glm::radians(70.0f), (float)GAME_WINDOW_WIDTH/(float)GAME_WINDOW_HEIGHT, 0.1f, 100.0f);
 
-    gs.r().defaultShader();
+    Renderer::defaultShader();
     Renderer::currentTexture(texture);
     VO.currentBind();
 
@@ -90,7 +90,7 @@ void renderFrame(VertexObject& VO, unsigned int texture, glm::vec3 cubePositions
         // trans is reused as final position
         trans = proj * gs.view * trans;
 
-        gs.r().setShaderTransform(&trans);
+        Renderer::setShaderTransform(&trans);
         VO.drawArray();
     }
 
@@ -98,7 +98,7 @@ void renderFrame(VertexObject& VO, unsigned int texture, glm::vec3 cubePositions
     auto trans = glm::scale(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -3.0f, 0.0f)),
                                          glm::vec3(30.0f, 1.0f, 30.0f));
     trans = proj * gs.view * trans;
-    gs.r().setShaderTransform(&trans);
+    Renderer::setShaderTransform(&trans);
     VO.drawArray();
 
     glBindVertexArray(0); // i think this is the reason why glBindVertexArray(VAO) gets called again

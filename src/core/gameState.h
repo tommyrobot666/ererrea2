@@ -17,13 +17,12 @@ public:
     double lastMouseX = gameWindowWidth / 2, lastMouseY = gameWindowHeight / 2;
     double mouseVelX = 0, mouseVelY = 0;
     glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3 cameraDir = glm::normalize(cameraPos - glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::vec3 cameraDir = glm::normalize(cameraPos - glm::vec3(0.0f, 0.0f, 1.0f)); //set in endFrame
     double yaw = 0.0f;
     double pitch = 0.0f;
     double lastFrameTime = glfwGetTime();
-    double deltaTime = 0;
+    double deltaTime = 0; // set in startFrame
     Scene *currentScene = nullptr;
-    Renderer *pointerToRenderer = nullptr; // this will be init manualy
     InputManager *input = nullptr;
     glm::mat4 view = glm::mat4(1.0f);
     bool switchingScene = false; // use this to detect if it's the last frame
@@ -35,23 +34,17 @@ public:
     GameState(const GameState&&)=delete;
     GameState& operator=(const GameState&&)=delete;
 
-    void initGameState(GLFWwindow *window,Renderer *pointerToRenderer);
-
+    void initGameState(GLFWwindow *window);
     void closingGame();
-
+    // set gameWindow and glViewport
     static void sizeCallback(GLFWwindow *window, int width, int height);
-
+    // set lastMouse and delta
     static void mouseCallback(GLFWwindow *window, double xpos, double ypos);
-
+    // set camDir and deltaTime; detect scene switch
     void onFrameStart();
-
+    // reset mouseVel, lastTime, and inputSys; Do the scene switching
     void onFrameEnd();
-
     void switchScene(Scene* newNextScene);
-
-    [[nodiscard]] Renderer& r() const {
-        return *this->pointerToRenderer;
-    }
 };
 
 extern GameState gs;

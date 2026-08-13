@@ -7,9 +7,9 @@
 
 #include <core/gameState.h>
 
-void GameState::initGameState(GLFWwindow *window,Renderer *pointerToRenderer) {
+void GameState::initGameState(GLFWwindow *window) {
     this->window = window;
-    this->pointerToRenderer = pointerToRenderer;
+    renderer.init();
     this->input = new InputManager(window);
 }
 
@@ -22,17 +22,18 @@ void GameState::closingGame() {
         nextScene->tryClose();
         delete(nextScene);
     }
-    delete(pointerToRenderer);
     delete(input);
 }
 
 void GameState::sizeCallback(GLFWwindow *window, int width, int height) {
+    assert(window == gs.window);
     glViewport(0,0,width,height);
     gs.gameWindowWidth = width;
     gs.gameWindowHeight = height;
 }
 
 void GameState::mouseCallback(GLFWwindow *window, double xpos, double ypos) {
+    assert(window == gs.window);
     gs.mouseVelX = gs.lastMouseX - xpos;
     gs.mouseVelY = gs.lastMouseY - ypos;
 
@@ -41,7 +42,7 @@ void GameState::mouseCallback(GLFWwindow *window, double xpos, double ypos) {
 }
 
 void GameState::onFrameStart() {
-    deltaTime = glfwGetTime() - lastFrameTime;
+    lastFrameTime = glfwGetTime();
 
     // camera location
     cameraDir.x = cos(yaw) * cos(pitch);
@@ -57,7 +58,7 @@ void GameState::onFrameStart() {
 void GameState::onFrameEnd() {
     mouseVelX = 0;
     mouseVelY = 0;
-    lastFrameTime = glfwGetTime();
+    deltaTime = glfwGetTime() - lastFrameTime;
     input->nextFrame();
 
     if (switchingScene) {

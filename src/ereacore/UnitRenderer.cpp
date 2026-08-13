@@ -56,7 +56,7 @@ UnitRenderer::~UnitRenderer() {
 }
 
 void UnitRenderer::render(std::vector<Chunk>& chunks, glm::mat4& proj) {
-    gs.r().defaultShader();
+    Renderer::defaultShader();
     Renderer::currentTexture(atlasTexture);
     Renderer::textureDrawingNearest();
 
@@ -88,7 +88,7 @@ void UnitRenderer::render(std::vector<Chunk>& chunks, glm::mat4& proj) {
 
         mesh->currentBind();
         glm::mat4 trans = proj*gs.view*chunkOffset;
-        gs.r().setShaderTransform(&trans);
+        Renderer::setShaderTransform(&trans);
         mesh->draw();
     }
 }

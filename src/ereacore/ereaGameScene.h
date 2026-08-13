@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-#include <thread>
 #include <core/scene.h>
 #include <uicore/uiObject.h>
 #include <ereacore/chunk.h>
@@ -19,6 +18,6 @@ class ereaGameScene : public Scene {
     void load() override;
     void simulate() override;
     void render() override;
-    void drawCubeAtLookedAtUnit(glm::mat4& proj);
+    void drawCubeAtLookedAtUnit(glm::mat4& proj) const;
     void close() override;
 };

@@ -14,8 +14,6 @@ class OtherTestScene : public Scene{
 
 public:
     void load() override;
-
     void simulate() override;
-
     void render() override;
 };

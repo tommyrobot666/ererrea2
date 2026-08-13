@@ -13,16 +13,12 @@ public:
     unsigned int triangles; // use for glDrawArrays
 
     VertexObject(unsigned int VAO, unsigned int VBO, unsigned int EBO, unsigned int vertices, unsigned int triangles);
-
     VertexObject();
-
     ~VertexObject();
-
     void currentBind();
-
     void draw();
-
     void drawArray();
+    void drawAt(glm::mat4& t);
 };
 
 class Vertex {
@@ -59,34 +55,26 @@ class Renderer {
 public:
     unsigned int shaderProgram;
     unsigned int transformLoc;
+    unsigned int d2texture0;
 
-    Renderer();
-
+    Renderer(): shaderProgram(), transformLoc(), d2texture0() {};
+    void init();
     static unsigned int setUpShaders();
-
     static VertexObject* createVertexObject(float vertices[], unsigned int indices[], unsigned int sizeOfVertices,
                                             unsigned int sizeOfIndices);
-
-    void setShaderTransform(glm::mat4 *trans) const;
-
-    void defaultShader() const;
-
+    static void setShaderTransform(glm::mat4 *trans);
+    static void defaultShader();
     static unsigned int loadPngTexture(std::string path);
-
     static unsigned char *loadPngData(std::string path);
-
     static unsigned int loadPngTextureNearest(std::string path);
-
     static void currentTexture(unsigned int texture);
-
+    static unsigned int getCurrentTexture();
     static void clear(float r, float g, float b, float a);
-
     static void freeTexture(unsigned int texture);
-
     static void textureDrawingNearest();
-
     static unsigned int createTextureAtlas(unsigned char **data, int textures, int length);
-
     static void disableDepthTest();
     static void enableDepthTest();
 };
+
+extern Renderer renderer;

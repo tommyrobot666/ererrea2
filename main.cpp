@@ -67,8 +67,7 @@ int main() {
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
     }
 
-    auto* coreRenderer = new Renderer();
-    gs.initGameState(window,coreRenderer);
+    gs.initGameState(window);
     uiObject::initUiSystem();
 
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -85,11 +84,12 @@ int main() {
         gs.onFrameStart();
         simulateFrame();
         renderFrame();
-        gs.onFrameEnd();
-
 
         glfwSwapBuffers(window); //it draws to back buffer first, this swaps it to be the shown front buffer
         glfwPollEvents();
+
+        // moved to after everything for more accurate deltaTime
+        gs.onFrameEnd();
     }
 
     uiObject::closeUiSystem();

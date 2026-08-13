@@ -45,7 +45,7 @@ void ereaGameScene::render() {
     testUi.renderThenChildren(orthProj);
 }
 
-void ereaGameScene::drawCubeAtLookedAtUnit(glm::mat4& proj) {
+void ereaGameScene::drawCubeAtLookedAtUnit(glm::mat4& proj) const {
     auto cubeModel = unitRenderer.cubeModel;
     cubeModel->currentBind();
     glm::vec3 lastLookedBlock = glm::vec3(playerWorldInteraction.lastLookedBlock.x,
@@ -54,7 +54,7 @@ void ereaGameScene::drawCubeAtLookedAtUnit(glm::mat4& proj) {
     trans = glm::scale(trans, glm::vec3(1.1));
     trans = glm::translate(trans, glm::vec3(-0.05));
     trans = proj*gs.view*trans;
-    gs.r().setShaderTransform(&trans);
+    Renderer::setShaderTransform(&trans);
     cubeModel->draw();
 }
 

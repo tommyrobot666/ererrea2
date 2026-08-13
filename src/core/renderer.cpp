@@ -38,6 +38,11 @@ void VertexObject::drawArray() {
     glDrawArrays(GL_TRIANGLES, 0, triangles);
 }
 
+void VertexObject::drawAt(glm::mat4 &t) {
+    Renderer::setShaderTransform(&t);
+    draw();
+}
+
 void Vertex::getOrAddVertex(std::vector<Vertex> &vertices, Vertex &v, unsigned int &i) {
     bool alreadyExists = false;
     for (int j = 0; j < vertices.size(); ++j) {
@@ -66,6 +71,44 @@ void Vertex::convertToFloats(std::vector<Vertex> &vertices, std::vector<float> &
     }
 }
 
+void VertexList::addTriangle(Vertex &v0, Vertex &v1, Vertex &v2) {
+}
+
+void VertexList::scaleAndTransformUV(float deltaU, float deltaV, float scaleU, float scaleV) {
+}
+
+Renderer renderer = Renderer();
+
+void Renderer::setUpTextureDrawing() {
+    //GL_REPEAT,GL_MIRRORED_REPEAT,GL_CLAMP_TO_EDGE,GL_CLAMP_TO_BORDER (like MonoGame)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    float borderColor[] = {1.0f, 1.0f, 0.0f, 1.0f};
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor); // for GL_CLAMP_TO_BORDER
+
+    //mipmap stuff
+    // NEAREST is exact value, LINEAR blurrs between
+    // GL_[MIPMAP]_MIPMAP_[TEXEL]
+    // [MIPMAP] affects interpoliate for mipmap selection
+    // [TEXEL] affects interpoliate for pixels
+    // 2*2 = 4 mipmap constants for glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_x_FILTER, x)
+
+    // GL_NEAREST is exact value, GL_LINEAR blurrs between
+    // GL_TEXTURE_MIN_FILTER is scaled down, GL_TEXTURE_MAG_FILTER is scaled up
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+}
+
+void Renderer::init() {
+    shaderProgram = setUpShaders();
+    transformLoc = glGetUniformLocation(shaderProgram, "transform");
+
+    setUpTextureDrawing();
+
+    stbi_set_flip_vertically_on_load(true);
+
+    glEnable(GL_DEPTH_TEST);
+}
 
 unsigned int Renderer::setUpShaders() {
     int success;
@@ -115,50 +158,9 @@ unsigned int Renderer::setUpShaders() {
     return shaderProgram;
 }
 
-void VertexList::addTriangle(Vertex &v0, Vertex &v1, Vertex &v2) {
-}
-
-void VertexList::scaleAndTransformUV(float deltaU, float deltaV, float scaleU, float scaleV) {
-}
-
-void Renderer::setUpTextureDrawing() {
-    //GL_REPEAT,GL_MIRRORED_REPEAT,GL_CLAMP_TO_EDGE,GL_CLAMP_TO_BORDER (like MonoGame)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    float borderColor[] = {1.0f, 1.0f, 0.0f, 1.0f};
-    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor); // for GL_CLAMP_TO_BORDER
-
-    //mipmap stuff
-    // NEAREST is exact value, LINEAR blurrs between
-    // GL_[MIPMAP]_MIPMAP_[TEXEL]
-    // [MIPMAP] affects interpoliate for mipmap selection
-    // [TEXEL] affects interpoliate for pixels
-    // 2*2 = 4 mipmap constants for glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_x_FILTER, x)
-
-    // GL_NEAREST is exact value, GL_LINEAR blurrs between
-    // GL_TEXTURE_MIN_FILTER is scaled down, GL_TEXTURE_MAG_FILTER is scaled up
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-}
-
-void Renderer::textureDrawingNearest() {
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-}
-
-Renderer::Renderer() {
-    shaderProgram = setUpShaders();
-    transformLoc = glGetUniformLocation(shaderProgram, "transform");
-
-    setUpTextureDrawing();
-
-    stbi_set_flip_vertically_on_load(true);
-
-    glEnable(GL_DEPTH_TEST);
-}
 
 VertexObject* Renderer::createVertexObject(float vertices[], unsigned int indices[], unsigned int sizeOfVertices,
-                                          unsigned int sizeOfIndices) {
+                                           unsigned int sizeOfIndices) {
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
@@ -189,12 +191,12 @@ VertexObject* Renderer::createVertexObject(float vertices[], unsigned int indice
     return new VertexObject{VAO, VBO, EBO, static_cast<unsigned int>(sizeOfIndices/sizeof(int)), sizeOfVertices/vertexObjectGenerators::SizeOfVertex};
 }
 
-void Renderer::setShaderTransform(glm::mat4 *trans) const {
-    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(*trans));
+void Renderer::setShaderTransform(glm::mat4 *trans) {
+    glUniformMatrix4fv(renderer.transformLoc, 1, GL_FALSE, glm::value_ptr(*trans));
 }
 
-void Renderer::defaultShader() const {
-    glUseProgram(shaderProgram);
+void Renderer::defaultShader() {
+    glUseProgram(renderer.shaderProgram);
 }
 
 unsigned int Renderer::loadPngTexture(std::string path) {
@@ -227,6 +229,30 @@ unsigned int Renderer::loadPngTextureNearest(std::string path) {
     unsigned int ret = loadPngTexture(path);
     textureDrawingNearest();
     return ret;
+}
+
+void Renderer::currentTexture(unsigned int texture) {
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    renderer.d2texture0 = texture;
+}
+
+unsigned int Renderer::getCurrentTexture() {
+    return renderer.d2texture0;
+}
+
+void Renderer::clear(float r, float g, float b, float a) {
+    glClearColor(r,g,b,a);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void Renderer::freeTexture(unsigned int texture) {
+    glDeleteTextures(1, &texture);
+}
+
+void Renderer::textureDrawingNearest() {
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
 
 unsigned int Renderer::createTextureAtlas(unsigned char **allData, int textures, int length) {
@@ -268,18 +294,4 @@ void Renderer::disableDepthTest() {
 
 void Renderer::enableDepthTest() {
     glEnable(GL_DEPTH_TEST);
-}
-
-void Renderer::currentTexture(unsigned int texture) {
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
-}
-
-void Renderer::clear(float r, float g, float b, float a) {
-    glClearColor(r,g,b,a);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
-void Renderer::freeTexture(unsigned int texture) {
-    glDeleteTextures(1, &texture);
 }
