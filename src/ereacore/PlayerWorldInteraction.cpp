@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <GLFW/glfw3.h>
-#include <3dListUtil.h>
+#include <glm/vec3.hpp>
 #include <core/gameState.h>
 #include <ereacore/chunk.h>
 #include <ereacore/keybinds.h>
@@ -45,14 +45,14 @@ void PlayerWorldInteraction::moveCamera() {
 void PlayerWorldInteraction::interactWithUnits(std::vector<Chunk>& chunks) {
     auto raycastHit = rayCastNullable(chunks,gs.cameraDir,gs.cameraPos,2);
     if (raycastHit == nullptr) return;
-    auto lookAtUnitPos = ListUtilVecInt(*raycastHit);
+    auto lookAtUnitPos = glm::ivec3(*raycastHit);
     delete raycastHit;
     lastLookedBlock = lookAtUnitPos;
 
     if (gs.input->isJustPressed(keybinds.mine)) {
         Chunk::setUnitAtGlobalPos(Unit::NONE,chunks,lookAtUnitPos.x,lookAtUnitPos.y,lookAtUnitPos.z);
     } else if (gs.input->isJustPressed(keybinds.place)) {
-        auto lookAtUnitFrontPos = ListUtilVecInt{
+        auto lookAtUnitFrontPos = glm::ivec3{
                 lookAtUnitPos.x-static_cast<int>(gs.cameraDir.x),
                 lookAtUnitPos.y-static_cast<int>(gs.cameraDir.y),
                 lookAtUnitPos.z-static_cast<int>(gs.cameraDir.z)};
@@ -60,7 +60,7 @@ void PlayerWorldInteraction::interactWithUnits(std::vector<Chunk>& chunks) {
     }
 }
 
-ListUtilVecInt PlayerWorldInteraction::rayCast(std::vector<Chunk> &chunks, glm::vec3 &rayDir, glm::vec3 &rayStartPos, int maxChunkDistance) {
+glm::ivec3 PlayerWorldInteraction::rayCast(std::vector<Chunk> &chunks, glm::vec3 &rayDir, glm::vec3 &rayStartPos, int maxChunkDistance) {
     bool isAir = true;
     glm::vec3 rayPos = glm::vec{rayStartPos};
     while (isAir && length(rayPos-rayStartPos) < static_cast<float>(maxChunkDistance)*Chunk::LENGTH) {
@@ -71,7 +71,7 @@ ListUtilVecInt PlayerWorldInteraction::rayCast(std::vector<Chunk> &chunks, glm::
 }
 
 // to interpret going till max distance as a "fail"
-ListUtilVecInt* PlayerWorldInteraction::rayCastNullable(std::vector<Chunk> &chunks, glm::vec3 &rayDir,
+glm::ivec3* PlayerWorldInteraction::rayCastNullable(std::vector<Chunk> &chunks, glm::vec3 &rayDir,
     glm::vec3 &rayStartPos, int maxChunkDistance) {
     auto hit = rayCast(chunks,rayDir,rayStartPos,maxChunkDistance);
     // std::cout << hit.x << "," << hit.y << "," << hit.z << "\n";
@@ -81,6 +81,6 @@ ListUtilVecInt* PlayerWorldInteraction::rayCastNullable(std::vector<Chunk> &chun
         // std::cout << "out\n";
         return nullptr;
     } else {
-        return new ListUtilVecInt(hit);
+        return new glm::ivec3(hit);
     }
 }

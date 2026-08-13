@@ -79,7 +79,7 @@ double badNoise::linear2dNoise9(double x, double y) {
     double dists[9];
     for (int i = -1; i < 2; ++i) {
         for (int j = -1; j < 2; ++j) {
-            double dista = dist(ListUtilVec{x-xStart+i,y-yStart+j,0});
+            double dista = dist(glm::vec3{x-xStart+i,y-yStart+j,0});
             int idx = posToIdx(i+1,j+1,0,3);
 
             if (dista > longestDist) {

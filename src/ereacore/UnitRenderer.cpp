@@ -60,9 +60,9 @@ void UnitRenderer::render(std::vector<Chunk>& chunks, glm::mat4& proj) {
     Renderer::currentTexture(atlasTexture);
     Renderer::textureDrawingNearest();
 
-    ListUtilVecInt cameraChunkPos = stepGridPos(gs.cameraPos.x,gs.cameraPos.y,gs.cameraPos.z,Chunk::LENGTH);
+    glm::ivec3 cameraChunkPos = stepGridPos(gs.cameraPos.x,gs.cameraPos.y,gs.cameraPos.z,Chunk::LENGTH);
     for (auto& chunk : chunks) {
-        if (dist(ListUtilVec{static_cast<double>(cameraChunkPos.x-chunk.x),
+        if (dist(glm::ivec3{static_cast<double>(cameraChunkPos.x-chunk.x),
             static_cast<double>(cameraChunkPos.y-chunk.y),
             static_cast<double>(cameraChunkPos.z-chunk.z)}) > 6) continue;
         glm::mat4 chunkOffset = glm::translate(glm::mat4(1.0f),glm::vec3(chunk.x*Chunk::LENGTH,chunk.y*Chunk::LENGTH,chunk.z*Chunk::LENGTH));

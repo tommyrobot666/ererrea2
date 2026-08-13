@@ -30,7 +30,6 @@ public:
     uiObjectConstants::Anchor anchor;
     glm::vec2 minCorner;
     glm::vec2 maxCorner;
-
     std::vector<uiObject> children;
 
     // TODO don't forget that basicQuad must be init in first scene because "random bs is funny" (if using)

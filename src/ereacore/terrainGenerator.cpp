@@ -41,7 +41,7 @@ void terrainGenerator::debugtex(int debugTex) {
 }
 
 void terrainGenerator::generateNearbyChunks(std::vector<Chunk>& chunks) {
-    ListUtilVecInt cameraChunkPos = stepGridPos(gs.cameraPos.x,gs.cameraPos.y,gs.cameraPos.z,Chunk::LENGTH);
+    glm::ivec3 cameraChunkPos = stepGridPos(gs.cameraPos.x,gs.cameraPos.y,gs.cameraPos.z,Chunk::LENGTH);
     int maxChunkDistance = 5;
     int maxChunkDistanceY = 2;
     for (int x = cameraChunkPos.x-maxChunkDistance; x < cameraChunkPos.x+maxChunkDistance; ++x) {

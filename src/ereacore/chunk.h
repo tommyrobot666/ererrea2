@@ -5,11 +5,12 @@
 #include <3dListUtil.h>
 
 class Chunk {
-    static void globalPosHandleNegatives(ListUtilVecInt &chunkPos, int &localPosX, int &localPosY, int &localPosZ);
+    static void globalPosHandleNegatives(glm::ivec3 &chunkPos, int &localPosX, int &localPosY, int &localPosZ);
 
     public:
     static constexpr int LENGTH = 16;
     const int x,y,z;
+    const glm::ivec3 chunkPos;
     Unit units[LENGTH*LENGTH*LENGTH] = {};
     bool queueMeshRegen;
 
