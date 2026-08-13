@@ -1,7 +1,6 @@
 #include <ereacore/PlayerWorldInteraction.h>
 
 #include <iostream>
-#include <GLFW/glfw3.h>
 #include <glm/vec3.hpp>
 #include <core/gameState.h>
 #include <ereacore/chunk.h>
@@ -12,17 +11,13 @@ void PlayerWorldInteraction::moveCamera() {
     if (gs.input->isPressed(keybinds.sprint))
         sprint = 68.0f;
 
-    // if (gs.input->isPressed(keybinds.left))
-    if (glfwGetKey(gs.window, GLFW_KEY_LEFT) == GLFW_PRESS)
+    if (gs.input->isPressed(keybinds.left))
         gs.yaw -= 1.3f*gs.deltaTime*sprint;
-    // if (gs.input->isPressed(keybinds.right))
-    if (glfwGetKey(gs.window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+    if (gs.input->isPressed(keybinds.right))
         gs.yaw += 1.3f*gs.deltaTime*sprint;
-    // if (gs.input->isPressed(keybinds.down))
-    if (glfwGetKey(gs.window, GLFW_KEY_DOWN) == GLFW_PRESS)
+    if (gs.input->isPressed(keybinds.down))
         gs.pitch -= 1.3f*gs.deltaTime*sprint;
-    // if (gs.input->isPressed(keybinds.up))
-    if (glfwGetKey(gs.window, GLFW_KEY_UP) == GLFW_PRESS)
+    if (gs.input->isPressed(keybinds.up))
         gs.pitch += 1.3f*gs.deltaTime*sprint;
 
     if (gs.input->isPressed(keybinds.posZ))

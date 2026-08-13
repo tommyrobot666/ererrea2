@@ -14,8 +14,8 @@ class Keybinds {
     Keybind negY = Keybind(GLFW_KEY_Q);
     Keybind mine = Keybind(GLFW_KEY_SPACE);
     Keybind place = Keybind(GLFW_KEY_LEFT_ALT);
-    // Keybind up = Keybind(GLFW_KEY_UP);
-    // Keybind down = Keybind(GLFW_KEY_DOWN);
-    // Keybind left = Keybind(GLFW_KEY_LEFT);
-    // Keybind right = Keybind(GLFW_KEY_RIGHT);
+    Keybind up = Keybind(GLFW_KEY_UP);
+    Keybind down = Keybind(GLFW_KEY_DOWN);
+    Keybind left = Keybind(GLFW_KEY_LEFT);
+    Keybind right = Keybind(GLFW_KEY_RIGHT);
 };
