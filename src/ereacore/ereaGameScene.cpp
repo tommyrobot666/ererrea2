@@ -2,7 +2,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <core/gameState.h>
-#include <core/vertexObjectGenerators.h>
 #include <uicore/uiObject.h>
 
 void ereaGameScene::load() {
@@ -13,14 +12,16 @@ void ereaGameScene::load() {
     // chunkGenerator.debugtex(unitRenderer.atlasTexture);
     gs.cameraPos = glm::vec3(0,9,0);
 
-    testUi.minCorner = glm::vec2(0,0);
-    testUi.maxCorner = glm::vec2(gs.gameWindowWidth,160);
-    testUi.recalculatePosAndSize();
+    int lengthOfUiAtlas = 256;
+    uiSprites = new Sprites(Renderer::loadPngTextureNearest("uiAtlas.png"),lengthOfUiAtlas);
+    uiSprites->addSprite(0,0,20,8);
+
+    testUi = new uiObject(*uiSprites,glm::vec2(0,0),glm::vec2(gs.gameWindowWidth,160));
 }
 
 void ereaGameScene::simulate() {
-    testUi.startUiUpdate();
-    testUi.uiUpdate();
+    testUi->startUiUpdate();
+    testUi->uiUpdate();
     playerWorldInteraction.moveCamera();
     chunkGenerator.generateNearbyChunks(chunks);
     playerWorldInteraction.interactWithUnits(chunks);
@@ -38,7 +39,7 @@ void ereaGameScene::render() {
     drawCubeAtLookedAtUnit(proj);
 
     Renderer::disableDepthTest();
-    testUi.renderThenChildren(orthProj);
+    testUi->renderThenChildren(orthProj);
 }
 
 void ereaGameScene::drawCubeAtLookedAtUnit(glm::mat4& proj) const {

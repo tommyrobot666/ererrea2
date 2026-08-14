@@ -12,7 +12,8 @@ class ereaGameScene : public Scene {
     UnitRenderer unitRenderer;
     terrainGenerator chunkGenerator;
     PlayerWorldInteraction playerWorldInteraction;
-    uiObject testUi = uiObject();
+    Sprites* uiSprites = nullptr;
+    uiObject* testUi = nullptr;
     public:
     ~ereaGameScene() override = default;
     void load() override;

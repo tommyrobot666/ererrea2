@@ -71,6 +71,7 @@ void UnitRenderer::render(std::vector<Chunk>& chunks, glm::mat4& proj) {
         for (auto& aMeshCacheEntry : chunkMeshCache) {
             if (aMeshCacheEntry.pos == glm::ivec3(chunk.x,chunk.y,chunk.z)) {
                 if (chunk.queueMeshRegen) {
+                    delete(aMeshCacheEntry.mesh);
                     mesh = generateChunkMesh(chunk);
                     aMeshCacheEntry.mesh = mesh;
                 }

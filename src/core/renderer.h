@@ -62,6 +62,7 @@ class Sprites {
     std::vector<glm::vec4> spriteUV;
 
     public:
+    ~Sprites();
     // generate full grid atlas
     Sprites(unsigned int texture, unsigned int sideLength, unsigned int spriteLength);
     // manually add non-square sprites
@@ -92,7 +93,7 @@ public:
     static void defaultShader();
     static unsigned int loadPngTexture(std::string path);
     static unsigned char *loadPngData(std::string path);
-    static unsigned int loadPngTextureNearest(std::string path);
+    static unsigned int loadPngTextureNearest(std::string path); // include file extension in path
     static void currentTexture(unsigned int texture);
     static unsigned int getCurrentTexture();
     static void clear(float r, float g, float b, float a);

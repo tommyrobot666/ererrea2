@@ -96,6 +96,10 @@ VertexObject * VertexList::makeObject() {
     return nullptr;
 }
 
+Sprites::~Sprites() {
+    Renderer::freeTexture(texture);
+}
+
 Sprites::Sprites(unsigned int texture, unsigned int sideLength, unsigned int spriteLength)
 : texture(texture), sideLength(sideLength), spriteLength(spriteLength), totalAtlasSize(sideLength*spriteLength) {
     float offset = 1/sideLength;
@@ -181,6 +185,7 @@ unsigned int Sprites::addSprite(unsigned int x, unsigned int y, unsigned int wid
         Vertex{glm::vec3{-1,0,0},glm::vec2{uv.z,uv.y}},
         Vertex{glm::vec3{0,-1,0},glm::vec2{uv.x,uv.w}}
         );
+    return quads.size()-1;
 }
 
 void Renderer::setUpTextureDrawing() {
