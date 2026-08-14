@@ -14,6 +14,7 @@
 #define RESOURCES_PATH
 #endif
 
+Renderer renderer = Renderer();
 
 VertexObject::VertexObject(unsigned int VAO, unsigned int VBO, unsigned int EBO, unsigned int vertices,
                            unsigned int triangles) : VAO(VAO), VBO(VBO), EBO(EBO), vertices(vertices), triangles(triangles) {}
@@ -74,10 +75,102 @@ void Vertex::convertToFloats(std::vector<Vertex> &vertices, std::vector<float> &
 void VertexList::addTriangle(Vertex &v0, Vertex &v1, Vertex &v2) {
 }
 
+void VertexList::addTriangleNoRef(Vertex v0, Vertex v1, Vertex v2) {
+}
+
 void VertexList::scaleAndTransformUV(float deltaU, float deltaV, float scaleU, float scaleV) {
 }
 
-Renderer renderer = Renderer();
+VertexObject * VertexList::makeObject() {
+    return nullptr;
+}
+
+Sprites::Sprites(unsigned int texture, unsigned int sideLength, unsigned int spriteLength)
+: texture(texture), sideLength(sideLength), spriteLength(spriteLength), totalAtlasSize(sideLength*spriteLength) {
+    float offset = 1/sideLength;
+    float x = 0, y = 0;
+    for (int i = 0; i < sideLength; ++i) {
+        for (int j = 0; j < sideLength; ++j) {
+            spriteUV.emplace_back(x,y,x+offset,y+offset);
+
+            x += offset;
+        }
+        y += offset;
+    }
+
+    VertexList baseQuad;
+    baseQuad.addTriangleNoRef(
+        Vertex{glm::vec3{0,0,0},glm::vec2{0,0}},
+        Vertex{glm::vec3{-1,0,0},glm::vec2{1,0}},
+        Vertex{glm::vec3{0,-1,0},glm::vec2{0,1}}
+        );
+    baseQuad.addTriangleNoRef(
+        Vertex{glm::vec3{-1,-1,0},glm::vec2{1,1}},
+        Vertex{glm::vec3{-1,0,0},glm::vec2{1,0}},
+        Vertex{glm::vec3{0,-1,0},glm::vec2{0,1}}
+        );
+
+    for (auto& uv : spriteUV) {
+        VertexList thisQuad = VertexList(baseQuad);
+        thisQuad.scaleAndTransformUV(0,0,offset,offset);
+        thisQuad.scaleAndTransformUV(uv.x,uv.y,1,1);
+        quads.push_back(thisQuad.makeObject());
+    }
+}
+
+Sprites::Sprites(unsigned int texture, unsigned int textureLength)
+: texture(texture), sideLength(1), spriteLength(textureLength), totalAtlasSize(textureLength) {}
+
+glm::vec4 Sprites::UVRegion(unsigned int x, unsigned int y, unsigned int width, unsigned int height) {
+    float uvX = static_cast<float>(x)/totalAtlasSize;
+    float uvY = static_cast<float>(y)/totalAtlasSize;
+    return glm::vec4(uvX, uvY, uvX+static_cast<float>(width)/totalAtlasSize, uvY+static_cast<float>(height)/totalAtlasSize);
+}
+
+VertexObject* Sprites::getSprite(unsigned int idx) {
+    return quads[idx];
+}
+
+void Sprites::drawSprite(unsigned int idx) {
+    if (renderer.d2texture0 != texture) {
+        Renderer::currentTexture(texture);
+    }
+
+    getSprite(idx)->draw();
+}
+
+void Sprites::drawSpriteAt(unsigned int idx, glm::mat4 &t) {
+    if (renderer.d2texture0 != texture) {
+        Renderer::currentTexture(texture);
+    }
+
+    getSprite(idx)->drawAt(t);
+}
+
+void Sprites::draw(unsigned int idx, float x, float y, float width, float height) {
+    if (renderer.d2texture0 != texture) {
+        Renderer::currentTexture(texture);
+    }
+    glm::mat4 trans = glm::mat4(1.0f);
+    trans = glm::translate(trans,glm::vec3(x-1,y+1,0));
+    trans = glm::scale(trans, glm::vec3(-width*2,height*2,1));
+    drawSpriteAt(idx,trans);
+}
+
+unsigned int Sprites::addSprite(unsigned int x, unsigned int y, unsigned int width, unsigned int height) {
+    auto uv = UVRegion(x, y, width, height);
+    VertexList quad;
+    quad.addTriangleNoRef(
+        Vertex{glm::vec3{0,0,0},glm::vec2{uv.x,uv.y}},
+        Vertex{glm::vec3{-1,0,0},glm::vec2{uv.z,uv.y}},
+        Vertex{glm::vec3{0,-1,0},glm::vec2{uv.x,uv.w}}
+        );
+    quad.addTriangleNoRef(
+        Vertex{glm::vec3{-1,-1,0},glm::vec2{uv.x,uv.y}},
+        Vertex{glm::vec3{-1,0,0},glm::vec2{uv.z,uv.y}},
+        Vertex{glm::vec3{0,-1,0},glm::vec2{uv.x,uv.w}}
+        );
+}
 
 void Renderer::setUpTextureDrawing() {
     //GL_REPEAT,GL_MIRRORED_REPEAT,GL_CLAMP_TO_EDGE,GL_CLAMP_TO_BORDER (like MonoGame)
