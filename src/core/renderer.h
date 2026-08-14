@@ -19,6 +19,8 @@ public:
     void draw();
     void drawArray();
     void drawAt(glm::mat4& t);
+    void bindAndDraw();
+    void bindAndDrawAt(glm::mat4& t);
 };
 
 class Vertex {
@@ -79,8 +81,9 @@ public:
     unsigned int shaderProgram;
     unsigned int transformLoc;
     unsigned int d2texture0;
+    unsigned int boundVAO;
 
-    Renderer(): shaderProgram(), transformLoc(), d2texture0() {};
+    Renderer(): shaderProgram(), transformLoc(), d2texture0(), boundVAO() {};
     void init();
     static unsigned int setUpShaders();
     static VertexObject* createVertexObject(float vertices[], unsigned int indices[], unsigned int sizeOfVertices,

@@ -7,17 +7,9 @@
 #include <core/renderer.h>
 #include <core/gameState.h>
 
-unsigned int uiObjectConstants::defaultTexture = 0;
-VertexObject* uiObjectConstants::basicQuad = 0;
+void uiObject::initUiSystem() {}
 
-void uiObject::initUiSystem() {
-    uiObjectConstants::defaultTexture = Renderer::loadPngTexture("smile.png");
-}
-
-void uiObject::closeUiSystem() {
-    Renderer::freeTexture(uiObjectConstants::defaultTexture);
-    // free quad?
-}
+void uiObject::closeUiSystem() {}
 
 void uiObject::recalculatePosAndSize() {
     switch (anchor) {
@@ -68,11 +60,5 @@ void uiObject::renderThenChildren(glm::mat4& orthProj) {
 }
 
 void uiObject::render(glm::mat4& orthProj) {
-    glm::mat4 trans = glm::mat4(1.0f);
-    trans = glm::translate(trans,glm::vec3(pos.x/gs.gameWindowWidth-1,pos.y/gs.gameWindowHeight+1,0));
-    trans = glm::scale(trans, glm::vec3(-size.x/gs.gameWindowWidth*2,size.y/gs.gameWindowHeight*2,1));
-    Renderer::setShaderTransform(&trans);
-    Renderer::currentTexture(uiObjectConstants::defaultTexture);
-    uiObjectConstants::basicQuad->currentBind();
-    uiObjectConstants::basicQuad->draw();
+    sprites.draw(0,pos.x,pos.y,size.x,size.y);
 }

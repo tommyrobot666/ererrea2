@@ -29,6 +29,7 @@ VertexObject::~VertexObject() {
 
 void VertexObject::currentBind() {
     glBindVertexArray(VAO);
+    renderer.boundVAO = VAO;
 }
 
 void VertexObject::draw() {
@@ -42,6 +43,16 @@ void VertexObject::drawArray() {
 void VertexObject::drawAt(glm::mat4 &t) {
     Renderer::setShaderTransform(&t);
     draw();
+}
+
+void VertexObject::bindAndDraw() {
+    if (renderer.boundVAO != VAO) currentBind();
+    draw();
+}
+
+void VertexObject::bindAndDrawAt(glm::mat4 &t) {
+    if (renderer.boundVAO != VAO) currentBind();
+    drawAt(t);
 }
 
 void Vertex::getOrAddVertex(std::vector<Vertex> &vertices, Vertex &v, unsigned int &i) {
@@ -136,7 +147,7 @@ void Sprites::drawSprite(unsigned int idx) {
         Renderer::currentTexture(texture);
     }
 
-    getSprite(idx)->draw();
+    getSprite(idx)->bindAndDraw();
 }
 
 void Sprites::drawSpriteAt(unsigned int idx, glm::mat4 &t) {
@@ -144,7 +155,7 @@ void Sprites::drawSpriteAt(unsigned int idx, glm::mat4 &t) {
         Renderer::currentTexture(texture);
     }
 
-    getSprite(idx)->drawAt(t);
+    getSprite(idx)->bindAndDrawAt(t);
 }
 
 void Sprites::draw(unsigned int idx, float x, float y, float width, float height) {

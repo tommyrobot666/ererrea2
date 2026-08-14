@@ -5,6 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <core/renderer.h>
 #include <core/gameState.h>
 
 void GameState::initGameState(GLFWwindow *window) {
