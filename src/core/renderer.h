@@ -47,7 +47,7 @@ class VertexList {
     {unsigned int i = 0; Vertex::getOrAddVertex(vertices, v, i); return i;}
     void addTriangle(Vertex &v0, Vertex &v1, Vertex &v2); // use getOrAddVertex for this
     void addTriangleNoRef(Vertex v0, Vertex v1, Vertex v2);
-    static std::vector<float> convertToFloats(std::vector<Vertex> &vertices)
+    std::vector<float> convertVerticesToFloats()
     {std::vector<float> verticesFloats; Vertex::convertToFloats(vertices, verticesFloats); return verticesFloats;}
     void scaleAndTransformUV(float deltaU, float deltaV, float scaleU, float scaleV);
     VertexObject* makeObject();

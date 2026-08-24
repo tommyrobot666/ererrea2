@@ -84,16 +84,28 @@ void Vertex::convertToFloats(std::vector<Vertex> &vertices, std::vector<float> &
 }
 
 void VertexList::addTriangle(Vertex &v0, Vertex &v1, Vertex &v2) {
+    indices.emplace_back(getOrAddVertex(v0));
+    indices.emplace_back(getOrAddVertex(v1));
+    indices.emplace_back(getOrAddVertex(v2));
 }
 
 void VertexList::addTriangleNoRef(Vertex v0, Vertex v1, Vertex v2) {
+    addTriangle(v0,v1,v2);
 }
 
 void VertexList::scaleAndTransformUV(float deltaU, float deltaV, float scaleU, float scaleV) {
+    for (auto& vertice : vertices) {
+        vertice.uv += glm::vec2(deltaU, deltaV);
+        vertice.uv *= glm::vec2(scaleU, scaleV);
+    }
 }
 
 VertexObject * VertexList::makeObject() {
-    return nullptr;
+    return Renderer::createVertexObject(
+        convertVerticesToFloats().data(),
+        indices.data(),
+        vertices.size()*vertexObjectGenerators::SizeOfVertex,
+        indices.size()*sizeof(int));
 }
 
 Sprites::~Sprites() {
@@ -185,6 +197,8 @@ unsigned int Sprites::addSprite(unsigned int x, unsigned int y, unsigned int wid
         Vertex{glm::vec3{-1,0,0},glm::vec2{uv.z,uv.y}},
         Vertex{glm::vec3{0,-1,0},glm::vec2{uv.x,uv.w}}
         );
+    quads.emplace_back(quad.makeObject());
+    spriteUV.emplace_back(uv);
     return quads.size()-1;
 }
 
