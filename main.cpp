@@ -13,6 +13,7 @@
 #include <core/glDebugLogger.h>
 #include <uicore/uiObject.h>
 #include <test/otherTestScene.h>
+#include <test/uiTestScene.h>
 #include <ereacore/ereaGameScene.h>
 
 #ifndef RESOURCES_PATH
@@ -77,7 +78,7 @@ int main() {
     glfwSetCursorPosCallback(window, GameState::mouseCallback);
     glfwSetKeyCallback(window, InputManager::keyCallback);
 
-    auto *test = new ereaGameScene(); // the new keyword does exist and makes it on the heap
+    auto *test = new uiTestScene(); // the new keyword does exist and makes it on the heap
     gs.switchScene(test);
 
     while (!glfwWindowShouldClose(window)) {
