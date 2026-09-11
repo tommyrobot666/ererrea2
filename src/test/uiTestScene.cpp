@@ -21,8 +21,7 @@ void uiTestScene::simulate() {
 }
 
 void uiTestScene::render() {
-    Renderer::clear(0,0,0,1);
+    Renderer::clear(0,0,1,1);
 
-    // incorrect usage of arg, interpret "gs.view" as null
-    testUi->renderThenChildren(gs.view);
+    testUi->renderThenChildren(gs.orthoScreenView);
 }
