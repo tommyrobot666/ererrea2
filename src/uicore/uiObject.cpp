@@ -4,7 +4,6 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <core/renderer.h>
 #include <core/gameState.h>
 
 void uiObject::initUiSystem() {}
@@ -12,6 +11,8 @@ void uiObject::initUiSystem() {}
 void uiObject::closeUiSystem() {}
 
 void uiObject::recalculatePosAndSize() {
+    assert(minCorner.x <= maxCorner.x && minCorner.y <= maxCorner.y);
+
     pos = minCorner;
     size = maxCorner-minCorner;
 

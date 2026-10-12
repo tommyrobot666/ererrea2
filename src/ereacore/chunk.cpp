@@ -1,6 +1,5 @@
 #include <ereacore/chunk.h>
 #include <3dListUtil.h>
-#include <iostream>
 
 
 void Chunk::globalPosHandleNegatives(glm::ivec3 &chunkPos, int &localPosX, int &localPosY, int &localPosZ) {
@@ -19,36 +18,36 @@ void Chunk::globalPosHandleNegatives(glm::ivec3 &chunkPos, int &localPosX, int &
     // std::cout << chunkPos.x << "," << chunkPos.y << "," << chunkPos.z << ":" << localPosX << "," << localPosY << "," << localPosZ << "\n";
 }
 
-Chunk::Chunk(const int x, const int y, const int z) : x(x), y(y), z(z), chunkPos(x, y, z), queueMeshRegen() {}
+Chunk::Chunk(const int x, const int y, const int z) : x(x), y(y), z(z), chunkPos(x, y, z) {}
 
-void Chunk::setUnit(int x, int y, int z,Unit unit) {
-    if (unit != getUnit(x,y,z)) {
-        units[posToIdx(x,y,z,LENGTH)] = unit;
+void Chunk::setUnit(const int lx, const int ly, const int lz, const Unit unit) {
+    if (unit != getUnit(lx,ly,lz)) {
+        units[posToIdx(lx,ly,lz,LENGTH)] = unit;
         queueMeshRegen = true;
     }
 }
 
-void Chunk::fillUnits(int x1, int y1, int z1, int x2, int y2, int z2,Unit unit) {
-    for (int x = x1; x < x2; ++x) {
-        for (int y = y1; y < y2; ++y) {
-            for (int z = z1; z < z2; ++z) {
+void Chunk::fillUnits(const int lx1, const int ly1, const int lz1, const int lx2, const int ly2, const int lz2, const Unit unit) {
+    for (int x = lx1; x < lx2; ++x) {
+        for (int y = ly1; y < ly2; ++y) {
+            for (int z = lz1; z < lz2; ++z) {
                 units[posToIdx(x,y,z,LENGTH)] = unit;
             }
         }
     }
 }
 
-Unit Chunk::getUnit(int x, int y, int z) {
-    return units[posToIdx(x,y,z,LENGTH)];
+Unit Chunk::getUnit(const int lx, const int ly, const int lz) const {
+    return units[posToIdx(lx,ly,lz,LENGTH)];
 }
 
-bool Chunk::inBounds(int x, int y, int z) {
-    return x>=0&&x<LENGTH&&y>=0&&y<LENGTH&&z>=0&&z<LENGTH;
+bool Chunk::inBounds(const int lx, const int ly, const int lz) {
+    return lx>=0&&lx<LENGTH&&ly>=0&&ly<LENGTH&&lz>=0&&lz<LENGTH;
 }
 
-Chunk* Chunk::findChunkOrNone(std::vector<Chunk>& chunks, int x, int y, int z) {
+Chunk* Chunk::findChunkOrNone(std::vector<Chunk>& chunks, int cx, int cy, int cz) {
     for (auto & chunk : chunks) {
-        if (chunk.x == x && chunk.y == y && chunk.z == z) {
+        if (chunk.x == cx && chunk.y == cy && chunk.z == cz) {
             return &chunk;
         }
     }
@@ -56,9 +55,9 @@ Chunk* Chunk::findChunkOrNone(std::vector<Chunk>& chunks, int x, int y, int z) {
 }
 
 /// Returns air if chunk doesn't exist
-Unit Chunk::getUnitAtGlobalPos(std::vector<Chunk> &chunks, int x, int y, int z) {
-    auto chunkPos = stepGridPos(x,y,z,LENGTH);
-    int localPosX = x-chunkPos.x*LENGTH, localPosY = y-chunkPos.y*LENGTH, localPosZ = z-chunkPos.z*LENGTH;
+Unit Chunk::getUnitAtGlobalPos(std::vector<Chunk> &chunks, int gx, int gy, int gz) {
+    auto chunkPos = stepGridPos(gx,gy,gz,LENGTH);
+    int localPosX = gx-chunkPos.x*LENGTH, localPosY = gy-chunkPos.y*LENGTH, localPosZ = gz-chunkPos.z*LENGTH;
     globalPosHandleNegatives(chunkPos,localPosX,localPosY,localPosZ);
     // std::cout << chunkPos.x << "," << chunkPos.y << "," << chunkPos.z << ":" << localPosX << "," << localPosY << "," << localPosZ << "\n";
     auto chunk = findChunkOrNone(chunks,chunkPos.x, chunkPos.y, chunkPos.z);
@@ -69,9 +68,9 @@ Unit Chunk::getUnitAtGlobalPos(std::vector<Chunk> &chunks, int x, int y, int z) 
 }
 
 /// Does nothing if chunk doesn't exist
-void Chunk::setUnitAtGlobalPos(Unit unit, std::vector<Chunk> &chunks, int x, int y, int z) {
-    auto chunkPos = stepGridPos(x,y,z,LENGTH);
-    int localPosX = x-chunkPos.x*LENGTH, localPosY = y-chunkPos.y*LENGTH, localPosZ = z-chunkPos.z*LENGTH;
+void Chunk::setUnitAtGlobalPos(Unit unit, std::vector<Chunk> &chunks, int gx, int gy, int gz) {
+    auto chunkPos = stepGridPos(gx,gy,gz,LENGTH);
+    int localPosX = gx-chunkPos.x*LENGTH, localPosY = gy-chunkPos.y*LENGTH, localPosZ = gz-chunkPos.z*LENGTH;
     globalPosHandleNegatives(chunkPos,localPosX,localPosY,localPosZ);
     auto chunk = findChunkOrNone(chunks,chunkPos.x, chunkPos.y, chunkPos.z);
     if (chunk) {

@@ -19,8 +19,8 @@ public:
     UnitRenderer() : cubeModel(), atlasTexture() {};
     ~UnitRenderer();
     void render(std::vector<Chunk>& chunks, glm::mat4& proj);
-    VertexObject* generateChunkMesh(Chunk& chunk);
-    VertexObject *generateChunkMeshWithAllChunks(Chunk &chunk, std::vector<Chunk> &chunks);
+    static VertexObject* generateChunkMesh(Chunk& chunk);
+    static VertexObject *generateChunkMeshWithAllChunks(Chunk &chunk, std::vector<Chunk> &chunks);
 
     void load();
 };

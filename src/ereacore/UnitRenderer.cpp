@@ -60,7 +60,7 @@ void UnitRenderer::render(std::vector<Chunk>& chunks, glm::mat4& proj) {
     Renderer::currentTexture(atlasTexture);
     Renderer::textureDrawingNearest();
 
-    glm::ivec3 cameraChunkPos = stepGridPos(gs.cameraPos.x,gs.cameraPos.y,gs.cameraPos.z,Chunk::LENGTH);
+    glm::ivec3 cameraChunkPos = stepGridPos(static_cast<int>(gs.cameraPos.x),static_cast<int>(gs.cameraPos.y),static_cast<int>(gs.cameraPos.z),Chunk::LENGTH);
     for (auto& chunk : chunks) {
         if (dist(glm::ivec3{static_cast<double>(cameraChunkPos.x-chunk.x),
             static_cast<double>(cameraChunkPos.y-chunk.y),
@@ -282,7 +282,7 @@ void UnitRenderer::load() {
     unsigned char* dirtTexture = Renderer::loadPngData("dort.png");
     unsigned char* stoneTexture = Renderer::loadPngData("stone.png");
     unsigned char* oreTexture = Renderer::loadPngData("ore.png");
-    unsigned char** textures = new unsigned char*[]{grassTexture,dirtTexture,stoneTexture,oreTexture};
+    unsigned char** textures = new unsigned char*[]{grassTexture,dirtTexture,stoneTexture,oreTexture}; // NOLINT(*-use-auto)
     atlasTexture = Renderer::createTextureAtlas(textures,4,16);
     free(grassTexture);
     free(dirtTexture);

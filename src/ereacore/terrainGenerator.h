@@ -9,7 +9,7 @@ class terrainGenerator {
     public:
     int seed = 0;
     terrainGenerator();
-    void debugtex(int debugTex);
+    void debugtex(unsigned int debugTex);
     void generateNearbyChunks(std::vector<Chunk>& chunks);
     void generateChunk(Chunk& chunk);
 };

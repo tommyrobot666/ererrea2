@@ -1,5 +1,4 @@
 #pragma once
-#include <stdexcept>
 #include <uicore/uiObject.h>
 
 class rootUiObject : public uiObject {
@@ -12,9 +11,6 @@ class rootUiObject : public uiObject {
           anchor(anchor) {
     }
 
-    // virtual void render(glm::mat4& orthProj) {
-    //     throw std::runtime_error("root ui objects choose orthProj");
-    // }
     void renderAll();
     void updateAll();
 };

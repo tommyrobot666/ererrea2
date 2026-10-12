@@ -9,17 +9,18 @@ class Chunk {
 
     public:
     static constexpr int LENGTH = 16;
+
     const int x,y,z;
     const glm::ivec3 chunkPos;
     Unit units[LENGTH*LENGTH*LENGTH] = {};
-    bool queueMeshRegen;
+    bool queueMeshRegen = false;
 
     Chunk(int x,int y,int z);
-    void setUnit(int x,int y,int z,Unit unit);
-    void fillUnits(int x1,int y1,int z1,int x2,int y2,int z2,Unit unit);
-    Unit getUnit(int x,int y,int z);
-    static bool inBounds(int x, int y, int z);
-    static Chunk* findChunkOrNone(std::vector<Chunk>& chunks, int x, int y, int z);
-    static Unit getUnitAtGlobalPos(std::vector<Chunk>& chunks, int x, int y, int z);
-    static void setUnitAtGlobalPos(Unit unit, std::vector<Chunk>& chunks, int x, int y, int z);
+    void setUnit(int lx,int ly,int lz,Unit unit);
+    void fillUnits(int lx1,int ly1,int lz1,int lx2,int ly2,int lz2,Unit unit);
+    Unit getUnit(int lx,int ly,int lz) const; // NOLINT(*-use-nodiscard)
+    static bool inBounds(int lx, int ly, int lz);
+    static Chunk* findChunkOrNone(std::vector<Chunk>& chunks, int cx, int cy, int cz);
+    static Unit getUnitAtGlobalPos(std::vector<Chunk>& chunks, int gx, int gy, int gz);
+    static void setUnitAtGlobalPos(Unit unit, std::vector<Chunk>& chunks, int gx, int gy, int gz);
 };

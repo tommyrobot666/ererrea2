@@ -28,7 +28,7 @@ terrainGenerator::terrainGenerator() {
     debugRemap->SetToMax(1);
 }
 
-void terrainGenerator::debugtex(int debugTex) {
+void terrainGenerator::debugtex(unsigned int debugTex) {
     constexpr int debugSize = 256;
     float debugValues[debugSize*debugSize];
     debugRemap->GenUniformGrid2D(debugValues,0,0,debugSize,debugSize,0.00001,0.00001,seed);
@@ -41,7 +41,7 @@ void terrainGenerator::debugtex(int debugTex) {
 }
 
 void terrainGenerator::generateNearbyChunks(std::vector<Chunk>& chunks) {
-    glm::ivec3 cameraChunkPos = stepGridPos(gs.cameraPos.x,gs.cameraPos.y,gs.cameraPos.z,Chunk::LENGTH);
+    glm::ivec3 cameraChunkPos = stepGridPos(static_cast<int>(gs.cameraPos.x),static_cast<int>(gs.cameraPos.y),static_cast<int>(gs.cameraPos.z),Chunk::LENGTH);
     int maxChunkDistance = 5;
     int maxChunkDistanceY = 2;
     for (int x = cameraChunkPos.x-maxChunkDistance; x < cameraChunkPos.x+maxChunkDistance; ++x) {
@@ -70,12 +70,12 @@ void terrainGenerator::generateChunk(Chunk &chunk) {
         return;
     }
     float perlinValues[Chunk::LENGTH*Chunk::LENGTH];
-    remap->GenUniformGrid2D(perlinValues,chunk.x*Chunk::LENGTH,chunk.z*Chunk::LENGTH,
+    remap->GenUniformGrid2D(perlinValues,static_cast<float>(chunk.x*Chunk::LENGTH),static_cast<float>(chunk.z*Chunk::LENGTH),
         Chunk::LENGTH,Chunk::LENGTH,1,1,seed);
 
     for (int x = 0; x < Chunk::LENGTH; ++x) {
         for (int z = 0; z < Chunk::LENGTH; ++z) {
-            int val = perlinValues[posToIdx(x,z,0,Chunk::LENGTH)];
+            int val = static_cast<int>(perlinValues[posToIdx(x,z,0,Chunk::LENGTH)]);
             int localV = val-chunk.y*Chunk::LENGTH;
             localV = (localV<0?0:(localV>Chunk::LENGTH?Chunk::LENGTH:localV));
             int grassEnd = localV-3;
