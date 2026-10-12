@@ -24,7 +24,6 @@ public:
     Scene *currentScene = nullptr;
     InputManager *input = nullptr;
     glm::mat4 view = glm::mat4(1.0f); // set in startFrame
-    glm::mat4 orthoScreenView = glm::mat4(1.0f); // set in startFrame
     bool switchingScene = false; // use this to detect if it's the last frame // set in startFrame
 
     GameState() = default;

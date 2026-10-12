@@ -1,12 +1,12 @@
 #pragma once
 #include <core/scene.h>
 #include <glm/glm.hpp>
-#include <uicore/uiObject.h>
+#include <uicore/rootUiObject.h>
 #include <core/renderer.h>
 
 class uiTestScene : public Scene{
     Sprites* uiSprites = nullptr;
-    uiObject* testUi = nullptr;
+    rootUiObject* testUi = nullptr;
 public:
     uiTestScene();
 

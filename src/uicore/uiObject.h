@@ -1,13 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include <core/renderer.h>
-
-namespace uiObjectConstants {
-    enum Anchor {
-        TOP_LEFT
-    };
-}
+#include <core/d2renderer.h>
 
 class uiObject {
     glm::vec2 pos;
@@ -22,8 +16,7 @@ public:
 
     virtual ~uiObject() = default;
 
-    // use anchor,minCorner,maxCorner to calculate pos,size
-    uiObjectConstants::Anchor anchor = uiObjectConstants::Anchor::TOP_LEFT;
+    // use minCorner,maxCorner to calculate pos,size
     glm::vec2 minCorner;
     glm::vec2 maxCorner;
     Sprites& sprites;

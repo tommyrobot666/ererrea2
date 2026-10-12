@@ -12,12 +12,11 @@ void uiObject::initUiSystem() {}
 void uiObject::closeUiSystem() {}
 
 void uiObject::recalculatePosAndSize() {
-    switch (anchor) {
-        case uiObjectConstants::Anchor::TOP_LEFT: {
-            pos = minCorner;
-            size = maxCorner-minCorner;
-        }
-        default: return;
+    pos = minCorner;
+    size = maxCorner-minCorner;
+
+    for (auto &child : children) {
+        child.recalculatePosAndSize();
     }
 }
 
