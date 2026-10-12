@@ -12,7 +12,7 @@ void uiTestScene::load() {
     uiSprites = new Sprites(Renderer::loadPngTextureNearest("uiAtlas.png"),lengthOfUiAtlas);
     uiSprites->addSprite(0,0,20,8);
 
-    testUi = new uiObject(*uiSprites,glm::vec2(0,0),glm::vec2(gs.gameWindowWidth,160));
+    testUi = new uiObject(*uiSprites,glm::vec2(200,160),glm::vec2(20,30));
 }
 
 void uiTestScene::simulate() {

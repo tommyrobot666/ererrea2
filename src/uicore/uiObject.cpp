@@ -60,5 +60,5 @@ void uiObject::renderThenChildren(glm::mat4& orthProj) {
 }
 
 void uiObject::render(glm::mat4& orthProj) {
-    sprites.draw(0,pos.x,pos.y,size.x,size.y);
+    sprites.draw(0,pos.x,pos.y,size.x,size.y,orthProj);
 }

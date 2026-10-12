@@ -51,7 +51,10 @@ void GameState::onFrameStart() {
     cameraDir.z = sin(yaw) * cos(pitch);
     view = glm::lookAt(cameraPos, cameraPos + cameraDir, glm::vec3(0.0, 1.0, 0.0));
 
-    orthoScreenView = glm::ortho(0.f,(float)gameWindowWidth,0.f,(float)gameWindowHeight);//,-.1f,.1f);
+    // this makes anchor be bottom left
+    // orthoScreenView = glm::ortho(0.f,(float)gameWindowWidth,0.f,(float)gameWindowHeight);//,-.1f,.1f);
+    // flip top and bottom to make be top left
+    orthoScreenView = glm::ortho(0.f,(float)gameWindowWidth,(float)gameWindowHeight,0.f);//,-.1f,.1f);
 
     if (nextScene != nullptr) {
         switchingScene = true;

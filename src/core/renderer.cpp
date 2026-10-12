@@ -9,6 +9,7 @@
 
 #include <core/renderer.h>
 #include <core/vertexObjectGenerators.h>
+// #include <core/gameState.h>
 
 #ifndef RESOURCES_PATH
 #define RESOURCES_PATH
@@ -174,13 +175,17 @@ void Sprites::drawSpriteAt(unsigned int idx, glm::mat4 &t) {
     getSprite(idx)->bindAndDrawAt(t);
 }
 
-void Sprites::draw(unsigned int idx, float x, float y, float width, float height) {
+void Sprites::draw(unsigned int idx, float x, float y, float width, float height, glm::mat4& orthProj) {
     if (renderer.d2texture0 != texture) {
         Renderer::currentTexture(texture);
     }
     glm::mat4 trans = glm::mat4(1.0f);
-    trans = glm::translate(trans,glm::vec3(x-1,y+1,0));
-    trans = glm::scale(trans, glm::vec3(-width*2,height*2,1));
+    trans = glm::translate(trans,glm::vec3(x,y,0));
+    trans = glm::scale(trans, glm::vec3(width,height,1));
+    trans = orthProj*trans;
+    trans = glm::scale(trans, glm::vec3(-1,-1,1));
+    // trans = glm::scale(trans, glm::vec3(1/gs.gameWindowWidth,1/gs.gameWindowHeight,1));
+    // trans = glm::translate(trans,glm::vec3(1,-1,0));
     drawSpriteAt(idx,trans);
 }
 

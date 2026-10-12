@@ -71,7 +71,7 @@ class Sprites {
     VertexObject* getSprite(unsigned int idx);
     void drawSprite(unsigned int idx);
     void drawSpriteAt(unsigned int idx, glm::mat4& t);
-    void draw(unsigned int idx,float x,float y,float width,float height);
+    void draw(unsigned int idx,float x,float y,float width,float height,glm::mat4& orthProj);
     unsigned int addSprite(unsigned int x,unsigned int y,unsigned int width,unsigned int height);
 };
 
