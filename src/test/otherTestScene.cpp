@@ -116,7 +116,7 @@ void OtherTestScene::load() {
     gs.yaw = 0.0f;
     gs.pitch = 0.0f;
 
-    glfwSetInputMode(gs.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(gs.mainWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 void OtherTestScene::render() {
@@ -124,7 +124,7 @@ void OtherTestScene::render() {
 }
 
 void OtherTestScene::simulate() {
-    simulateFrame(gs.window,&gs.cameraPos,reinterpret_cast<float*>(&gs.yaw),reinterpret_cast<float*>(&gs.pitch),&gs.cameraDir);
+    simulateFrame(gs.mainWindow,&gs.cameraPos,reinterpret_cast<float*>(&gs.yaw),reinterpret_cast<float*>(&gs.pitch),&gs.cameraDir);
 }
 
 

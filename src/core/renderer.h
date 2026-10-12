@@ -13,14 +13,13 @@ public:
     unsigned int triangles; // use for glDrawArrays
 
     VertexObject(unsigned int VAO, unsigned int VBO, unsigned int EBO, unsigned int vertices, unsigned int triangles);
-    VertexObject();
     ~VertexObject();
-    void currentBind();
-    void draw();
-    void drawArray();
-    void drawAt(glm::mat4& t);
-    void bindAndDraw();
-    void bindAndDrawAt(glm::mat4& t);
+    void currentBind() const;
+    void draw() const;
+    void drawArray() const;
+    void drawAt(glm::mat4& t) const;
+    void bindAndDraw() const;
+    void bindAndDrawAt(glm::mat4& t) const;
 };
 
 class Vertex {
@@ -33,7 +32,7 @@ public:
         return pos == value.pos && uv == value.uv;
     }
 
-    static void getOrAddVertex(std::vector<Vertex> &vertices, Vertex &v, unsigned int &i);
+    static void getOrAddVertex(std::vector<Vertex> &vertices, const Vertex &v, unsigned int &i);
     static void convertToFloats(std::vector<Vertex> &vertices, std::vector<float> &verticesFloats);;
 };
 
@@ -54,7 +53,7 @@ class VertexList {
 };
 
 class Renderer {
-    void setUpTextureDrawing();
+    static void setUpTextureDrawing();
 public:
     unsigned int shaderProgram;
     unsigned int transformLoc;
@@ -68,9 +67,9 @@ public:
                                             unsigned int sizeOfIndices);
     static void setShaderTransform(glm::mat4 *trans);
     static void defaultShader();
-    static unsigned int loadPngTexture(std::string path);
-    static unsigned char *loadPngData(std::string path);
-    static unsigned int loadPngTextureNearest(std::string path); // include file extension in path
+    static unsigned int loadPngTexture(const std::string& path);
+    static unsigned char *loadPngData(const std::string& path);
+    static unsigned int loadPngTextureNearest(const std::string& path); // include file extension in path
     static void currentTexture(unsigned int texture);
     static unsigned int getCurrentTexture();
     static void clear(float r, float g, float b, float a);

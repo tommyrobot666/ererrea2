@@ -34,7 +34,7 @@ void PlayerWorldInteraction::moveCamera() {
         gs.cameraPos.y += 2.7f*gs.deltaTime*sprint;
 
     if(gs.input->excape())
-        glfwSetWindowShouldClose(gs.window, true);
+        glfwSetWindowShouldClose(gs.mainWindow, true);
 }
 
 void PlayerWorldInteraction::interactWithUnits(std::vector<Chunk>& chunks) {

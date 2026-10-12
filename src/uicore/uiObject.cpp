@@ -26,7 +26,7 @@ void uiObject::startUiUpdate() {
     }
 
     double mx,my;
-    glfwGetCursorPos(gs.window,&mx,&my);
+    glfwGetCursorPos(gs.mainWindow,&mx,&my);
     if (mx>=minCorner.x&&mx<=maxCorner.x&&my>=minCorner.y&&my<=maxCorner.y) {
         mouseOver = true;
     } else {
@@ -34,7 +34,7 @@ void uiObject::startUiUpdate() {
         mouseDown = false;
     }
 
-    if (mouseOver && glfwGetMouseButton(gs.window,GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS) {
+    if (mouseOver && glfwGetMouseButton(gs.mainWindow,GLFW_MOUSE_BUTTON_LEFT)==GLFW_PRESS) {
         if (!mouseDown) {
             justClicked = true;
             mouseDown = true;

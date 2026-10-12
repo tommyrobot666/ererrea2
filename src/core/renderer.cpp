@@ -9,7 +9,6 @@
 
 #include <core/renderer.h>
 #include <core/vertexObjectGenerators.h>
-// #include <core/gameState.h>
 
 #ifndef RESOURCES_PATH
 #define RESOURCES_PATH
@@ -20,49 +19,49 @@ Renderer renderer = Renderer();
 VertexObject::VertexObject(unsigned int VAO, unsigned int VBO, unsigned int EBO, unsigned int vertices,
                            unsigned int triangles) : VAO(VAO), VBO(VBO), EBO(EBO), vertices(vertices), triangles(triangles) {}
 
-VertexObject::VertexObject() : VAO(-1), VBO(-1), EBO(-1), vertices(0), triangles(0) {}
-
 VertexObject::~VertexObject() {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
 }
 
-void VertexObject::currentBind() {
+void VertexObject::currentBind() const {
+    if (renderer.boundVAO == VAO) return;
+
     glBindVertexArray(VAO);
     renderer.boundVAO = VAO;
 }
 
-void VertexObject::draw() {
-    glDrawElements(GL_TRIANGLES, vertices, GL_UNSIGNED_INT, 0);
+void VertexObject::draw() const {
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(vertices), GL_UNSIGNED_INT, nullptr);
 }
 
-void VertexObject::drawArray() {
-    glDrawArrays(GL_TRIANGLES, 0, triangles);
+void VertexObject::drawArray() const {
+    glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(triangles));
 }
 
-void VertexObject::drawAt(glm::mat4 &t) {
+void VertexObject::drawAt(glm::mat4 &t) const {
     Renderer::setShaderTransform(&t);
     draw();
 }
 
-void VertexObject::bindAndDraw() {
-    if (renderer.boundVAO != VAO) currentBind();
+void VertexObject::bindAndDraw() const {
+    currentBind();
     draw();
 }
 
-void VertexObject::bindAndDrawAt(glm::mat4 &t) {
-    if (renderer.boundVAO != VAO) currentBind();
+void VertexObject::bindAndDrawAt(glm::mat4 &t) const {
+    currentBind();
     drawAt(t);
 }
 
-void Vertex::getOrAddVertex(std::vector<Vertex> &vertices, Vertex &v, unsigned int &i) {
+void Vertex::getOrAddVertex(std::vector<Vertex> &vertices, const Vertex &v, unsigned int &i) {
     bool alreadyExists = false;
     for (int j = 0; j < vertices.size(); ++j) {
-        auto vertex = vertices[j];
-        if (v == vertex) {
+        if (auto vertex = vertices[j]; v == vertex) {
             alreadyExists = true;
             i = j;
+            break;
         }
     }
     if (!alreadyExists) {
@@ -94,7 +93,7 @@ void VertexList::addTriangleNoRef(Vertex v0, Vertex v1, Vertex v2) {
     addTriangle(v0,v1,v2);
 }
 
-void VertexList::scaleAndTransformUV(float deltaU, float deltaV, float scaleU, float scaleV) {
+void VertexList::scaleAndTransformUV(const float deltaU, const float deltaV, const float scaleU, const float scaleV) {
     for (auto& vertice : vertices) {
         vertice.uv += glm::vec2(deltaU, deltaV);
         vertice.uv *= glm::vec2(scaleU, scaleV);
@@ -114,7 +113,7 @@ void Renderer::setUpTextureDrawing() {
     //GL_REPEAT,GL_MIRRORED_REPEAT,GL_CLAMP_TO_EDGE,GL_CLAMP_TO_BORDER (like MonoGame)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    float borderColor[] = {1.0f, 1.0f, 0.0f, 1.0f};
+    constexpr float borderColor[] = {1.0f, 1.0f, 0.0f, 1.0f};
     glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor); // for GL_CLAMP_TO_BORDER
 
     //mipmap stuff
@@ -152,11 +151,11 @@ unsigned int Renderer::setUpShaders() {
     vertFile.close();
     std::string vertFileData = vertFileStream.str();
     const char* vertFileDataChar = vertFileData.c_str();
-    glShaderSource(vertexShader, 1, &vertFileDataChar, NULL);
+    glShaderSource(vertexShader, 1, &vertFileDataChar, nullptr);
     glCompileShader(vertexShader);
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
     if (!success) {
-        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+        glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
         std::cout << "Default vertex shader failed\n" << infoLog;
     }
     unsigned int fragmentShader;
@@ -167,11 +166,11 @@ unsigned int Renderer::setUpShaders() {
     fragFile.close();
     std::string fragFileData = fragFileStream.str();
     const char* fragFileDataChar = fragFileData.c_str();
-    glShaderSource(fragmentShader, 1, &fragFileDataChar, NULL);
+    glShaderSource(fragmentShader, 1, &fragFileDataChar, nullptr);
     glCompileShader(fragmentShader);
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
     if (!success) {
-        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+        glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
         std::cout << "Default fragment shader failed\n" << infoLog;
     }
     unsigned int shaderProgram;
@@ -181,7 +180,7 @@ unsigned int Renderer::setUpShaders() {
     glLinkProgram(shaderProgram);
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
     if (!success) {
-        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+        glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
         std::cout << "Shader program failed\n" << infoLog;
     }
     glDeleteShader(vertexShader); // the shaders are in the program now
@@ -190,8 +189,11 @@ unsigned int Renderer::setUpShaders() {
 }
 
 
-VertexObject* Renderer::createVertexObject(float vertices[], unsigned int indices[], unsigned int sizeOfVertices,
-                                           unsigned int sizeOfIndices) {
+VertexObject* Renderer::createVertexObject(float vertices[], unsigned int indices[], const unsigned int sizeOfVertices,
+                                           const unsigned int sizeOfIndices) {
+    assert(vertices != nullptr);
+    assert(indices != nullptr);
+
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
@@ -210,27 +212,30 @@ VertexObject* Renderer::createVertexObject(float vertices[], unsigned int indice
     // tell it how vertices is formatted
     // position attribute
     // layout location, items, type, idk, stride length, offset.
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), static_cast<void *>(nullptr));
     glEnableVertexAttribArray(0);
     // color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<void *>(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
     // uv
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (6 * sizeof(float)));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<void *>(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
     return new VertexObject{VAO, VBO, EBO, static_cast<unsigned int>(sizeOfIndices/sizeof(int)), sizeOfVertices/vertexObjectGenerators::SizeOfVertex};
 }
 
 void Renderer::setShaderTransform(glm::mat4 *trans) {
-    glUniformMatrix4fv(renderer.transformLoc, 1, GL_FALSE, glm::value_ptr(*trans));
+    assert(trans != nullptr);
+    glUniformMatrix4fv(static_cast<GLint>(renderer.transformLoc), 1, GL_FALSE, glm::value_ptr(*trans));
 }
 
 void Renderer::defaultShader() {
     glUseProgram(renderer.shaderProgram);
 }
 
-unsigned int Renderer::loadPngTexture(std::string path) {
+unsigned int Renderer::loadPngTexture(const std::string& path) {
+    assert(!path.empty());
+
     int width, height, nrChannels;
     unsigned char *data = stbi_load((RESOURCES_PATH "textures/" + path).c_str(), &width, &height, &nrChannels,
                                     STBI_rgb_alpha);
@@ -249,20 +254,26 @@ unsigned int Renderer::loadPngTexture(std::string path) {
     return texture;
 }
 
-unsigned char *Renderer::loadPngData(std::string path) {
+unsigned char *Renderer::loadPngData(const std::string& path) {
+    assert(!path.empty());
+
     int width, height, nrChannels;
     unsigned char *data = stbi_load((RESOURCES_PATH "textures/" + path).c_str(), &width, &height, &nrChannels,
                                     STBI_rgb_alpha);
     return data;
 }
 
-unsigned int Renderer::loadPngTextureNearest(std::string path) {
+unsigned int Renderer::loadPngTextureNearest(const std::string& path) {
+    assert(!path.empty());
+
     unsigned int ret = loadPngTexture(path);
     textureDrawingNearest();
     return ret;
 }
 
-void Renderer::currentTexture(unsigned int texture) {
+void Renderer::currentTexture(const unsigned int texture) {
+    if (renderer.d2texture0 == texture) return;
+
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
     renderer.d2texture0 = texture;
@@ -272,12 +283,12 @@ unsigned int Renderer::getCurrentTexture() {
     return renderer.d2texture0;
 }
 
-void Renderer::clear(float r, float g, float b, float a) {
+void Renderer::clear(const float r, const float g, const float b, const float a) {
     glClearColor(r,g,b,a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::freeTexture(unsigned int texture) {
+void Renderer::freeTexture(const unsigned int texture) {
     glDeleteTextures(1, &texture);
 }
 
@@ -286,20 +297,22 @@ void Renderer::textureDrawingNearest() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
 
-unsigned int Renderer::createTextureAtlas(unsigned char **allData, int textures, int length) {
+unsigned int Renderer::createTextureAtlas(unsigned char **allData, const int textures, const int length) {
+    assert(allData != nullptr);
+
     // 4 == numChannels
-    int atlasLengthTextures = std::ceil(std::sqrt(textures));
-    int atlasLengthPixels = atlasLengthTextures * length;
-    int atlasDataSize = atlasLengthPixels*atlasLengthPixels*4;
+    const int atlasLengthTextures = std::ceil(std::sqrt(textures));
+    const int atlasLengthPixels = atlasLengthTextures * length;
+    const int atlasDataSize = atlasLengthPixels*atlasLengthPixels*4;
     std::vector<unsigned char> atlasData;
     atlasData.reserve(atlasDataSize);
     for (int x = 0; x < atlasLengthPixels; x++) {
         for (int y = 0; y < atlasLengthPixels; y++) {
-            int idx = x + y*atlasLengthPixels;
-            int texturesIdx = x/length + y/length*atlasLengthTextures;
-            int textureX = x%length;
-            int textureY = y%length;
-            int textureIdx = textureX + textureY*length;
+            const int idx = x + y*atlasLengthPixels;
+            const int texturesIdx = x/length + y/length*atlasLengthTextures;
+            const int textureX = x%length;
+            const int textureY = y%length;
+            const int textureIdx = textureX + textureY*length;
 
             atlasData[idx*4] = allData[texturesIdx][textureIdx*4];
             atlasData[idx*4+1] = allData[texturesIdx][textureIdx*4+1];

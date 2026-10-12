@@ -12,7 +12,7 @@ class GameState {
     Scene *nextScene = nullptr;
 public:
     double gameWindowWidth = 800, gameWindowHeight = 600; // set in callback
-    GLFWwindow *window = nullptr;
+    GLFWwindow *mainWindow = nullptr;
     double lastMouseX = gameWindowWidth / 2, lastMouseY = gameWindowHeight / 2; // set in callback
     double mouseVelX = 0, mouseVelY = 0; //set in endFrame
     glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -34,7 +34,7 @@ public:
     GameState& operator=(const GameState&&)=delete;
 
     void initGameState(GLFWwindow *window);
-    void closingGame();
+    void closingGame() const;
     // set gameWindow and glViewport
     static void sizeCallback(GLFWwindow *window, int width, int height);
     // set lastMouse and delta

@@ -16,7 +16,7 @@ public:
     Sprites(unsigned int texture, unsigned int sideLength, unsigned int spriteLength);
     // manually add non-square sprites
     Sprites(unsigned int texture, unsigned int textureLength);
-    glm::vec4 UVRegion(unsigned int x,unsigned int y,unsigned int width,unsigned int height);
+    glm::vec4 UVRegion(unsigned int x,unsigned int y,unsigned int width,unsigned int height) const;
     VertexObject* getSprite(unsigned int idx);
     void drawSprite(unsigned int idx);
     void drawSpriteAt(unsigned int idx, glm::mat4& t);

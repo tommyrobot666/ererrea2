@@ -7,16 +7,17 @@
 
 #include <core/renderer.h>
 #include <core/gameState.h>
-
-#include "d2renderer.h"
+#include <core/d2renderer.h>
 
 void GameState::initGameState(GLFWwindow *window) {
-    this->window = window;
+    assert(window != nullptr);
+
+    this->mainWindow = window;
     renderer.init();
     this->input = new InputManager(window);
 }
 
-void GameState::closingGame() {
+void GameState::closingGame() const {
     if (currentScene) {
         currentScene->tryClose();
         delete(currentScene);
@@ -29,14 +30,16 @@ void GameState::closingGame() {
 }
 
 void GameState::sizeCallback(GLFWwindow *window, int width, int height) {
-    assert(window == gs.window);
+    assert(window == gs.mainWindow);
+
     glViewport(0,0,width,height);
     gs.gameWindowWidth = width;
     gs.gameWindowHeight = height;
 }
 
 void GameState::mouseCallback(GLFWwindow *window, double xpos, double ypos) {
-    assert(window == gs.window);
+    assert(window == gs.mainWindow);
+
     gs.mouseVelX = gs.lastMouseX - xpos;
     gs.mouseVelY = gs.lastMouseY - ypos;
 
@@ -48,12 +51,12 @@ void GameState::onFrameStart() {
     lastFrameTime = glfwGetTime();
 
     // camera location
-    cameraDir.x = cos(yaw) * cos(pitch);
-    cameraDir.y = sin(pitch);
-    cameraDir.z = sin(yaw) * cos(pitch);
+    cameraDir.x = static_cast<float>(cos(yaw) * cos(pitch));
+    cameraDir.y = static_cast<float>(sin(pitch));
+    cameraDir.z = static_cast<float>(sin(yaw) * cos(pitch));
     view = glm::lookAt(cameraPos, cameraPos + cameraDir, glm::vec3(0.0, 1.0, 0.0));
 
-    OrthProjManager::updateOrthProjs(gameWindowWidth, gameWindowHeight);
+    OrthProjManager::updateOrthProjs(static_cast<float>(gameWindowWidth), static_cast<float>(gameWindowHeight));
 
     if (nextScene != nullptr) {
         switchingScene = true;
